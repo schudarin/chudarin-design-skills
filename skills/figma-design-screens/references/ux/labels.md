@@ -24,14 +24,17 @@ attention and makes the label longer than the button.
 
 **Read:** for each add/create button, whether its object is visible within the same block.
 
-### You cannot create a person
+### Create what the product brings into existence; add what already exists
 
-"Create" is for things that do not exist until the product makes them — a report, a rule, a
-segment. A human being — a manager, a client, a courier — already exists; they are **added** to the
-system. "Create a manager" reads as manufacturing a colleague, and users notice.
+"Create" takes as its object the thing that did not exist until now — a report, a rule, a segment,
+an **account**. A person does not become real when the product says so: a manager, a client, a
+courier already exists and is **added**. So "Add manager" and "Create account" are both right, and
+"Create manager" is the error — it reads as manufacturing a colleague, and users notice.
 
-**Read:** every "create" label against whether its object exists in the world independently of the
-product.
+The same test settles the awkward cases: if the label's object is a record *about* someone, create
+it; if the object is the someone, add them.
+
+**Read:** each create/add label against whether its object comes into existence with the press.
 
 ### The button's tier follows the weight of what it starts
 
@@ -50,14 +53,19 @@ are for. See `ux/principles.md` on why two accents cancel each other.
 
 **Read:** the count of primary-tier controls per screen region.
 
-### Cancel is a noun; so is anything that only navigates
+### A destination is named for the place, not for the act of going there
 
-An action button carries a verb because it does something. A button that takes you somewhere, or
-that means "never mind", is named for the place or the state — "Cancel", "Settings", "Back" — not
-"Go to settings". Mixing the two conventions makes the user read every label twice to work out
-which kind it is.
+"Settings", not "Go to settings". "Order #1042", not "Open the order". A button that only moves the
+user somewhere is labelled with the thing at the other end, because that is what they are looking
+for; adding the verb spends width on the one word that carries no information. Action buttons keep
+their verb — they do something — and dismissals keep whatever single word the product has settled
+on ("Cancel", "Close", "Not now"), the same one everywhere.
 
-**Read:** action buttons are verbs, navigation and dismissal are nouns, consistently.
+*This is about which word carries the meaning, not about grammar: "Cancel" is a verb in English and
+a noun in other languages, and the rule holds either way.*
+
+**Read:** each navigation label names its destination; each action label names its action; the
+dismissal word is the same one across the product.
 
 ### The two buttons in a dialog name their two outcomes
 

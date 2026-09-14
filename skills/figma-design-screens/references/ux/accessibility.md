@@ -7,12 +7,18 @@ states. These are the design-time rules — what to do while the screen is being
 same ground as yes/no questions for auditing a file someone else drew. When a rule here changes,
 change the question there too — two copies that drift are worse than one.
 
-### Tap targets: 44pt for buttons and fields
+### Targets meet the platform's minimum, and there is more than one number
 
-Buttons, fields, icon buttons, rows that act as controls. **Inline text links are excluded** — see
-`ux/controls.md`; enlarging them is a defect this checklist itself causes when applied blindly.
+There is no single 44. Apple's guidance is 44pt, Material's is 48dp, and WCAG 2.2 sets two different
+bars: **2.5.8 Target Size (Minimum)** at AA requires 24 × 24 CSS px — with exceptions for spacing,
+inline targets and platform-controlled controls — while **2.5.5** at AAA asks for 44 × 44. A design
+checked against the wrong one of those produces either false findings or false confidence.
 
-**Read:** height of every control node against 44; links exempt.
+So: record which target the product holds itself to in `design.md`, and check against that. **Inline
+text links are excluded** from all of them — see `ux/controls.md`; enlarging them is a defect this
+checklist itself causes when applied blindly.
+
+**Read:** the product's stated minimum, then every control's hit area against it; links exempt.
 
 ### Contrast covers non-text too
 
@@ -86,26 +92,27 @@ a 1px ring of a mid-tone is technically present and practically invisible.
 
 ### Nothing covers the element that just took focus
 
-Sticky headers, floating action buttons, cookie bars: when focus moves through the page, the focused
-element has to end up somewhere visible, not behind a fixed layer. This is the failure that makes a
-keyboard user's cursor vanish for three tab stops.
+WCAG 2.2 **2.4.11 Focus Not Obscured (Minimum)** (AA); 2.4.12 raises it to *not obscured at all* at
+AAA. Sticky headers, floating action buttons, cookie bars: when focus moves through the page, the
+focused element has to end up somewhere visible, not behind a fixed layer. This is the failure that
+makes a keyboard user's cursor vanish for three tab stops.
 
 **Look:** walk the focus order past every fixed element and say where the ring is at each stop.
 
 ### Anything done by dragging has a non-drag route
 
-Reordering, sliders, drawing, swipe-to-act: a single-pointer alternative exists — buttons to move an
-item up and down, a number to type instead of a handle to drag. Dragging demands precision that not
-every user has.
+WCAG 2.2 **2.5.7 Dragging Movements** (AA). Reordering, sliders, drawing, swipe-to-act: a
+single-pointer alternative exists — buttons to move an item up and down, a number to type instead of
+a handle to drag. Dragging demands precision that not every user has.
 
 **Read:** every drag interaction on the screen has a named alternative.
 **Blocking:** a drag with no alternative, when the action cannot be completed any other way.
 
 ### Help sits in the same place on every screen
 
-Support, contact, documentation: whatever the product offers, it appears in a consistent position
-across screens rather than migrating between the header, a footer and a floating bubble. Users learn
-one location, once.
+WCAG 2.2 **3.2.6 Consistent Help** (A). Support, contact, documentation: whatever the product
+offers, it appears in the same relative position across screens rather than migrating between the
+header, a footer and a floating bubble. Users learn one location, once.
 
 **Read:** the help affordance's position, compared with the other screens in the flow.
 

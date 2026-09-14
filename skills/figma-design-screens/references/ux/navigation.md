@@ -113,10 +113,10 @@ user arrives cold.
 
 **Read:** for each screen, what it shows when opened directly, with no history behind it.
 
-### Breadcrumbs earn their place only below three levels of depth
+### Breadcrumbs earn their place from the third level down
 
-At two levels they duplicate the back button. Below three they start to carry real orientation
-value. When there is no room for the full chain, collapse from the second item onward into a single
+At two levels they duplicate the back button. From three levels deep they start to carry real
+orientation value. When there is no room for the full chain, collapse from the second item onward into a single
 "more" — the root and the current page are the two parts that carry the orientation, so they are the
 two that survive.
 

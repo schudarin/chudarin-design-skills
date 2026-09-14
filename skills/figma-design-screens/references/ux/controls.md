@@ -32,13 +32,13 @@ as mixing the two save models in `ux/actions.md`.
 
 ### Text links get no enlarged tap zone
 
-The 44pt rule is for buttons and fields. Applied to an inline link it inflates the wrapper,
-detaches the underline from the text, and breaks the vertical rhythm — set no `minHeight` on link
-wrappers.
+The minimum-target rule is for buttons and fields. Applied to an inline link it inflates the
+wrapper, detaches the underline from the text, and breaks the vertical rhythm — set no `minHeight` on
+link wrappers. Inline targets are explicitly exempted by WCAG 2.2's own target-size criterion, so
+this is not a trade-off against accessibility; it is what the criterion says.
 
-Note the trap: an accessibility checklist that says "tap zones ≥ 44" is itself what causes this
-defect, because the agent applies it to everything interactive. Exclude inline links explicitly when
-running that check (`ux/accessibility.md`).
+Note the trap: a checklist that says "tap zones ≥ 44" is itself what causes this defect, because the
+agent applies it to everything interactive (`ux/accessibility.md` on which number even applies).
 
 **Read:** link wrappers have no `minHeight`; their height equals the text's.
 
@@ -53,7 +53,7 @@ field is not itself typable is the defect.
 ### Which way a panel opens is arithmetic, not preference
 
 Measure the space below the field to the edge of its container: if it is smaller than the panel, the
-panel opens upward, because that is what the browser does. A dropdown drawn downward through the
+panel opens upward, because that is what every platform's own controls do. A dropdown drawn downward through the
 bottom of a card is a drawing, not a state.
 
 **Read:** container bottom minus field bottom, against the panel's height.
@@ -68,11 +68,14 @@ extra for pointer devices, never the carrier of information.
 
 ### A copy affordance appears next to the value, on hover
 
-Text the user will need to copy — an identifier, a key, an address — gets a copy control that
-appears on hover, immediately beside the value at a fixed offset, at the lowest control tier. It is
-not a permanent button, because it would then compete with the content it belongs to.
+Text the user will need to copy — an identifier, a key, an address — gets a copy control
+immediately beside the value at a fixed offset, at the lowest control tier. On a pointer device it
+appears on hover, so it does not compete with the content it belongs to. On touch there is no hover,
+so there it is permanent, or it lives in the row's action set — a hover-only copy button is a copy
+button that does not exist on a phone (`ux/controls.md` above, `ux/responsive.md`).
 
-**Read:** copyable values have the affordance; the offset matches the one recorded in `design.md`.
+**Read:** copyable values have the affordance in both the pointer and the touch frames; the offset
+matches the one recorded in `design.md`.
 
 ### Chips wrap; they never truncate their row
 
@@ -102,8 +105,9 @@ submit the design invited.
 
 ### Targets need space between them, not just size of their own
 
-Two 44pt targets flush against each other still produce mis-taps, because the finger's contact
-patch is wider than the visual edge. Leave a gap, or make the boundary between them
+Two minimum-size targets flush against each other still produce mis-taps, because the finger's
+contact patch is wider than the visual edge — which is also why WCAG's target-size criterion accepts
+a smaller target when it has spacing around it. Leave a gap, or make the boundary between them
 unambiguous — the risk is worst where the neighbours do opposite things.
 
 **Read:** the spacing between adjacent controls. *Touch: worst case is a destructive action next to

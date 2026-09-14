@@ -9,8 +9,10 @@ XS / S / M / L / XL — or whatever the product calls its steps. The designer pi
 value, because a step survives a change to the scale and a value does not. A screen assembled from
 raw numbers cannot be retuned later without touching every node on it.
 
-**Read:** each padding and gap is bound to a spacing token; raw numbers are findings
-(`figma-plugin-api-rules/references/variables-and-tokens.md` for the binding mechanics).
+**Read:** each padding and gap against the product's scale. Where the product has spacing
+variables, the value is bound to one (`figma-plugin-api-rules/references/variables-and-tokens.md`
+for the mechanics); where it has none, the number still has to be a step of the scale in
+`design.md`.
 
 ### The product's own step wins; 8 is what to use when there is none
 

@@ -45,12 +45,17 @@ element that replaces them.
 
 **Read:** each skeleton block's dimensions against the node it stands in for.
 
-### Nothing scrolls while the skeleton is up
+### A first-screen skeleton does not scroll
 
-Scrolling a placeholder moves the user away from content that has not arrived yet, and the position
-they scrolled to means nothing once it does. Scroll becomes available when the content is in place.
+Where the skeleton stands in for the whole first screen, scrolling it moves the user away from
+content that has not arrived, and the position they scrolled to means nothing once it does — so
+scroll arrives with the content.
 
-**Read:** the loading frame specifies that scroll is disabled.
+This does **not** extend to a skeleton in one region of an otherwise loaded page, or to rows being
+appended below a list the user is already reading: freezing the page there takes away work they can
+actually do. The distinction is whether there is anything real to scroll to yet.
+
+**Read:** which of the two this skeleton is, and whether the frame specifies scroll accordingly.
 
 ### Reserve the space that arriving content will occupy
 

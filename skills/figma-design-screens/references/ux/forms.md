@@ -10,7 +10,13 @@ step of a multi-step flow. Message wording itself is in `ux/copy.md`.
 A disabled button states that something is wrong and refuses to say what; the user is left guessing
 which field is the problem. Let them press it and answer with the reason.
 
-**Read:** the submit button's state in the empty-form frame is not `Disabled`.
+The boundary: a submit that is expensive or irreversible when it goes through — a payment, a
+destructive import, a rate-limited request — may gate the press, because there the cost of a wrong
+attempt is not a message. What is never acceptable is gating it *silently*: the screen still has to
+say what is missing, gate or no gate.
+
+**Read:** the submit button's state in the empty-form frame; if it is disabled, what on the screen
+says why.
 
 ### Then the answer has to be words
 
@@ -57,9 +63,10 @@ field, because nobody can infer it from a drawing and the default is always the 
 
 ### Never ask twice for something the product already has
 
-A value the user entered on a previous step, or that the account already holds, is prefilled and
-editable — not asked again. Re-entry is where flows lose people, and the second copy is where the
-two values diverge.
+WCAG 2.2 **3.3.7 Redundant Entry** (A) requires this, and it is good practice besides. A value the
+user entered on a previous step, or that the account already holds, is prefilled and editable — not
+asked again. Re-entry is where flows lose people, and the second copy is where the two values
+diverge.
 
 **Read:** for each field, whether the value exists earlier in the flow or on the account.
 

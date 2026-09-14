@@ -64,6 +64,12 @@ finding: real, fixable, not a stop. Two levels, because four invite arguing abou
 Where a rule holds only on one kind of device, it says so in italics — *Touch:*, *Pointer:*,
 *Mobile:*. A rule with no marker holds everywhere.
 
+**Rules that speak of tokens assume the product has them.** This skill works on products with no
+design system too (`SKILL.md`, the project-state table). There, the same rule applies to the values
+themselves — one scale, one set of colours, recorded in `design.md` — and "not bound to a variable"
+is not a finding. What stays a finding either way is a value that matches nothing else on the
+screen.
+
 ## Growing this set
 
 A rule belongs here when it is true **outside** the product it came from. A rule that is true only

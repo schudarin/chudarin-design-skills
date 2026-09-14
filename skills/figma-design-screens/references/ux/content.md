@@ -78,13 +78,17 @@ a layout failure even when it is technically correct.
 
 **Look:** every multi-line heading at its real width, with the real string.
 
-### One accordion panel open at a time
+### One accordion panel open at a time, unless the task is comparing
 
-A stack of expandable rows exists to keep the page scannable. Letting several open at once returns
-the page to the wall of text the accordion was there to prevent — and the user loses the overview
-that made them able to choose. Opening one closes the last.
+Default to one: a stack of expandable rows exists to keep the page scannable, and letting several
+open returns the page to the wall of text the accordion was there to prevent. Opening one closes the
+last.
 
-**Read:** the accordion's states — one expanded row per frame.
+The exception is real and narrow — when the user's job is to compare what is inside two panels, or
+to work through several in one pass, forcing them closed makes them reopen the same panel repeatedly.
+Then several may be open, and the design says so rather than leaving it to the component's default.
+
+**Read:** the accordion's states, and which behaviour the design specifies.
 
 ### A stack of avatars collapses into a count
 
