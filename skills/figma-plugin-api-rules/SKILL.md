@@ -226,7 +226,7 @@ If you accumulate facts about one specific Figma file (Set IDs / Page IDs of par
 
 | Mistake | Fix |
 |---|---|
-| Retrying font loads/bindings for a sandbox-absent licensed font | Author in Inter to spec; tell the user to restyle in desktop — `text-and-styles.md` |
+| Retrying font loads/bindings for a sandbox-absent licensed font | Ask whether it can be uploaded to the org/team — that's the real fix; only then fall back to Inter to spec — `text-and-styles.md` |
 | Writing to a node right after `setTextStyleIdAsync` | It swaps the node's font mid-call — load both current and target fonts first |
 | Reading `node.fontName` on multi-font text | It's `figma.mixed` — loop `getStyledTextSegments(['fontName'])` and load each run's font |
 | Assuming a binding applied | Read it back — library-swatch and `cornerRadius` bindings fail silently |
