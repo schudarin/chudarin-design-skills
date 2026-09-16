@@ -52,7 +52,7 @@ which is what these files carry.
 
 ## Install
 
-Three things to have first, then two commands.
+Three things to have first, then three commands.
 
 ### 1. A Figma seat that allows agent access
 
@@ -109,6 +109,19 @@ claude plugin details chudarin@chudarin
 Five skills in the list. Inside a chat they're `chudarin:figma-design-screens`,
 `chudarin:figma-plugin-api-rules`, and so on — the agent picks them up by itself when the task
 matches, and you can name one directly.
+
+### 5. superpowers
+
+These skills decide *how* to work in Figma once the task is clear. They don't decide *what* the
+task is. Anthropic's `superpowers` does: on "add a button" its `brainstorming` fires first, asks
+which project and which Figma file, and only then hands over. Without it the agent starts on the
+wrong page.
+
+```bash
+claude plugin install superpowers@claude-plugins-official
+```
+
+Quit Claude Code and start it again.
 
 ## Where to run it
 
@@ -170,22 +183,15 @@ claude plugin list                          # what is installed right now
 | The agent says it can't reach Figma | The connection isn't authorized | Type `/mcp`, pick `figma`, log in through the browser |
 | It stops after a handful of reads | Seat limit — 6 calls a month on Starter, View or Collab | Ask for a Dev or Full seat on a paid plan |
 | Reads start failing later in the day | Figma's rate limit for the account. On a Professional plan expect roughly 70–100 read calls a day across all tools, reset at 00:00 UTC | Continue tomorrow, or split the work across days |
-| The agent works in the wrong file or page | It had no link and guessed | Paste the link every time. Also install an "ask before acting" skill — see below |
+| The agent works in the wrong file or page | It had no link and guessed | Paste the link every time. And install `superpowers` from step 5 |
 | The skills don't show up | The plugin is installed but the session is the old one | Quit Claude Code and start it again |
 | The agent changed something you didn't want | Figma keeps the file's history | **File → Show version history**, restore the earlier version |
 
 ## Recommended alongside
 
-**Nothing in this section is required.** The five skills work installed on their own — the only hard
-requirement is the Figma plugin from step 3. What follows makes the runs better, and every piece of
-it is someone else's skill, not mine.
-
-These skills decide *how* to work in Figma once the task is clear. They don't decide *what* the task
-is. The best runs pair them with a skill that stops the agent before the first action and asks which
-project and which Figma file — with Claude Code that's Anthropic's `superpowers`
-(`claude plugin install superpowers@claude-plugins-official`), where `brainstorming` fires on "add a
-button", asks for the file link, and only then hands over. Any equivalent works. Without one, expect
-the agent to start on the wrong page.
+**Nothing in this section is required.** With the plugins from steps 3 and 5 in place the five
+skills work on their own. What follows makes the runs better, and every piece of it is someone
+else's skill, not mine.
 
 `figma-design-screens` also uses one visual skill per task — a mobile-UI, web, motion or charts
 skill, whichever matches the screen. It requires none of them. It reads the list of skills your
