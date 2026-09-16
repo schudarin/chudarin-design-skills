@@ -19,7 +19,7 @@ Accumulated, field-tested knowledge of the Figma Plugin API as driven through an
  - `combineAsVariants` · `addComponentProperty` · `deleteComponentProperty` · `componentPropertyDefinitions` · `componentPropertyReferences` → `references/components-and-variants.md`
  - `setBoundVariable` · `setBoundVariableForPaint` · `addMode` · `setValueForMode` · `resolveForConsumer` → `references/variables-and-tokens.md`
  - `characters =` · `loadFontAsync` · `textStyleId` · `textAutoResize` · `textTruncation` → `references/text-and-styles.md`
- - `layoutMode` · `layoutSizing*` · `primaryAxisSizingMode` · `resize(` · `insertChild` · `clone` → `references/layout-and-geometry.md`
+ - `layoutMode` · `layoutSizing*` · `primaryAxisSizingMode` · `resize(` · `insertChild` · `clone` · `arcData` → `references/layout-and-geometry.md`
  - `connectorStart` · `connectorEnd` → `references/connectors.md` · `annotations` → `references/annotations.md`
  - `get_metadata` on a page · `findAll` over a page · `exportAsync` · `get_screenshot` for verification → `references/mcp-and-environment.md`
  One read per file per session is enough. Skipping it is how a session re-discovers a documented rule the hard way: a run that never opened `instances.md` hits `swapComponent` returning `void`, a stale child id after `setProperties`, and a hidden instance child that reads as "unreachable" — all three are in that file.
@@ -259,6 +259,7 @@ If you accumulate facts about one specific Figma file (Set IDs / Page IDs of par
 | Leaving `clipsContent` at its default on structural wrappers | Every wrapper clips its children's shadows — `clipsContent = false` next to `fills = []` |
 | Editing the file to match a screenshot that disagrees with the readback | The screenshot is stale, not the file — re-shoot, never save a disagreeing frame as reference — `mcp-and-environment.md` |
 | Centering or sizing by `text.width` / `text.height` in the call that created the text | Fresh TEXT metrics are the default font's, not yours — align with auto-layout, verify by render — `text-and-styles.md` |
+| Drawing a ring or progress arc as a stroked ELLIPSE with `innerRadius: 0` | That is a pie sector — `innerRadius = 1 - thickness / radius`, fill it, `strokes = []`, read `arcData` back — `layout-and-geometry.md` |
 
 ## Protocol for recording a new insight
 

@@ -1507,3 +1507,15 @@ const walk = (n, rootId) => {
 const root = await figma.getNodeByIdAsync('SCREEN_ROOT_ID'); walk(root, root.id);
 return findings; // [] — hand-off; otherwise set clipsContent=false on each `clippedBy`, or shrink the shadow
 ```
+
+### ellipse-arcdata-inner-radius-zero-renders-a-pie-sector
+**Principle:** `arcData` on an ELLIPSE with `innerRadius: 0` is a pie sector whatever the stroke: the stroke follows the sector's outline, both radii included, so a thick stroke never turns a sector into a progress arc. A ring segment is `innerRadius = 1 - thickness / radius` with a fill and no strokes; the track behind it is the same shape with `startingAngle: 0, endingAngle: 2π`.
+**Symptom:** a progress ring renders as a wedge toward the centre while the full-circle track behind it looks right — a closed circle hides the radii.
+**Pattern:** build track and progress with the same `innerRadius`, fills bound to variables, `strokes = []`; read `arcData` back in the same call and check `innerRadius > 0`.
+```js
+const inner = 1 - thickness / (size / 2);
+track.arcData = { startingAngle: 0, endingAngle: Math.PI * 2, innerRadius: inner };
+arc.arcData = { startingAngle: -Math.PI / 2, endingAngle: -Math.PI / 2 + Math.PI * 2 * pct, innerRadius: inner };
+track.strokes = []; arc.strokes = [];
+return { arc: arc.arcData }; // innerRadius must be > 0
+```
