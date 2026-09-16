@@ -1,6 +1,6 @@
 # chudarin-figma-skills
 
-Agents can write into Figma now. Left to themselves they design badly and break the file quietly —
+Agents can write into Figma now. Left to themselves they design badly and break the file quietly:
 a variable that never bound, a component set that deleted itself when its last variant moved out, a
 screen assembled from hardcoded values that looks right until someone switches the theme.
 
@@ -15,24 +15,25 @@ that broke exactly this way, not a reading of the docs.
 Designers. You install it once, then work in a chat: paste a Figma link, say what you need in one
 sentence. No code, no code editor, no plugin to build.
 
-What that looks like in practice — you paste a link to a frame and write "design a settings screen
-for this app". In a project it hasn't seen, the agent first looks for the answers it needs — a design
-system document, existing screens, the variables already in the file — and asks you only what the
+What that looks like in practice: you paste a link to a frame and write "design a settings screen
+for this app". In a project it hasn't seen, the agent first looks for the answers it needs, a design
+system document, existing screens, the variables already in the file. It asks you only what the
 search didn't turn up, at most two questions. It writes that down and never asks again. Then it works
 from your components and variables, reads back every binding it set instead of assuming it applied,
-and shows you the result. You change one element, it changes that element — not the screen around it.
+and shows you the result. You ask to change one element, and it changes that element, not the screen
+around it.
 
 ## The five skills
 
 | Skill | You type something like | What happens |
 |---|---|---|
-| `figma-plan-user-flows` | "What screens do we need for checkout?" | You get every screen and state, entry and exit points, and a page structure for the Figma file — before anything is drawn |
+| `figma-plan-user-flows` | "What screens do we need for checkout?" | You get every screen and state, entry and exit points, and a page structure for the Figma file, before anything is drawn |
 | `figma-audit-design-system` | "Go through this file and tell me what the design system holds" | The agent reads the file and reports components, tokens, patterns and design debt, and writes documentation pages if you ask. Read-only otherwise |
 | `figma-design-screens` | "Design a settings screen" · "Change the header on this frame" | The design process itself: where the style comes from, a brief per screen, checks afterwards, edits to approved work one element at a time |
-| `figma-plugin-api-rules` | nothing — it loads on its own | 382 real Plugin API failures and the way around each one. Loads before the agent writes anything into your file |
+| `figma-plugin-api-rules` | nothing, it loads on its own | 382 real Plugin API failures and the way around each one. Loads before the agent writes anything into your file |
 | `figma-fix-variable-bindings` | "Variables on this page are detached, fix them" | Finds detached, orphaned and hardcoded values, shows you a report, and rebinds only after you approve it |
 
-Five `SKILL.md` files and 42 topic files behind them. Eleven of those are the Plugin API pack —
+Five `SKILL.md` files and 42 topic files behind them. Eleven of those are the Plugin API pack:
 components and variants, instances, layout and geometry, text and fonts, variables and modes,
 connectors, annotations, publishing hygiene, FigJam, the tool layer, building a screen from code. The
 other thirty-one carry the audit checklists, the per-screen briefs, the checks that run afterwards,
@@ -47,8 +48,8 @@ per-corner fields and the aggregate key you checked stays empty. A licensed font
 sandbox makes text writes fail in ways that read as your mistake. An instance's `children` omits
 hidden descendants, so the inventory you built from it is wrong.
 
-None of that is fixed by asking nicely. It's fixed by knowing the case and checking the result —
-which is what these files carry.
+Asking nicely fixes none of that. Knowing the case and checking the result does, and that is what
+these files carry.
 
 ## Install
 
@@ -80,7 +81,7 @@ in Figma's developer docs, as of September 2026.
 
 ### 2. Claude Code
 
-Claude Code is Anthropic's agent. It runs in Terminal — the black window, not a code editor.
+Claude Code is Anthropic's agent. It runs in Terminal, the black window, not a code editor.
 
 Open Terminal (⌘ + Space, type `Terminal`, Enter), paste this and press Enter:
 
@@ -88,7 +89,7 @@ Open Terminal (⌘ + Space, type `Terminal`, Enter), paste this and press Enter:
 curl -fsSL https://claude.ai/install.sh | bash
 ```
 
-When it finishes, type `claude` and press Enter — that starts the chat. `/exit` closes it.
+When it finishes, type `claude` and press Enter. That starts the chat. `/exit` closes it.
 Full instructions: [docs.claude.com/en/docs/claude-code/setup](https://docs.claude.com/en/docs/claude-code/setup).
 
 ### 3. The connection to Figma
@@ -99,7 +100,6 @@ Figma's own agent instructions, which these skills build on top of:
 ```bash
 claude plugin install figma@claude-plugins-official
 ```
-
 
 ### 4. These skills
 
@@ -147,10 +147,9 @@ cd ~/Design/my-product
 claude
 ```
 
-The folder matters. `figma-design-screens` writes what it learned about your project —
-design system, style source, the Figma file — into `.claude/design.md` inside it, and every later
-session reads that instead of asking you again. Start from a different folder and you start from
-zero.
+The folder matters. `figma-design-screens` writes what it learned about your project (design
+system, style source, the Figma file) into `.claude/design.md` inside it, and every later session
+reads that instead of asking you again. Start from a different folder and you start from zero.
 
 ## Your first task
 
@@ -207,7 +206,7 @@ claude plugin list                          # what is installed right now
 skills work on their own. What follows makes the runs better, and every piece of it is someone
 else's skill, not mine.
 
-`figma-design-screens` also uses one visual skill per task — a mobile-UI, web, motion or charts
+`figma-design-screens` also uses one visual skill per task: a mobile-UI, web, motion or charts
 skill, whichever matches the screen. It requires none of them. It reads the list of skills your
 session actually has, loads the one matching the task type, and on an empty shelf says so and works
 from your design system, your existing screens and its own copy-and-control rules instead. The
@@ -287,7 +286,7 @@ for s in ~/chudarin-figma-skills/skills/*; do ln -sfn "$s" ~/.agents/skills/; do
 
 Re-run the loop after `git pull` to pick up updates.
 
-On any other agent this is ordinary Markdown — hand `SKILL.md` to the agent as a context file before
+On any other agent this is ordinary Markdown. Hand `SKILL.md` to the agent as a context file before
 Figma work.
 
 Either way you still need the Figma MCP server, and Figma's own `figma-use` instructions loaded
@@ -299,10 +298,10 @@ resource `skill://figma/figma-use/SKILL.md` does.
 ## Contributing
 
 Each skill documents how to extend it; for `figma-plugin-api-rules` the protocol is at the end of
-its [`SKILL.md`](skills/figma-plugin-api-rules/SKILL.md). Facts about one specific Figma file — node
-IDs, local conventions — don't belong here. Keep those in `<project>/.claude/design.md` or your own
+its [`SKILL.md`](skills/figma-plugin-api-rules/SKILL.md). Facts about one specific Figma file (node
+IDs, local conventions) don't belong here. Keep those in `<project>/.claude/design.md` or your own
 notes.
 
 ## License
 
-MIT — see [`LICENSE`](LICENSE).
+MIT, see [`LICENSE`](LICENSE).
