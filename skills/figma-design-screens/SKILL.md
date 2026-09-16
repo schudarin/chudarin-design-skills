@@ -16,6 +16,11 @@ task is about. No link in the request and none recorded in `design.md` → ask f
 line and wait. Guessing which file and page the user means is the most expensive mistake available
 here: everything after it is built in the wrong place.
 
+A from-scratch product has no file yet, and that is not an exemption from the rule — it is the case
+where the answer is "a new file". Say where it will be created (which plan, drafts or a named
+project) in the same message as the first phase, before any typography or palette is proposed; the
+user should never have to ask "where are you going to draw this?" after the direction is agreed.
+
 | Project state | Where style comes from | Skipped |
 |---|---|---|
 | Design system exists | the design system is law | direction, typography, palette phases |
@@ -116,6 +121,8 @@ The same rule covers any other condition swapped mid-task — a hung Figma bridg
 | Redesigning an audited flow | Three frames documented defects of a modal date picker; the fix replaced the picker entirely, and the frames were about to be filled with the calendar anyway | The defect's object no longer existed — the frames had to be reassigned to the new states, not populated with a control nobody would build |
 | Writing a value list | Country list written from memory into the mockup | Two of the countries had no flag in the design system and one was named differently — invisible in the mockup, a missing asset at build time |
 | A decision was reversed | The screen was changed, the note under it was not | A mockup whose own caption praises the state it no longer has is worse than an uncaptioned one — search the notes for the decision's keywords whenever it flips |
+| Showing a screen | The builder glanced at its own screenshot and posted the link; no critic, no three checks | The screenshot was a stale render: the user's first-round rejection named two defects — clipped shadows and a busy background — that the Accuracy and Product style checks exist to catch, and a later "fix" was made against the stale frame and broke a title that had been correct |
+| Saving the reference frame | The screenshot disagreed with the readback (34px in the file, small on the frame) and was saved to `design-shots/` anyway | Every later comparison ran against the cache, not the file; the saved frame has to agree with a Read of one changed property before it becomes the reference |
 
 ## Red Flags — stop
 
@@ -127,3 +134,6 @@ The same rule covers any other condition swapped mid-task — a hung Figma bridg
 - "The note says so" — a quarter of the audit notes were wrong on the first pass, and they were written by you. Re-read the note against the screen before designing to it.
 - "Nothing found on the re-read" — on a set over ~20 notes the observed rate is one defect in four, so an empty result is a claim about your re-read, not about the notes.
 - "The defect is recorded, so this frame needs that control drawn" — check whether your fix removed the object the defect lived on. If it did, the frame is reassigned, not filled.
+- "I looked at the screenshot myself, that's the check" — the builder looking at its own work is step 3's revision pass, not step 4. The three checks run as a separate read-only pass, against node properties, before the link goes out.
+- "The link is ready, I'll show it and check while they look" — the verdict comes first. A screen shown before SHOW gets rejected for what the checks would have listed, and the rejection costs the round.
+- "The screenshot shows it, so the file is like that" — when the readback disagrees, the file wins and the render is old. Re-shoot; don't edit the file to match a cache.

@@ -29,6 +29,15 @@ looked at didn't run.
   export.
 - **Colors bound to variables**, never typed in by hand. A hand-typed hex is a color that silently
   stops following the palette the next time the palette changes.
+- **Text on text styles, effects on effect styles** — and every style created for this screen has at
+  least one user. A type ramp in the styles panel with `textStyleId` empty on every node is the same
+  defect as a hand-typed hex: it looks identical today and stops following the ramp tomorrow. Read.
+- **Shadows and outside strokes not cut by a clipping ancestor.** The cut lands on the card, but the
+  cause is a wrapper two levels up with the default `clipsContent`; checked by computing each shadow's
+  reach against its clipping ancestors, not by glancing at the card. Read.
+- **The frame being looked at agrees with the file.** A Look rule runs only on a screenshot that
+  matches the Read of at least one property changed in this round; a render can lag the file by
+  minutes, and a finding filed against a stale render is a finding against the cache.
 - **Spacing follows the project's grid**, not an eyeballed value that happens to look close.
 - **No artifacts that read as a bug.** Stray single pixels left over from a resize read as a bug
   rather than a deliberate choice — an artifact doesn't announce itself, it has to be looked for.
