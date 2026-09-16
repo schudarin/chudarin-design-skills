@@ -1,6 +1,6 @@
 # Project State: `<project>/.claude/design.md`
 
-One file per project. It is the only place project-specific style facts live — not a summary of them, the source. Screenshots of approved work live alongside it in `<project>/.claude/design-shots/`.
+One file per product. It is the only place product-specific style facts live — not a summary of them, the source. Screenshots of approved work live alongside it in `<project>/.claude/design-shots/`.
 
 Both live in the project's own repository, not in this skill and not in agent memory. The reason is mechanical: a subagent doing design work can read a file in the repository it's already working in, but it cannot see the orchestrator's memory. Style that only exists in memory gets re-described from scratch inside every brief, and re-description drifts.
 
@@ -64,6 +64,46 @@ The Figma bridge hangs after long write sessions — work in small calls, not on
 ```
 
 Rejected lines stay in whatever language the user spoke, untranslated — see the quoting rule below.
+
+## Several products in one repository
+
+A repository that serves more than one product — a company workspace, a designer's hub across an agency's
+clients, separate platforms with separate design systems — cannot use one file: the Settings and
+Signature traits of two products contradict each other, and a reader loading one product's slice gets
+the other's by accident.
+
+Switch to the layout below the moment a second product with its own Settings appears, not before. A
+repository with one product keeps the single `design.md` and never sees this section.
+
+```
+<project>/.claude/
+  design.md                ← index only, no style facts
+  design/<slug>.md         ← one file per product, the six-section format above
+  design-shots/<slug>/     ← that product's screenshots
+```
+
+Index format:
+
+```markdown
+# Design — index
+
+| Product | File | Figma file key | Task markers |
+|---|---|---|---|
+| Ledger — consumer app | `design/ledger.md` | `<file-key>` | ledger.app, LDG-*, "accounts", "transactions" |
+| Ledger Admin — back office | `design/ledger-admin.md` | `<file-key>` | admin.ledger.app, LADM-* |
+
+No row matches → ask which product in one line, create `design/<slug>.md` in the usual format, add a row.
+```
+
+Rules that follow from the layout:
+
+- The first line `# Design — index` is what tells `SKILL.md` to resolve a product before reading style.
+  Keep it exactly.
+- The **Figma file key** column is the primary match: a link in the request settles it. **Task markers**
+  are the fallback — domain, ticket prefix, folder names, product words — for requests without a link.
+- The index holds routing only. A style fact written into the index is a second copy that drifts.
+- Paths inside a product file are relative to `.claude/`, so screenshots are `design-shots/<slug>/…`.
+- A new product goes through `references/setup.md` like a first run, then gets its row.
 
 ## Rules for keeping the file
 

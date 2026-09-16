@@ -9,7 +9,11 @@ description: Use when designing, building, or changing a product screen, flow, o
 
 The process is universal. Everything product-specific is discovered in the project, never assumed.
 
-First action, every time: check `<project>/.claude/design.md`. No file → follow `references/setup.md`.
+First action, every time: read `<project>/.claude/design.md`. No file → follow `references/setup.md`.
+If its first line is `# Design — index`, the repository holds several products: match the task to one row
+of the index — by the Figma file key in the request first, then by the row's task markers. Exactly one
+match → the product file it names (`design/<slug>.md`) is `design.md` for the rest of this run. Zero or
+more than one → ask which product in a single line and wait. Format of the index: `references/state.md`.
 
 Second action, before any read or write in Figma: make sure you have a link to the frame or page the
 task is about. No link in the request and none recorded in `design.md` → ask for one in a single

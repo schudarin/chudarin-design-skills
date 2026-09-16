@@ -18,6 +18,10 @@ Search, in this order:
 
 If the search finds something, skip Step 2 entirely. Write the pointer into `design.md` (format in `references/state.md`) and start working.
 
+If `design.md` already exists and is an index (`state.md`, "Several products in one repository") but the
+task's product has no row, this setup runs for that product alone: its answers go to `design/<slug>.md`,
+and the index gets one new row. The index itself is never overwritten.
+
 ## Step 2 — The survey: exactly two questions
 
 Ask only if Step 1 found nothing. No more than these two, in this order.
