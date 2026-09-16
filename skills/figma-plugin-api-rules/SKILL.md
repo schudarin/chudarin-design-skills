@@ -44,6 +44,14 @@ Accumulated, field-tested knowledge of the Figma Plugin API as driven through an
 **Principle:** `createFrame` and `createAutoLayout` create a frame with a white `#ffffff` fill by default — set `frame.fills = []` on structural containers right after creation.
 **Symptom:** invisible white slabs behind every structural container.
 
+### createframe-default-clipscontent-true-clips-child-shadows
+**Principle:** `createFrame` and `createAutoLayout` create a frame with `clipsContent: true` by default — so every structural wrapper (a section, a row, a grid cell, a header) silently clips the drop shadows, outside strokes and blur halos of its children at its own edge. The visible cut lands on the *child*, several levels below the frame that causes it, so it reads as a shadow bug rather than a container default. Set `clipsContent = false` on structural containers right after creation, in the same breath as `fills = []`; leave `true` only on the screen root and on deliberate masks.
+**Symptom:** card shadows end in a hard rectangle at the edge of an invisible row or section; the effect looks correct on the node itself and on the screen root, and a metadata read shows no node at the cut line.
+**Pattern:** a `wrap()` helper that creates, clears the fill and lifts the clip in one place; before hand-off, a scan of every node with a `DROP_SHADOW` against its clipping ancestors — recipe in `references/layout-and-geometry.md`, `shadow-extent-vs-clipping-ancestors-scan`.
+```js
+const wrap = (dir, props) => { const f = figma.createAutoLayout(dir, props); f.fills = []; f.clipsContent = false; return f; };
+```
+
 ### appendchild-returns-void
 **Principle:** `parent.appendChild(child)` returns `void` (`null` at runtime), not `child` — you cannot chain `appendChild(...).prop = value`; keep the node in a variable first.
 **Symptom:** `TypeError: cannot set property of null`.
@@ -211,7 +219,7 @@ for (const id of collection.variableIds) {
 | `references/components-and-variants.md` | COMPONENT / COMPONENT_SET: creation, `combineAsVariants`, properties, `setProperties`; deleting properties and dissolving sets |
 | `references/instances.md` | INSTANCE: import / swap / detach, nested overrides, hidden children, repurposing slots |
 | `references/layout-and-geometry.md` | frames, auto-layout, HUG/FILL, resize, coordinates, strokes/shadows, radii, SVG and vector paths, traversal and safe deletion |
-| `references/text-and-styles.md` | TEXT nodes, fonts and font loading, `textStyleId`, `figma.mixed`, truncation |
+| `references/text-and-styles.md` | TEXT nodes, fonts and font loading, `textStyleId`, `figma.mixed`, truncation, stale `width`/`height` on fresh text |
 | `references/variables-and-tokens.md` | variables, bindings (incl. per-corner radius and per-paint colour), collections, modes, tinted fills, library vs local files |
 | `references/connectors.md` | CONNECTOR in any editor: endpoints, magnets, SECTION anchoring |
 | `references/annotations.md` | Dev Mode annotations (`node.annotations`, `figma.annotations`) — not Figma Comments; category/colour enums, HTML escaping in labels, existing-only categories |
@@ -247,6 +255,10 @@ If you accumulate facts about one specific Figma file (Set IDs / Page IDs of par
 | Treating `get_screenshot`'s default response as image bytes | It's a short-lived URL — `enableBase64Response: true` or `curl` it to disk at once |
 | Skipping `setCurrentPageAsync` / font preload before a write batch | Both fail opaquely mid-batch |
 | Declaring a visual edit safe without a before/after check | Hash the export or diff against a saved screenshot — never assert pixel-identity by eye |
+| Creating text styles, then setting `fontName`/`fontSize` on nodes to the same values | Nothing links them — bind with `setTextStyleIdAsync(style.id)` and read back `styled/total` — `text-and-styles.md` |
+| Leaving `clipsContent` at its default on structural wrappers | Every wrapper clips its children's shadows — `clipsContent = false` next to `fills = []` |
+| Editing the file to match a screenshot that disagrees with the readback | The screenshot is stale, not the file — re-shoot, never save a disagreeing frame as reference — `mcp-and-environment.md` |
+| Centering or sizing by `text.width` / `text.height` in the call that created the text | Fresh TEXT metrics are the default font's, not yours — align with auto-layout, verify by render — `text-and-styles.md` |
 
 ## Protocol for recording a new insight
 

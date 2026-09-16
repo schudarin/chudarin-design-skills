@@ -1,6 +1,6 @@
 ---
 name: figma-plugin-api-rules/text-and-styles
-description: Read when working with TEXT nodes — fonts and font loading, loadFontAsync, textStyleId, figma.mixed, letterSpacing, truncation, measuring text width
+description: Read when working with TEXT nodes — fonts and font loading, loadFontAsync, textStyleId, figma.mixed, letterSpacing, truncation, measuring text width, stale width/height of fresh text in the sandbox, applying created text styles
 ---
 
 # text-and-styles — use_figma rules
@@ -331,3 +331,37 @@ if (node.layoutSizingHorizontal === 'FIXED') {
   node.layoutSizingHorizontal = 'FILL';
 }
 ```
+
+### created-text-style-does-not-apply-by-value-match-bind-by-id
+**Principle:** `figma.createTextStyle()` and a TEXT node whose `fontName` / `fontSize` / `lineHeight` are set to the same values are unrelated objects — Figma never matches a node to a style by value. A file can carry a full type ramp and zero nodes using it, and nothing in the build reports that: every text renders exactly as specified, the styles panel shows the ramp, and the only tell is `textStyleId === ''` on every node. The text helper takes a style id, not a font tuple, and applies it with `await node.setTextStyleIdAsync(id)`; the readback at the end of the build counts `styled/total`.
+**Symptom:** "the styles were created but nothing in the design uses them" — a restyle in the panel changes nothing on the canvas; `getLocalTextStylesAsync()` lists the ramp while `findAllWithCriteria({types:['TEXT']}).filter(t => t.textStyleId).length` is 0.
+**Pattern:** resolve style ids once per call by name; the helper sets `characters`, fill, then the style; retrofit an unstyled screen by matching each node's `fontSize + fontName.style` to a style and binding, then re-count.
+```js
+const styles = await figma.getLocalTextStylesAsync();
+const S = name => { const s = styles.find(x => x.name === name); if (!s) throw new Error('no text style ' + name); return s.id; };
+const T = async (chars, styleName, fillVar) => {
+  const t = figma.createText(); t.characters = chars;
+  t.fills = [figma.variables.setBoundVariableForPaint({ type: 'SOLID', color: { r: 0, g: 0, b: 0 } }, 'color', fillVar)];
+  await t.setTextStyleIdAsync(S(styleName));   // the binding — not fontName/fontSize
+  return t;
+};
+// readback before "done"
+const texts = root.findAllWithCriteria({ types: ['TEXT'] });
+return { styled: texts.filter(t => t.textStyleId).length, total: texts.length, unstyled: texts.filter(t => !t.textStyleId).map(t => t.id) };
+```
+
+### text-metrics-stale-in-sandbox-do-not-center-or-size-by-text-width
+**Principle:** In the MCP sandbox a freshly created TEXT node's `width`, `height` and `absoluteRenderBounds` do not recompute after `fontName`, `fontSize`, `lineHeight` or `setTextStyleIdAsync` inside the call that created it — they stay at the default font's metrics for the characters (Inter 12: a five-letter word reads ≈37×15 whatever size was set). No in-call nudge fixes it: write order (font first or characters first), toggling `textAutoResize`, re-assigning `characters`, style binding, or appending into an auto-layout parent — the HUG parent hugs the stale size too. In later calls most nodes report real metrics, but some keep the stale ones indefinitely. The render is right; only the numbers lie.
+**Symptom:** a 34px title reads `h: 15`; a label centred with `t.x = (box - t.width) / 2` lands off-centre; a numeric tap-zone or overflow check on text passes or fails for no visible reason; `absoluteRenderBounds` is a third of the rendered glyph box. Reading it as "the sandbox doesn't lay text out" and abandoning numeric checks altogether is the wrong conclusion — only TEXT metrics are affected, and only until Figma recomputes them.
+**Pattern:** never derive a position or a size from `text.width` / `text.height` in the call that created or restyled the text — centre with auto-layout alignment (`counterAxisAlignItems`, `primaryAxisAlignItems`) or with constraints, give text a `FIXED` width from the design rather than from a measurement, and verify text geometry by `get_screenshot`, not by arithmetic. When a numeric audit returns `h ≈ 15` on a node whose `fontSize` isn't 12, classify the number as stale and re-read in a later call before filing a finding.
+```js
+// ❌ off-centre: t.width is the default font's width
+pct.x = (ring.width - pct.width) / 2;
+// ✅ let layout centre it
+const box = figma.createAutoLayout('HORIZONTAL'); box.fills = []; box.resize(84, 84);
+box.primaryAxisAlignItems = 'CENTER'; box.counterAxisAlignItems = 'CENTER'; box.appendChild(pct);
+```
+
+### apple-system-fonts-exposed-as-sf-pro-family-in-sandbox
+**Principle:** Apple's system fonts reach the sandbox as the families `SF Pro`, `SF Pro Rounded`, `SF Compact` and `SF Compact Rounded`, with styles such as `Regular`, `Medium`, `Semibold`, `Bold` and the `Condensed` / `Expanded` variants inside the same family — there are no `SF Pro Display` or `SF Pro Text` families, so a spec written in those names fails on every style with a font-load error. Probe once with `listAvailableFontsAsync` and branch on `family === 'SF Pro'`; the optical size Display/Text is not a separate family here.
+**Symptom:** `Cannot write to node with unloaded font "SF Pro Display Semibold"` while `SF Pro Semibold` loads fine.

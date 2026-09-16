@@ -107,11 +107,17 @@ brandCollection.removeMode(test);
 **Pattern:** light block = clone + pin the light mode; dark block = clone + pin the dark mode.
 
 ### unbound-binding-scan-before-done
-**Principle:** Before "done" on a component — scan for the unbound: `findAllWithCriteria` by types + a `boundVariables` check (color/spacing); skip nodes with `;` in the id (instance internals). When auditing raw/hardcoded values, skip anything nested inside an `INSTANCE`, since its properties are owned by the main component and aren't locally editable:
+**Principle:** Before "done" on a component or a screen — scan for the unbound in **both directions**. Forward: `findAllWithCriteria` by types + a `boundVariables` check (color/spacing), `textStyleId` on every TEXT, `effectStyleId` on every node carrying effects; skip nodes with `;` in the id (instance internals). Reverse: every local text style, effect style and variable created in this build has at least one consumer — a style with zero users is the same defect as a node with zero bindings, and it is invisible from the node side. When auditing raw/hardcoded values, skip anything nested inside an `INSTANCE`, since its properties are owned by the main component and aren't locally editable:
 ```js
 const inInstance = n => { let p = n.parent; while (p) { if (p.type === 'INSTANCE') return true; p = p.parent; } return false; };
+const texts = root.findAllWithCriteria({ types: ['TEXT'] }).filter(n => !inInstance(n));
+const unstyledText = texts.filter(t => !t.textStyleId).map(t => t.id);
+const rawEffects = root.findAll(n => 'effects' in n && n.effects.length && !n.effectStyleId && !inInstance(n)).map(n => n.id);
+const usedStyles = new Set([...texts.map(t => t.textStyleId), ...root.findAll(n => 'effectStyleId' in n).map(n => n.effectStyleId)]);
+const orphanStyles = [...await figma.getLocalTextStylesAsync(), ...await figma.getLocalEffectStylesAsync()].filter(s => !usedStyles.has(s.id)).map(s => s.name);
+return { unstyledText, rawEffects, orphanStyles };   // all three empty — done
 ```
-**Symptom:** a "finished" component with a couple of raw hexes surfacing on a theme switch.
+**Symptom:** a "finished" component with a couple of raw hexes surfacing on a theme switch; a screen with a full type ramp in the styles panel and `textStyleId === ''` on every node; a shadow variable that nothing references because the effect style was authored with a raw colour.
 
 ### on-fill-icon-color-must-mirror-sibling-text-not-role-name
 **Principle:** When adding an icon next to text on a coloured/accent fill (e.g. an active chip/pill with a dark background) — resolve the icon's colour by **inspecting the actual `boundVariables` of the neighbouring TEXT node in THE SAME state**, not by picking a same-named `icon/*` token by the semantics of the role. In several semantic schemes `icon/accent` / `text/accent` resolve to THE SAME monochrome colour as the `accent` fill itself (the "accent" role = the fill's own colour, not a contrast to it) — binding the icon to such a token makes it invisible on its own background. The real contrast token on the fill is often a different role (`text/inverse` / `icon/inverse`), which the neighbouring text already uses explicitly.

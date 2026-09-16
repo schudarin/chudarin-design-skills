@@ -1477,3 +1477,33 @@ if (f === 'itemSpacing' && spaceBetween(n)) continue;
 ### vectorpaths-node-box-normalizes-to-path-bbox
 **Principle:** A node's `vectorPaths` don't position it at `(0, 0)` — Figma normalises the node's box to the path's bounding box, so `x`/`y` come out equal to the bbox minimum, not zero. If the node must be planted at a specific origin, either author the path with that bbox minimum already baked in, or — when overwriting `vectorPaths` on an existing vector — delete the node and create a fresh one rather than reusing it (the stale box otherwise persists).
 **Symptom:** a vector authored "from (0,0)" sits offset inside its parent by exactly the path's minimum x/y; re-assigning `vectorPaths` on the same node keeps the old box.
+
+### createframe-default-clipscontent-true-clips-child-shadows
+_Core: full text — `../SKILL.md`._
+
+### shadow-extent-vs-clipping-ancestors-scan
+**Principle:** A shadow is clipped by the *first* ancestor whose `clipsContent` is `true` and whose box is smaller than the child's box plus the shadow's reach — `|offset| + radius + spread` on each side. Reading the shadowed node, or the screen root, shows nothing wrong; the cut is decided by an intermediate wrapper. So before hand-off compute the reach for every node carrying a `DROP_SHADOW` and compare it with every clipping ancestor up to the top-level frame.
+**Symptom:** shadows that end in straight lines at invisible edges; a "phantom" rectangle around a card; identical cards clipped differently depending on which row they sit in.
+**Pattern:** walk the subtree, collect shadowed nodes, walk each one's parent chain with `absoluteBoundingBox`, report the first clipping ancestor that cuts the reach. Exclude the screen root when the clip at the device edge is intended.
+```js
+const CONT = new Set(['FRAME','COMPONENT','INSTANCE','GROUP','SECTION','BOOLEAN_OPERATION']);
+const reach = n => (n.effects || []).filter(e => e.type === 'DROP_SHADOW' && e.visible !== false)
+  .reduce((m, e) => Math.max(m, Math.abs(e.offset.x) + e.radius + (e.spread || 0), Math.abs(e.offset.y) + e.radius + (e.spread || 0)), 0);
+const findings = [];
+const walk = (n, rootId) => {
+  const r = 'effects' in n ? reach(n) : 0;
+  if (r > 0 && n.absoluteBoundingBox) {
+    const b = n.absoluteBoundingBox;
+    for (let p = n.parent; p && p.type !== 'PAGE'; p = p.parent) {
+      if (p.id === rootId) break;                       // clip at the device edge is intended — drop this line to include the root
+      if (!('clipsContent' in p) || !p.clipsContent || !p.absoluteBoundingBox) continue;
+      const pb = p.absoluteBoundingBox;
+      const cut = b.x - r < pb.x || b.y - r < pb.y || b.x + b.width + r > pb.x + pb.width || b.y + b.height + r > pb.y + pb.height;
+      if (cut) { findings.push({ node: n.id, name: n.name, reach: r, clippedBy: p.id, clipper: p.name }); break; }
+    }
+  }
+  if (CONT.has(n.type)) for (const c of n.children) walk(c, rootId);
+};
+const root = await figma.getNodeByIdAsync('SCREEN_ROOT_ID'); walk(root, root.id);
+return findings; // [] — hand-off; otherwise set clipsContent=false on each `clippedBy`, or shrink the shadow
+```
