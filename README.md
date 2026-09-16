@@ -5,7 +5,7 @@ a variable that never bound, a component set that deleted itself when its last v
 screen assembled from hardcoded values that looks right until someone switches the theme.
 
 This is what fixed that on real product files. Five skills: the process for each stage of design
-work, plus 377 recorded Plugin API failures with the way around each one. Every rule here is a case
+work, plus 382 recorded Plugin API failures with the way around each one. Every rule here is a case
 that broke exactly this way, not a reading of the docs.
 
 [Русская версия](README.ru.md)
@@ -29,7 +29,7 @@ and shows you the result. You change one element, it changes that element — no
 | `figma-plan-user-flows` | "What screens do we need for checkout?" | You get every screen and state, entry and exit points, and a page structure for the Figma file — before anything is drawn |
 | `figma-audit-design-system` | "Go through this file and tell me what the design system holds" | The agent reads the file and reports components, tokens, patterns and design debt, and writes documentation pages if you ask. Read-only otherwise |
 | `figma-design-screens` | "Design a settings screen" · "Change the header on this frame" | The design process itself: where the style comes from, a brief per screen, checks afterwards, edits to approved work one element at a time |
-| `figma-plugin-api-rules` | nothing — it loads on its own | 377 real Plugin API failures and the way around each one. Loads before the agent writes anything into your file |
+| `figma-plugin-api-rules` | nothing — it loads on its own | 382 real Plugin API failures and the way around each one. Loads before the agent writes anything into your file |
 | `figma-fix-variable-bindings` | "Variables on this page are detached, fix them" | Finds detached, orphaned and hardcoded values, shows you a report, and rebinds only after you approve it |
 
 Five `SKILL.md` files and 42 topic files behind them. Eleven of those are the Plugin API pack —
@@ -52,18 +52,31 @@ which is what these files carry.
 
 ## Install
 
-Three things to have first, then three commands.
+Five steps: a Figma seat, Claude Code, three plugins, one restart at the end.
+
+**Or hand it to the agent.** If Claude Code is already installed, paste this into the chat:
+
+```
+Install https://github.com/schudarin/chudarin-figma-skills: run the commands from install steps 3, 4 and 5 of its README
+```
+
+The agent runs those commands itself. Three things stay with you: the seat from step 1, the
+restart, and the Figma login in step 6.
 
 ### 1. A Figma seat that allows agent access
 
 Figma limits an agent by seat, not by skill:
 
-- **Starter plan, or a View or Collab seat on a paid plan** — up to 6 tool calls per month. Enough
-  to look at the thing once, not to work.
-- **Dev or Full seat on Professional, Organization or Enterprise** — per-minute limits, same as
-  Figma's REST API. This is the seat you need.
+| Seat | Starter | Professional | Organization, Enterprise |
+|---|---|---|---|
+| View, Collab | 20 reads a month | 6 reads a month | 6 reads a month |
+| Dev, Full | 200 a day, 10 a minute | 200 a day, 15 a minute | 600 a day, 20 a minute |
 
-Writing into a file is free while Figma's beta lasts. Reading counts against the limits above.
+A View or Collab seat is enough to look at the thing once, not to work. You need Dev or Full.
+
+The limits count reads. Writing into a file is exempt and free while Figma's beta lasts. Source
+and current numbers: [Rate limits & access](https://developers.figma.com/docs/figma-mcp-server/rate-limits-access/)
+in Figma's developer docs, as of September 2026.
 
 ### 2. Claude Code
 
@@ -87,8 +100,6 @@ Figma's own agent instructions, which these skills build on top of:
 claude plugin install figma@claude-plugins-official
 ```
 
-Quit Claude Code and start it again. Then type `/mcp` in the chat, pick `figma`, and follow the
-login prompt — Figma opens in your browser and asks you to authorize the connection once.
 
 ### 4. These skills
 
@@ -97,18 +108,7 @@ claude plugin marketplace add schudarin/chudarin-figma-skills
 claude plugin install chudarin@chudarin
 ```
 
-Quit Claude Code and start it again. Both commands also work inside the chat as
-`/plugin marketplace add …` and `/plugin install …`.
-
-Check it landed:
-
-```bash
-claude plugin details chudarin@chudarin
-```
-
-Five skills in the list. Inside a chat they're `chudarin:figma-design-screens`,
-`chudarin:figma-plugin-api-rules`, and so on — the agent picks them up by itself when the task
-matches, and you can name one directly.
+Both commands also work inside the chat as `/plugin marketplace add …` and `/plugin install …`.
 
 ### 5. superpowers
 
@@ -121,7 +121,21 @@ wrong page.
 claude plugin install superpowers@claude-plugins-official
 ```
 
-Quit Claude Code and start it again.
+### 6. Restart and log in to Figma
+
+Quit Claude Code and start it again. Plugins load on start, so one restart covers all three. Then
+type `/mcp` in the chat, pick `figma`, and follow the login prompt: Figma opens in your browser and
+asks you to authorize the connection once.
+
+Check the skills landed:
+
+```bash
+claude plugin details chudarin@chudarin
+```
+
+Five skills in the list. Inside a chat they're `chudarin:figma-design-screens`,
+`chudarin:figma-plugin-api-rules`, and so on. The agent picks them up by itself when the task
+matches, and you can name one directly.
 
 ## Where to run it
 
@@ -181,8 +195,8 @@ claude plugin list                          # what is installed right now
 | What you see | What it means | What to do |
 |---|---|---|
 | The agent says it can't reach Figma | The connection isn't authorized | Type `/mcp`, pick `figma`, log in through the browser |
-| It stops after a handful of reads | Seat limit — 6 calls a month on Starter, View or Collab | Ask for a Dev or Full seat on a paid plan |
-| Reads start failing later in the day | Figma's rate limit for the account. On a Professional plan expect roughly 70–100 read calls a day across all tools, reset at 00:00 UTC | Continue tomorrow, or split the work across days |
+| It stops after a handful of reads | Seat limit: 6 reads a month on a View or Collab seat, 20 on Starter | Ask for a Dev or Full seat on a paid plan |
+| Reads start failing later in the day | The daily read limit: 200 on Professional, 600 on Organization and Enterprise, across all tools | Continue tomorrow, or split the work across days |
 | The agent works in the wrong file or page | It had no link and guessed | Paste the link every time. And install `superpowers` from step 5 |
 | The skills don't show up | The plugin is installed but the session is the old one | Quit Claude Code and start it again |
 | The agent changed something you didn't want | Figma keeps the file's history | **File → Show version history**, restore the earlier version |
@@ -250,24 +264,23 @@ place the text, they don't write it.
 <details>
 <summary>Codex, or Claude Code without the plugin system</summary>
 
-Every skill is a folder: `SKILL.md` + `references/` + `agents/openai.yaml` for Codex. Clone the
-repository and link the folders where your agent looks for skills.
+Every skill is a folder: `SKILL.md` + `references/` + `agents/openai.yaml` for Codex. The Skills
+CLI from [skills.sh](https://skills.sh) installs them anywhere it knows; it needs Node.js.
+
+```bash
+npx skills add schudarin/chudarin-figma-skills -a codex -g -y          # Codex
+npx skills add schudarin/chudarin-figma-skills -a claude-code -g -y    # Claude Code, no plugin system
+```
+
+`-g` installs for every project; drop it for one project. `npx skills update` pulls newer versions
+later. In Codex, call a skill explicitly with `$skill-name`; implicit invocation is enabled on all
+five.
+
+Without Node.js, clone and link the folders where your agent looks for skills, `~/.agents/skills/`
+for Codex and `~/.claude/skills/` for Claude Code:
 
 ```bash
 git clone https://github.com/schudarin/chudarin-figma-skills ~/chudarin-figma-skills
-```
-
-**Claude Code** — `~/.claude/skills/` for every project, or `<project>/.claude/skills/` for one:
-
-```bash
-mkdir -p ~/.claude/skills
-for s in ~/chudarin-figma-skills/skills/*; do ln -sfn "$s" ~/.claude/skills/; done
-```
-
-**Codex** — `~/.agents/skills/` for every project, or `<repo>/.agents/skills/` for one. Call a skill
-explicitly with `$skill-name`; implicit invocation is enabled on all five.
-
-```bash
 mkdir -p ~/.agents/skills
 for s in ~/chudarin-figma-skills/skills/*; do ln -sfn "$s" ~/.agents/skills/; done
 ```
