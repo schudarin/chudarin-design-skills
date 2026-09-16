@@ -193,16 +193,47 @@ claude plugin list                          # что стоит сейчас
 которые он ищет: `mobile-app-ui-design`, `frontend-design`, `impeccable`,
 `design-motion-principles`, `emil-design-eng`, `dataviz` и `design-critique` — на проверку.
 
-Один из них — от самой Anthropic:
+### Как их поставить
+
+`frontend-design` от самой Anthropic, ставится как плагин:
 
 ```bash
 claude plugin install frontend-design@claude-plugins-official
 ```
 
-Остальные сторонние, каталоги — [skills.sh](https://skills.sh) и
-[agentskills.io](https://agentskills.io). Читайте лицензию, прежде чем ставить чужую работу, и не
-переживайте, если какое-то имя отсюда уже переехало или исчезло: скил проверяет полку в рантайме, а
-не доверяет этому списку, так что мёртвое имя ничего не стоит.
+`dataviz` встроен в Claude Code. Ставить нечего.
+
+Остальные пять лежат на GitHub и ставятся через Skills CLI с [skills.sh](https://skills.sh). Ему
+нужен Node.js: наберите в Терминале `node -v`, и если в ответ `command not found`, сначала
+поставьте LTS-сборку с [nodejs.org](https://nodejs.org). Дальше по одной команде на скил, в
+Терминале, не в чате:
+
+```bash
+npx skills add pbakaus/impeccable@impeccable -a claude-code -g -y
+npx skills add kylezantos/design-motion-principles@design-motion-principles -a claude-code -g -y
+npx skills add emilkowalski/skills@emil-design-eng -a claude-code -g -y
+npx skills add ceorkm/mobile-app-ui-design@mobile-app-ui-design -a claude-code -g -y
+npx skills add anthropics/knowledge-work-plugins@design-critique -a claude-code -g -y
+```
+
+Флаги: `-a claude-code` выбирает агента, `-g` ставит для всех проектов, а не только для текущей
+папки, `-y` пропускает подтверждение. Уберите `-g`, чтобы поставить в один проект. Для Codex
+замените `-a claude-code` на `-a codex`.
+
+Закройте Claude Code, откройте заново и проверьте, что встало:
+
+```bash
+npx skills list
+```
+
+Потом `npx skills check` покажет, у каких из них вышла новая версия, а `npx skills update`
+обновит все разом.
+
+Любой другой скил со skills.sh ставится так же: `npx skills add owner/repo@skill-name`, а
+`npx skills find <слово>` ищет по каталогу прямо из Терминала. Читайте лицензию, прежде чем ставить
+чужую работу. Если какое-то имя отсюда уже переехало или исчезло, ничего не сломается:
+`figma-design-screens` проверяет полку в рантайме, а не доверяет этому списку, так что мёртвое имя
+ничего не стоит.
 
 Ещё пригодится свой скил под тексты — подписи кнопок и текст интерфейса. Эти скилы ставят текст на
 место, но не пишут его.

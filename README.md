@@ -195,16 +195,46 @@ names it looks for: `mobile-app-ui-design`, `frontend-design`, `impeccable`,
 `design-motion-principles`, `emil-design-eng`, `dataviz`, and `design-critique` for the review
 pass.
 
-One of them is Anthropic's own:
+### Installing them
+
+`frontend-design` is Anthropic's own and comes as a plugin:
 
 ```bash
 claude plugin install frontend-design@claude-plugins-official
 ```
 
-The rest are third-party; the catalogues are [skills.sh](https://skills.sh) and
-[agentskills.io](https://agentskills.io). Read the licence before installing someone else's work,
-and don't worry if a name here has since moved or gone: the skill checks the shelf at run time
-rather than trusting this list, so a retired name costs nothing.
+`dataviz` ships inside Claude Code. Nothing to install.
+
+The other five live on GitHub and install with the Skills CLI from [skills.sh](https://skills.sh).
+It needs Node.js: type `node -v` in Terminal, and if it says `command not found`, install the LTS
+build from [nodejs.org](https://nodejs.org) first. Then one command per skill, in Terminal, not in
+the chat:
+
+```bash
+npx skills add pbakaus/impeccable@impeccable -a claude-code -g -y
+npx skills add kylezantos/design-motion-principles@design-motion-principles -a claude-code -g -y
+npx skills add emilkowalski/skills@emil-design-eng -a claude-code -g -y
+npx skills add ceorkm/mobile-app-ui-design@mobile-app-ui-design -a claude-code -g -y
+npx skills add anthropics/knowledge-work-plugins@design-critique -a claude-code -g -y
+```
+
+The flags: `-a claude-code` picks the agent, `-g` installs for every project rather than the
+current folder, `-y` skips the confirmation. Drop `-g` to install into one project only. For
+Codex, replace `-a claude-code` with `-a codex`.
+
+Quit Claude Code, start it again, then check what landed:
+
+```bash
+npx skills list
+```
+
+Later, `npx skills check` shows which of them have a newer version and `npx skills update` pulls
+them all.
+
+Any other skill on skills.sh installs the same way, `npx skills add owner/repo@skill-name`, and
+`npx skills find <word>` searches the catalogue from Terminal. Read the licence before installing
+someone else's work. If a name above has since moved or gone, nothing breaks: `figma-design-screens`
+checks the shelf at run time rather than trusting this list, so a retired name costs nothing.
 
 Also worth having: a writing skill of your own for button labels and interface text. These skills
 place the text, they don't write it.
