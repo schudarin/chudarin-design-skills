@@ -319,6 +319,14 @@ Do not modify product screens unless the user explicitly asks.
 
 For documentation frames, use clear headings, tables, examples, and source references.
 
+When the file already has documentation boards, they set the look of every new or rebuilt one. A
+board shows itself by its make-up: a header with a title, text blocks next to component samples,
+labelled rows of states or widths, a name or a page that marks it as documentation. Take their
+header, text styles, colours, spacing and board width in full. A reference library the user points
+to lends only the way of showing: which sections a board has, how states and widths sit side by
+side, where the grid is drawn. Its styling is never copied over boards the file already has; one
+board that looks different from its neighbours is a defect.
+
 Load `references/figma-documentation-structure.md` before creating documentation pages in Figma.
 
 ## Default output
