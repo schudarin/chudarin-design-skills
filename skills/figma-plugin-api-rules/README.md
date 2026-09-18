@@ -1,6 +1,6 @@
 # figma-plugin-api-rules
 
-384 ways the Figma Plugin API breaks when an agent drives it, and what to do instead. Every entry
+The ways the Figma Plugin API breaks when an agent drives it, and what to do instead. Every entry
 is a real case that failed exactly this way, written as Principle / Symptom / Pattern — not a
 rewrite of the docs.
 
