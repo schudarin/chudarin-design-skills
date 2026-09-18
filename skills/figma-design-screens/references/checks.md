@@ -38,7 +38,12 @@ looked at didn't run.
 - **The frame being looked at agrees with the file.** A Look rule runs only on a screenshot that
   matches the Read of at least one property changed in this round; a render can lag the file by
   minutes, and a finding filed against a stale render is a finding against the cache.
-- **Spacing follows the project's grid**, not an eyeballed value that happens to look close.
+- **Spacing follows the project's grid**, not an eyeballed value that happens to look close. When
+  the file has a spacing collection, every gap, padding and corner radius is bound to it, never
+  typed as a number: a typed `16` next to a `16` variable is the same defect as a hand-typed hex.
+  The one exception is a gap that reads Auto (`SPACE_BETWEEN`); it stays unbound. A value the scale
+  does not have goes to the user as a question, add it to the scale or move to the nearest step,
+  and is never left as a number. Read.
 - **No artifacts that read as a bug.** Stray single pixels left over from a resize read as a bug
   rather than a deliberate choice — an artifact doesn't announce itself, it has to be looked for.
 
