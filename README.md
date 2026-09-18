@@ -5,7 +5,7 @@ a variable that never bound, a component set that deleted itself when its last v
 screen assembled from hardcoded values that looks right until someone switches the theme.
 
 This is what fixed that on real product files. Five skills: the process for each stage of design
-work, plus 382 recorded Plugin API failures with the way around each one. Every rule here is a case
+work, plus 384 recorded Plugin API failures with the way around each one. Every rule here is a case
 that broke exactly this way, not a reading of the docs.
 
 [Русская версия](README.ru.md)
@@ -30,15 +30,15 @@ around it.
 | `figma-plan-user-flows` | "What screens do we need for checkout?" | You get every screen and state, entry and exit points, and a page structure for the Figma file, before anything is drawn |
 | `figma-audit-design-system` | "Go through this file and tell me what the design system holds" | The agent reads the file and reports components, tokens, patterns and design debt, and writes documentation pages if you ask. Read-only otherwise |
 | `figma-design-screens` | "Design a settings screen" · "Change the header on this frame" | The design process itself: where the style comes from, a brief per screen, checks afterwards, edits to approved work one element at a time |
-| `figma-plugin-api-rules` | nothing, it loads on its own | 382 real Plugin API failures and the way around each one. Loads before the agent writes anything into your file |
+| `figma-plugin-api-rules` | nothing, it loads on its own | 384 real Plugin API failures and the way around each one. Loads before the agent writes anything into your file |
 | `figma-fix-variable-bindings` | "Variables on this page are detached, fix them" | Finds detached, orphaned and hardcoded values, shows you a report, and rebinds only after you approve it |
 
-Five `SKILL.md` files and 42 topic files behind them. Eleven of those are the Plugin API pack:
+Five `SKILL.md` files and 43 topic files behind them. Twelve of those are the Plugin API pack:
 components and variants, instances, layout and geometry, text and fonts, variables and modes,
-connectors, annotations, publishing hygiene, FigJam, the tool layer, building a screen from code. The
-other thirty-one carry the audit checklists, the per-screen briefs, the checks that run afterwards,
-and 189 UX rules routed by what the screen contains. All plain Markdown. Nothing runs on your
-machine, nothing phones home.
+connectors, annotations, publishing hygiene, FigJam, prototype links, the tool layer, building a
+screen from code. The other thirty-one carry the audit checklists, the per-screen briefs, the checks
+that run afterwards, and 189 UX rules routed by what the screen contains. All plain Markdown. Nothing
+runs on your machine, nothing phones home.
 
 ## Why it's not just prompting
 

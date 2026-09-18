@@ -21,6 +21,7 @@ Accumulated, field-tested knowledge of the Figma Plugin API as driven through an
  - `characters =` · `loadFontAsync` · `textStyleId` · `textAutoResize` · `textTruncation` → `references/text-and-styles.md`
  - `layoutMode` · `layoutSizing*` · `primaryAxisSizingMode` · `resize(` · `insertChild` · `clone` · `arcData` → `references/layout-and-geometry.md`
  - `connectorStart` · `connectorEnd` → `references/connectors.md` · `annotations` → `references/annotations.md`
+ - `setReactionsAsync` · `reactions` · `overlay*` → `references/prototyping.md`
  - `get_metadata` on a page · `findAll` over a page · `exportAsync` · `get_screenshot` for verification → `references/mcp-and-environment.md`
  One read per file per session is enough. Skipping it is how a session re-discovers a documented rule the hard way: a run that never opened `instances.md` hits `swapComponent` returning `void`, a stale child id after `setProperties`, and a hidden instance child that reads as "unreachable" — all three are in that file.
 5. **Prologue for any write batch:** `await figma.setCurrentPageAsync(page)` before the first mutation, and load every font the batch touches. Both are easy to forget and both fail opaquely mid-batch — a wrong-page mutation or an unloaded-font write doesn't say so, it just throws.
@@ -225,6 +226,7 @@ for (const id of collection.variableIds) {
 | `references/annotations.md` | Dev Mode annotations (`node.annotations`, `figma.annotations`) — not Figma Comments; category/colour enums, HTML escaping in labels, existing-only categories |
 | `references/publishing-hygiene.md` | ANY text written outward: component descriptions, annotations, node/page names, TEXT in the layout |
 | `references/figjam.md` | FigJam boards (`/board/`): pasted-image styling, stale reads |
+| `references/prototyping.md` | prototype links: `setReactionsAsync`, overlays and their read-only position |
 | `references/mcp-and-environment.md` | the tool layer (screenshots, asset upload), rate limits, subagents; metadata read reliability (partial page lists, timeouts, hidden children), truncation of large responses (~20 KB), `skipInvisibleInstanceChildren`, `findAll` partial subtrees, screenshot artefacts (1×1, phantom boxes), infinite-loop detection, REST fallback, visual regression and verification recipes (export hash, pixel compare, page dumper) |
 | `references/screen-from-code.md` | building / rebuilding a Figma screen from application code: role mapping, DS lookup, build actions, Mode Discovery / Build |
 

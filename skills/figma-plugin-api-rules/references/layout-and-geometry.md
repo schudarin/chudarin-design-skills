@@ -1484,7 +1484,7 @@ _Core: full text — `../SKILL.md`._
 ### shadow-extent-vs-clipping-ancestors-scan
 **Principle:** A shadow is clipped by the *first* ancestor whose `clipsContent` is `true` and whose box is smaller than the child's box plus the shadow's reach — `|offset| + radius + spread` on each side. Reading the shadowed node, or the screen root, shows nothing wrong; the cut is decided by an intermediate wrapper. So before hand-off compute the reach for every node carrying a `DROP_SHADOW` and compare it with every clipping ancestor up to the top-level frame.
 **Symptom:** shadows that end in straight lines at invisible edges; a "phantom" rectangle around a card; identical cards clipped differently depending on which row they sit in.
-**Pattern:** walk the subtree, collect shadowed nodes, walk each one's parent chain with `absoluteBoundingBox`, report the first clipping ancestor that cuts the reach. Exclude the screen root when the clip at the device edge is intended.
+**Pattern:** walk the subtree, collect shadowed nodes, walk each one's parent chain with `absoluteBoundingBox`, and report every clipping ancestor that cuts the reach, not only the first. A first-only scan hides the next level: lift the clip on the cells and the rows start cutting, lift the rows and the blocks do, so one fix takes as many runs as there are wrapper levels. Exclude the screen root when the clip at the device edge is intended. After lifting clips, rerun the overflow check: a wrapper that clipped may also have hidden a child wider than itself.
 ```js
 const CONT = new Set(['FRAME','COMPONENT','INSTANCE','GROUP','SECTION','BOOLEAN_OPERATION']);
 const reach = n => (n.effects || []).filter(e => e.type === 'DROP_SHADOW' && e.visible !== false)
@@ -1499,13 +1499,13 @@ const walk = (n, rootId) => {
       if (!('clipsContent' in p) || !p.clipsContent || !p.absoluteBoundingBox) continue;
       const pb = p.absoluteBoundingBox;
       const cut = b.x - r < pb.x || b.y - r < pb.y || b.x + b.width + r > pb.x + pb.width || b.y + b.height + r > pb.y + pb.height;
-      if (cut) { findings.push({ node: n.id, name: n.name, reach: r, clippedBy: p.id, clipper: p.name }); break; }
+      if (cut) findings.push({ node: n.id, name: n.name, reach: r, clippedBy: p.id, clipper: p.name }); // no break: every level that cuts
     }
   }
   if (CONT.has(n.type)) for (const c of n.children) walk(c, rootId);
 };
 const root = await figma.getNodeByIdAsync('SCREEN_ROOT_ID'); walk(root, root.id);
-return findings; // [] — hand-off; otherwise set clipsContent=false on each `clippedBy`, or shrink the shadow
+return findings; // [] means hand-off; otherwise set clipsContent=false on every `clippedBy` in one pass, or shrink the shadow
 ```
 
 ### ellipse-arcdata-inner-radius-zero-renders-a-pie-sector

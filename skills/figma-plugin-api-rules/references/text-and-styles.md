@@ -29,6 +29,7 @@ node.textDecoration = 'NONE'; // safe now — the new font is already loaded
 
 ### node-fontname-is-figma-mixed-on-multi-font-text
 **Principle:** On a text node with more than one font in it, `node.fontName` reads back as `figma.mixed`, not a usable font descriptor — passing that straight to `loadFontAsync` throws. Walk the real per-run fonts instead.
+**Symptom:** `Error: in loadFontAsync: Cannot unwrap symbol` — the error names neither the font nor `figma.mixed`. The same cause in a read-only dump reads `TypeError: cannot convert symbol to string`: a helper concatenated `fontName`, `fills`, `cornerRadius` or `letterSpacing` into a string while the value was `figma.mixed`. Test `=== figma.mixed` before loading or printing any of them.
 ```js
 // figma.mixed carries no font info by itself — enumerate the actual fonts
 // used in each styled run and load each one.
