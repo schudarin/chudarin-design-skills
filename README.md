@@ -60,7 +60,7 @@ flowchart LR
 | `design-slides` | "Make a pitch deck from this doc" · "Fix this deck, it looks generated" | Story first, one claim per slide, style from your template or brand, numbers checked against sources, export checked before you get it |
 | `figma-plugin-api-rules` | nothing, it loads on its own | Real Plugin API failures and the way around each one. Loads before the agent writes anything into your file |
 | `figma-fix-variable-bindings` | "Variables on this page are detached, fix them" | Finds detached, orphaned and hardcoded values, shows you a report, and rebinds only after you approve it |
-| `writing-texts` | "Rewrite this so it sounds like a person" · "Check the button labels" | Plain words instead of formulaic ones, in Russian and English: interface text, docs, articles, slides. Learns how you write from your corrections, with your consent, in `~/.agents/voice.md`. The rules inside are written in Russian |
+| `writing-texts` | "Rewrite this so it sounds like a person" · "Check the button labels" | Plain words instead of formulaic ones, in Russian and English: interface text, docs, articles, slides. Learns how you write from your corrections, with your consent, in `~/.agents/voice.md` |
 
 Every skill has a `SKILL.md` and topic files. Some of those make up the Plugin API pack:
 components and variants, instances, layout and geometry, text and fonts, variables and modes,
