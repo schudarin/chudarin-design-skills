@@ -20,9 +20,9 @@ Agents can write into Figma now. Left to themselves they design badly and break 
 a variable that never bound, a component set that deleted itself when its last variant moved out, a
 screen assembled from hardcoded values that looks right until someone switches the theme.
 
-This is what fixed that on real product files. A skill for each stage of design work,
-plus a pack of recorded Plugin API failures with the way around each one. Every rule here is a case
-that broke exactly this way, not a reading of the docs.
+These skills fixed exactly those breakages on real product files. A skill for each stage of design
+work, plus a pack of recorded Plugin API failures with the way around each one. Every rule here comes
+from a real breakage, not a reading of the docs.
 
 [Русская версия](README.ru.md)
 
@@ -33,8 +33,8 @@ sentence. No code, no code editor, no plugin to build.
 
 What that looks like in practice: you paste a link to a frame and write "design a settings screen
 for this app". In a project it hasn't seen, the agent first looks for the answers it needs, a design
-system document, existing screens, the variables already in the file. It asks you only what the
-search didn't turn up, at most two questions. It writes that down and never asks again. Then it works
+system document, existing screens, the variables already in the file. What it didn't find, it asks
+you, at most two questions, and writes the answers down so it never asks again. Then it works
 from your components and variables, reads back every binding it set instead of assuming it applied,
 and shows you the result. You ask to change one element, and it changes that element, not the screen
 around it.
@@ -54,15 +54,15 @@ flowchart LR
 
 | Skill | You type something like | What happens |
 |---|---|---|
-| 🗺️ `plan-user-flows` | "What screens do we need for checkout?" | You get every screen and state, entry and exit points, and a page structure for the Figma file, before anything is drawn |
-| 🔍 `audit-design-system` | "Go through this file and tell me what the design system holds" | The agent reads the file and reports components, tokens, patterns and design debt, and writes documentation pages if you ask. Read-only otherwise |
-| 🎨 `design-screens` | "Design a settings screen" · "Change the header on this frame" | The design process itself: where the style comes from, a brief per screen, checks afterwards, edits to approved work one element at a time |
-| 🖼️ `design-slides` | "Make a pitch deck from this doc" · "Fix this deck, it looks generated" | Story first, one claim per slide, style from your template or brand, numbers checked against sources, export checked before you get it |
-| 🧰 `figma-plugin-api-rules` | nothing, it loads on its own | Real Plugin API failures and the way around each one. Loads before the agent writes anything into your file |
-| 🔗 `figma-fix-variable-bindings` | "Variables on this page are detached, fix them" | Finds detached, orphaned and hardcoded values, shows you a report, and rebinds only after you approve it |
-| ✍️ `writing-texts` | "Rewrite this so it sounds like a person" · "Check the button labels" | Plain words instead of formulaic ones, in Russian and English: interface text, docs, articles, slides. Learns how you write from your corrections, with your consent, in `~/.agents/voice.md`. The rules inside are written in Russian |
+| `plan-user-flows` | "What screens do we need for checkout?" | You get every screen and state, entry and exit points, and a page structure for the Figma file, before anything is drawn |
+| `audit-design-system` | "Go through this file and tell me what the design system holds" | The agent reads the file and reports components, tokens, patterns and design debt, and writes documentation pages if you ask. Read-only otherwise |
+| `design-screens` | "Design a settings screen" · "Change the header on this frame" | The design process itself: where the style comes from, a brief per screen, checks afterwards, edits to approved work one element at a time |
+| `design-slides` | "Make a pitch deck from this doc" · "Fix this deck, it looks generated" | Story first, one claim per slide, style from your template or brand, numbers checked against sources, export checked before you get it |
+| `figma-plugin-api-rules` | nothing, it loads on its own | Real Plugin API failures and the way around each one. Loads before the agent writes anything into your file |
+| `figma-fix-variable-bindings` | "Variables on this page are detached, fix them" | Finds detached, orphaned and hardcoded values, shows you a report, and rebinds only after you approve it |
+| `writing-texts` | "Rewrite this so it sounds like a person" · "Check the button labels" | Plain words instead of formulaic ones, in Russian and English: interface text, docs, articles, slides. Learns how you write from your corrections, with your consent, in `~/.agents/voice.md`. The rules inside are written in Russian |
 
-A `SKILL.md` per skill and the topic files behind them. Some of those make up the Plugin API pack:
+Every skill has a `SKILL.md` and topic files. Some of those make up the Plugin API pack:
 components and variants, instances, layout and geometry, text and fonts, variables and modes,
 connectors, annotations, publishing hygiene, FigJam, prototype links, the tool layer, building a
 screen from code. The rest carry the audit checklists, the per-screen briefs, the checks that run
@@ -77,8 +77,8 @@ per-corner fields and the aggregate key you checked stays empty. A licensed font
 sandbox makes text writes fail in ways that read as your mistake. An instance's `children` omits
 hidden descendants, so the inventory you built from it is wrong.
 
-Asking nicely fixes none of that. Knowing the case and checking the result does, and that is what
-these files carry.
+Asking nicely fixes none of that. What helps is knowing where exactly it breaks and checking the
+result, and that is what these files carry.
 
 ## 📦 Install
 
@@ -234,13 +234,12 @@ claude plugin list                          # what is installed right now
 ## ➕ Recommended alongside
 
 **Nothing in this section is required.** With the plugins from steps 3 and 5 in place the
-skills work on their own. What follows makes the runs better, and every piece of it is someone
-else's skill, not mine.
+skills work on their own. Everything below is someone else's skills, not mine.
 
 `design-screens` also uses one visual skill per task: a mobile-UI, web, motion or charts
 skill, whichever matches the screen. It requires none of them. It reads the list of skills your
-session actually has, loads the one matching the task type, and on an empty shelf says so and works
-from your design system, your existing screens and its own copy-and-control rules instead. The
+session actually has, loads the one matching the task type, and if none is installed, says so and works
+from your design system, your existing screens and its own rules for text and controls instead. The
 names it looks for: `mobile-app-ui-design`, `frontend-design`, `impeccable`,
 `design-motion-principles`, `emil-design-eng`, `dataviz`, and `design-critique` for the review
 pass.
@@ -284,7 +283,8 @@ them all.
 Any other skill on skills.sh installs the same way, `npx skills add owner/repo@skill-name`, and
 `npx skills find <word>` searches the catalogue from Terminal. Read the licence before installing
 someone else's work. If a name above has since moved or gone, nothing breaks: `design-screens`
-checks the shelf at run time rather than trusting this list, so a retired name costs nothing.
+checks which skills you have installed on every run rather than trusting this list, so an outdated
+name gets in the way of nothing.
 
 Button labels and interface text go through `writing-texts`. If you already have a writing skill of
 your own, keep using it instead.
