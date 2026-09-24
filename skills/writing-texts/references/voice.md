@@ -1,79 +1,83 @@
-# Голос человека и продукта
+# The person's and the product's voice
 
-Общие правила из `SKILL.md` одинаковы для всех. Характер конкретного человека и голос конкретного продукта живут в двух файлах вне скилла. Скилл их читает, а пополняет только с согласия человека.
+The general rules in `SKILL.md` are the same for everyone. The character of a specific person and the voice of a specific product live in two files outside the skill. The skill reads them and adds to them only with the person's consent.
 
-## Слои
+## Layers
 
-| Слой | Файл | Что в нём |
+| Layer | File | Contents |
 |---|---|---|
-| Голос человека | `~/.agents/voice.md` | как пишет этот человек, во всех его проектах |
-| Голос продукта | `<project>/.claude/voice.md` | обращение, термины, кнопки и сообщения продукта |
-| Общие правила | `SKILL.md` | одинаковые для всех |
+| Person's voice | `~/.agents/voice.md` | how this person writes, in all their projects |
+| Product's voice | `<project>/.claude/voice.md` | form of address, terms, buttons and messages of the product |
+| General rules | `SKILL.md` | the same for everyone |
 
-Какой слой главнее, зависит от текста:
+Which layer wins depends on the text:
 
-- **текст интерфейса и документация продукта:** продукт, затем человек, затем общие правила;
-- **авторский текст** (пост, заметка, статья, письмо, сообщение от имени человека): человек, затем продукт, затем общие правила.
+- **interface text and product docs:** product, then person, then general rules;
+- **authored text** (post, note, article, letter, message on the person's behalf): person, then product, then general rules.
 
-Нет файла: слой пропускается. `~` здесь означает домашнюю папку пользователя, в любом агенте.
+No file: the layer is skipped. `~` here means the user's home folder, in any agent.
 
-## Начало задачи
+The files are written in the person's language; section names may be in that language too. Match sections by meaning, not by exact heading.
 
-Перед первым текстом в задаче прочитай оба файла, если они есть. Слова из раздела «Мои слова» и «Термины» используй вместо синонимов, которые пришли бы сами: если в голосе человека записано «Пользуюсь: созвон», в его заметке будет «созвон», даже когда в запросе стоит «встреча».
+## Start of a task
 
-Вспомогательному агенту, который пишет текст, передай в поручении пути к обоим файлам. Он читает их сам.
+Before the first text in a task, read both files if they exist. Use the words from "My words" and "Terms" instead of the synonyms that would come on their own: if the person's voice says "I use: созвон", their note says «созвон» even when the request says «встреча».
 
-## Когда текст и есть задача
+When a helper agent writes text, pass it the paths to both files in its brief. It reads them itself.
 
-Приглашение прислать тексты и предложение записи появляются, только когда человек просит сам текст: написать, переписать или проверить его. Если скилл работает как правило внутри другой работы (код, дизайн, настройка, ответ на вопрос), файлы голоса читаются и применяются, но ни приглашения, ни предложения записи в ответе нет.
+## When the text is the task
 
-## Личного файла нет
+The invitation to send texts and the record proposal appear only when the person asks for the text itself: to write, rewrite or check it. If the skill runs as a rule inside other work (code, design, setup, answering a question), the voice files are read and applied, but the reply has neither the invitation nor the proposal.
 
-В первой задаче с текстом, где `~/.agents/voice.md` не существует, добавь к ответу одну строку:
+## No personal file
 
+In the first task with text where `~/.agents/voice.md` does not exist, add one line to the reply, in the person's language:
+
+> If you send me 2–3 of your texts, I'll write down how you write and will write closer to you from then on.
+>
 > Если пришлёшь 2–3 своих текста, я выпишу, как ты пишешь, и дальше буду писать ближе к тебе.
 
-Прислал: собери черновик файла по формату ниже из того, что видно в текстах, и покажи целиком. Запиши только те пункты, которые человек подтвердил.
+They sent texts: draft the file in the format below from what the texts show, and show it whole. Record only the items the person confirmed.
 
-Отказался или промолчал: работай по общим правилам. В этой задаче строку больше не добавляй.
+They declined or said nothing: work by the general rules. Do not add the line again in this task.
 
-## Конец задачи: предложение записи
+## End of a task: the record proposal
 
-Если в задаче человек поправил твой текст или отклонил формулировку, последнее сообщение задачи заканчивается предложением записи. Предложение состоит из:
+If in the task the person corrected your text or rejected a wording, the task's last message ends with a record proposal. It consists of:
 
-1. строки «Записать в голос?»;
-2. от одной до трёх записей, каждая в виде: слой (личный или продукт), раздел, текст записи с датой;
-3. для записи, которая противоречит уже записанной: дата и цитата старой записи и вопрос «Заменить?»;
-4. строки «Ответь „да“, „нет“ или какие записать».
+1. the line "Record in the voice?" (in the person's language);
+2. one to three records, each as: layer (personal or product), section, record text with the date;
+3. for a record that contradicts one already written: the date and a quote of the old record and the question "Replace?";
+4. the line "Reply 'yes', 'no', or which ones to record".
 
-До ответа человека файлы голоса не меняются. После «да» запиши ровно то, что предложил, в указанный раздел; при согласии на замену удали старую запись. Частичное согласие: только названные записи.
+Until the person answers, the voice files do not change. After "yes", write exactly what was proposed into the named section; if a replacement was agreed, delete the old record. Partial consent: only the named records.
 
-Правка попадает в предложение, когда она переживёт другой текст на ту же тему: как человек называет вещи, каким тоном говорит, какие слова не любит. Правка, которая держится на этом тексте (не хватает места, другая длина, разовый факт), в предложение не попадает. Если все правки задачи такие, предложения нет.
+A correction goes into the proposal when it will outlive this text and apply to another text on the same subject: how the person names things, what tone they take, which words they dislike. A correction that depends on this text (not enough space, a different length, a one-off fact) does not. If all corrections in the task are like that, there is no proposal.
 
-## Сведение
+## Consolidation
 
-Раздел, в котором больше 15 записей, предложи свести: похожие записи становятся одним правилом с одним-двумя примерами. Покажи было и стало, запиши после «да».
+For a section with more than 15 records, propose consolidating: similar records become one rule with one or two examples. Show before and after; write after "yes".
 
-## Формат личного файла
+## Personal file format
 
 ```markdown
-# Голос: <имя или ник>
+# Voice: <name or handle>
 
-## Как я пишу
-<правило>. «<было>» → «<стало>». <ГГГГ-ММ-ДД>
+## How I write
+<rule>. "<before>" → "<after>". <YYYY-MM-DD>
 
-## Мои слова
-Пользуюсь: <слова>
-Не пользуюсь: <слово> (вместо: <слово>)
+## My words
+I use: <words>
+I don't use: <word> (instead: <word>)
 
-## Отклонено: не предлагать
-<что предлагал агент> → «<слова человека>», <ГГГГ-ММ-ДД>
+## Rejected: do not offer
+<what the agent offered> → "<the person's words>", <YYYY-MM-DD>
 
-## Образцы
-> <короткий кусок текста человека>
+## Samples
+> <a short piece of the person's text>
 ```
 
-Пример, выдуманный:
+An invented example:
 
 ```markdown
 # Голос: Анна
@@ -93,40 +97,40 @@
 > Три недели мы спорили о кнопке. Выиграла та, которую никто не предлагал.
 ```
 
-## Формат файла продукта
+## Product file format
 
 ```markdown
-# Голос продукта: <продукт>
+# Product voice: <product>
 
-## Кому и как
-Обращение (ты / вы), тон, чего не бывает.
+## Audience and tone
+Form of address (formal / informal), tone, what never happens.
 
-## Термины
-<каноническое название>, не «<синоним>»
+## Terms
+<canonical name>, not "<synonym>"
 
-## Кнопки и сообщения
-<правило>
+## Buttons and messages
+<rule>
 
-## Отклонено: не предлагать
-<что> → «<слова>», <ГГГГ-ММ-ДД>
+## Rejected: do not offer
+<what> → "<words>", <YYYY-MM-DD>
 ```
 
-Пример, выдуманный:
+An invented example:
 
 ```markdown
-# Голос продукта: Ledger
+# Product voice: Ledger
 
-## Кому и как
-На «вы». Спокойно, без восклицательных знаков и шуток в ошибках.
+## Audience and tone
+Formal address. Calm, no exclamation marks, no jokes in errors.
 
-## Термины
-счёт, не «аккаунт»
-перевод, не «транзакция»
+## Terms
+account, not "profile"
+transfer, not "transaction"
 
-## Кнопки и сообщения
-Кнопка называет действие глаголом: «Сохранить», «Удалить счёт».
-Ошибка говорит, что случилось и что сделать: «Перевод не прошёл. Проверьте номер карты».
+## Buttons and messages
+A button names the action with a verb: "Save", "Delete account".
+An error says what happened and what to do: "The transfer failed. Check the card number."
 
-## Отклонено: не предлагать
-«Упс! Что-то пошло не так» → «мы не извиняемся смайликами», 2026-05-20
+## Rejected: do not offer
+"Oops! Something went wrong" → "we don't apologize with smileys", 2026-05-20
 ```

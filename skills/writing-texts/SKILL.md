@@ -3,162 +3,125 @@ name: writing-texts
 description: Write, rewrite, or review Russian and English prose so it reads as written by a person, not a model. Use for requests to make text more human, simplify language, remove formulaic writing, or edit articles, notes, docs, UI copy, presentations, and Figma text. Covers drafting and language review without a separate editing skill. Also use when the user corrects the agent's wording, says how they write or how their product speaks, or asks to remember a writing preference.
 ---
 
-# Как писать тексты
+# Writing texts
 
-Общий слой, верный для любого текста. Регистр задаёт место: пост в блоге — тёплый, от первого лица; текст в интерфейсе — короткий и нейтральный. Правила ниже действуют в обоих.
+A common layer that holds for any text, in Russian and in English. The place sets the register: a blog post is warm and in the first person; interface text is short and neutral. The rules below apply in both.
 
-В общении с пользователем пиши как коллеге, который знает предмет, но не следил за работой. В документации проекта следуй её регистру; по умолчанию он нейтральный. В авторском тексте сохраняй личную позицию. Для проверки ясности и речевых шаблонов отдельный навык не нужен.
+To the user, write as to a colleague who knows the subject but has not followed the work. In project docs, follow their register; by default it is neutral. In authored text, keep the author's own position. No separate skill is needed to check clarity and formulaic phrasing.
 
-## Голос человека и продукта
+## Files
 
-Перед любым текстом прочитай `~/.agents/voice.md` (голос человека) и `<project>/.claude/voice.md` (голос продукта), если они есть. Текст интерфейса и документация продукта следуют голосу продукта, авторский текст следует голосу человека; оба важнее общих правил ниже. Как устроены файлы, когда предлагать запись в них и что не записывать: [references/voice.md](references/voice.md).
+| File | When to read |
+|---|---|
+| [references/voice.md](references/voice.md) | before the first text in a task; how the voice files work and when to propose a record |
+| [references/articles.md](references/articles.md) | writing or reworking an article, a guide, a title, a summary or a translation |
+| [references/editing-patterns.md](references/editing-patterns.md) | a detailed pass for formulaic phrasing, RU and EN examples |
 
-## Конкретика вместо категории
+## The person's and the product's voice
 
-Называй вещь, а не класс вещей.
+Before any text, read `~/.agents/voice.md` (the person's voice) and `<project>/.claude/voice.md` (the product's voice), if they exist. Interface text and product docs follow the product's voice; authored text follows the person's voice; both override the general rules below.
 
-- «Celeron N3000 и Voodoo 3Dfx» → да. «Старый компьютер» → нет.
-- «Выросло с 4 до 19 секунд» → да. «Значительно замедлилось» → нет.
+## The thing, not the category
 
-Не выдумывай конкретику. Если без недостающего факта нельзя закончить мысль, спроси автора. В готовую редактуру не вставляй `TBD`: используй то, что уже известно.
+Name the thing, not its class.
 
-## Разговорная интонация в авторских текстах
+- "Grew from 4 to 19 seconds", not "slowed down significantly". «Выросло с 4 до 19 секунд», а не «значительно замедлилось».
+- "A 2011 ThinkPad with 4 GB of RAM", not "an old computer" (an invented example).
 
-Пиши так, как автор объяснил бы мысль знакомому коллеге: простыми словами, от себя, с понятным ходом мысли. Это ориентир для языка, но гладкие фразы ещё не означают, что статья раскрыта. Для интерфейсов и технических документов сохраняй их регистр.
+Do not invent specifics. If a thought cannot be finished without a missing fact, ask the author. Do not put `TBD` into a finished edit: use what is already known.
 
-Замени тяжёлые слова обычными, абстрактные обороты словами о том, кто что делает или чувствует. Собери повтор одной мысли в ясную фразу. Сохраняй личные примеры, авторскую лексику и интонацию. Не ограничивайся исправлением запятых, если сама фраза звучит неестественно.
+## Conversational tone in authored text
 
-Примеры:
+Write the way the author would explain the thought to a colleague they know: plain words, from themselves, with a clear line of thought. This guides the language; smooth sentences do not mean the article is complete. Interfaces and technical docs keep their own register.
+
+Replace heavy words with ordinary ones and abstract phrasing with words about who does or feels what. Merge a repeated thought into one clear sentence. Keep the author's personal examples, vocabulary and intonation. Do not stop at fixing commas if the sentence itself sounds unnatural.
 
 - «Осуществляется процесс согласования макетов с заинтересованными сторонами» → «Я показываю макеты команде и собираю правки».
 - «Возникает ощущение некоторой перегруженности» → «Через неделю понимаешь, что не успеваешь».
+- "Stakeholder alignment on mockups is being conducted" → "I show the mockups to the team and collect edits".
 
-Проверь, легко ли произнести фразу вслух. Не добавляй для разговорности слова-паразиты, нарочитый сленг или рубленые фразы. Смысл и степень уверенности автора важнее дословного копирования примера.
+Check that the sentence is easy to say out loud. Do not add filler words, forced slang or chopped sentences to sound conversational. The meaning and the author's degree of certainty matter more than copying an example word for word.
 
-## Ирония
+## Irony
 
-Ирония автора делает текст живым. Без неё редактура превращает статью в гладкую инструкцию. Сохраняй её при правке и не выпрямляй в нейтральное утверждение: «совещание, которое могло быть письмом» не заменяй на «совещание было неэффективным».
+The author's irony keeps a text alive; without it, editing turns an article into a smooth manual. Keep it when editing, do not straighten it into a neutral statement: "a meeting that could have been an email" does not become "the meeting was inefficient".
 
-Если материал сам даёт повод, лёгкая ирония уместна и в новом тексте: несоответствие между обещанием и результатом, между названием и тем, что происходит на деле. В тон автору и без нормы на раздел: если ирония читается как приём, её слишком много. Ирония растёт из фактов материала, а не прикладывается сверху: без повода её не добавляй.
+In new text, light irony fits when the material gives a reason: a gap between a promise and the result, between a name and what actually happens. Match the author's tone and set no quota: if irony reads as a device, there is too much. Irony grows from the material's facts; without a reason, do not add it.
 
-## Личный текст: сохранить ход мысли
+## Personal text: keep the line of thought
 
-«Человечнее» не значит «короче». Сохраняй конкретную ситуацию, причины, последствия и реакцию автора. Убирай словесный повтор, но не объяснение того, почему ситуация возникла и что она сделала с человеком. Разговорная и профессиональная лексика автора уместна, если понятна читателю.
+"More human" does not mean "shorter". Keep the specific situation, causes, consequences and the author's reaction. Remove verbal repetition, but not the explanation of why the situation arose and what it did to the person. The author's colloquial and professional vocabulary fits if the reader understands it.
 
-Не заменяй рассказ готовым ярлыком. «Процесс неудобный» теряет смысл исходного наблюдения, если автор описал, что именно мешает: сколько шагов, где он ждёт и что приходится делать заново. Используй такие детали, только если их дал автор.
+The author's experience, feelings and sharp judgements stay theirs. Do not add motives to other people, and do not soften what the author wrote to "it seemed to me" without being asked. Suggest fixing a conclusion that does not follow from the examples as a separate proposal; the decision on meaning stays with the author.
 
-Личный опыт, чувства и резкие оценки автора остаются его позицией. Не добавляй от себя мотивы других людей, но и не смягчай уже написанное автором до «мне показалось» без запроса. Отдельно предложи исправить вывод, который не следует из примеров; решение о смысловой правке оставь автору.
+## Mode and scope
 
-## Смысловая редактура статьи
+Choose the mode by the request; if `mode:author`, `mode:edit` or `mode:detect` is given, follow it.
 
-При написании или переработке статьи сначала определи для себя, какую задачу читателя решает текст, с каким вопросом он входит и как разделы ведут к ответу. Личный рассказ об опыте и практическое руководство по инструменту могут использовать один материал, но требуют разных акцентов. Это короткая рабочая проверка, а не обязательный план на согласование. Естественный язык не заменяет раскрытую мысль. При запросе только на языковые ошибки не перестраивай статью.
+- **Write (`author`).** Create the text from the material provided, following the voice and clarity rules. If the skill runs as a rule inside another task, apply it without a separate report on the skill's work.
+- **Rewrite (`edit`).** Work on the author's latest version, including their manual edits. Edit right away within the allowed scope; leave clear passages alone. Return the text and, if useful, name the changes briefly.
+- **Review (`detect`).** When asked to check or to suggest first, give the exact place, the problem and a fix. Separate language errors from meaning suggestions and matters of taste. Do not rewrite the whole text and do not pad the notes to a fixed number.
 
-**Различай противоречие и развитие мысли.** Следующий пример может дополнять предыдущий или показывать другой способ оценить ситуацию. Например, данные исследования и мнение опытного коллеги — разные основания для решения. Не превращай отсутствие одного основания в отсутствие любого. Сначала восстанови отношение между мыслями, затем выбирай переход.
+After the author chooses, apply what was agreed; do not bring back a rejected edit in other words. Change a file only when asked to change the file; otherwise return the text in the reply.
 
-**Отбирай материал по его роли.** Из расшифровки бери то, что раскрывает вопрос статьи: объясняет причину, даёт нужный пример, ограничение или следствие. Интересная история на ту же широкую тему может вести к другому выводу и не подходить этой статье. Сохраняй принадлежность опыта говорящему; обезличивание не делает чужой случай авторским.
+"Put it all together" means assembling the current fragments with the accepted replacements and reorderings. Do not start another unrequested edit and do not return an old version of a neighboring paragraph. Ask separately about any ambiguity that blocks the assembly.
 
-**Строй последовательность по смыслу.** Если в длинном тексте несколько этапов рассуждения, выдели их заголовками. Для каждого раздела должно быть понятно, что он добавляет и зачем стоит здесь. Переход от концепта к тестированию прототипа требует объяснить смену задачи; слово «поэтому» само эту связь не создаёт. Повтор без новой роли объедини, необходимое основание поставь перед выводом. Не задавай всем статьям одинаковое число разделов или порядок.
+## What to keep when editing
 
-**Финал должен завершать рассуждение.** Вернись к вопросу начала и сформулируй следствие из разобранного опыта: что теперь стало понятнее и что это меняет в исходной мысли. Вывод можно собрать из уже сказанного автором; новый факт, совет или личную позицию ради концовки не добавляй. Проверь удалением: если без финала читатель теряет только пересказ разделов, финал ещё не решает свою задачу. Короткая связка с предыдущим нужна, но перечисление всех примеров её не заменяет. Не обязателен ни отдельный раздел с выводами, ни призыв к действию.
+Facts, numbers, names, sources, caveats, causal links and the degree of certainty stay unless the author asked for or agreed to a change. Keep paths, commands, identifiers and technical thresholds exact. Do not change code, quotes, frontmatter or link targets without a request to work on them.
 
-Если материал допускает разные развязки, предложи конкретную трактовку как редакторский вариант. Когда без позиции автора выбрать нельзя, задай один вопрос о смысловом выборе. Например: «Ты ведёшь к тому, что этот подход стоит внедрить, или к тому, что он подходит только в узком случае?» Не подставляй дежурную мораль вместо недостающей мысли.
+Simplify jargon when it gets in the reader's way; keep precise terms and explain them if needed. Do not invent experience, numbers or sources to be convincing. A sample request in a tutorial is fine if it is clearly presented as an example and relies on confirmed capabilities; do not pass it off as the author's real session. Do not judge from the text's features whether a person or a model wrote it.
 
-Уточнения автора могут менять смысл, а не только добавлять подробности. Пересмотри связанные вступление, разделы и финал в пределах разрешённой редактуры. Новые воспоминания и намерения автора нельзя было угадать; повторная правка уже объяснённой мысли — повод проверить, усвоено ли уточнение.
+## The first sentence carries the point
 
-## Практическая статья об инструменте
+Start with a specific thought, observation or question on the subject. An article can name the problem first and reach the answer through examples; the final conclusion does not have to be the first sentence. Remove general warm-up and topic announcements with no content. In an instruction or an error message, give the needed action or fact at once.
 
-Применяй этот раздел, когда задача статьи — помочь читателю выбрать или использовать инструмент. Покажи основные задачи и способы работы; личный кейс может их иллюстрировать. Яркий результат в одном случае не должен сужать описание возможностей: правка существующего не объясняет создание нового. Это не требование перечислить все функции или всегда ставить кейс после объяснения. Если история создания уже раскрыта в другой доступной статье автора, можно сослаться на неё и оставить здесь только нужный контекст.
+## Formulaic phrases
 
-Проверь, понятны ли читателю устройство инструмента и первый шаг: что он устанавливает, какие части получает и как ими пользуется. Набор из нескольких инструментов не называй одним инструментом с вложенными частями; автоматический выбор инструкций не описывай как необходимость запускать каждую отдельно. Такое уточнение должно быть согласовано по всей статье.
+Rewrite these unless they are a precise term or the author's deliberate choice:
 
-Различай возможность и обязательный порядок работы. Если можно сразу получить весь результат или сначала обсудить план, сохрани оба варианта. Не приписывай одной части инструмента возможности всего набора. Сверяй это с доступной читателю версией документации или кода; внутренние детали оставляй, когда они объясняют результат или выбор пользователя. README даёт факты, но не обязательно подходящую структуру статьи. Предусмотренная инструкцией проверка сама по себе не доказывает безошибочность результата.
+- RU: «в современном мире», «в наши дни», «не секрет, что», «как известно»; EN: "in today's world", "it's no secret that", "as we all know"
+- RU: «в этой статье мы рассмотрим», «давайте разберёмся», «поехали»; EN: "in this article we will explore", "let's dive in"
+- RU: «важно отметить», «стоит отметить», «следует учитывать», «таким образом», «подводя итог»; EN: "it's worth noting", "it's important to note", "in conclusion"
+- RU: «является», «осуществлять», «в рамках», «данный» вместо «этот»; EN: "utilize", "facilitate", "serves as"
+- RU: «эффективный», «инновационный», «уникальный», «мощный инструмент», «гибкий и масштабируемый»; EN: "innovative", "seamless", "powerful yet simple"
+- RU: «позволяет» without who is allowed to do what; EN: "enables" in the same way
 
-Если автор просит обратную связь, сделай понятным, что и куда прислать. Не превращай полезные дополнения в обязательную анкету или требование самостоятельно найти причину ошибки. Сохраняй авторское различие между нужным и необязательным.
+## Dashes
 
-## Режим и объём работы
+In new text, prefer a period, comma, colon or parentheses over the long dash (—). In a targeted edit, do not remove dashes the author kept or added. A punctuation mark alone says nothing about where a text came from.
 
-Выбирай режим по запросу; если указан `mode:author`, `mode:edit` или `mode:detect`, учитывай его.
+The short dash (–) in ranges is fine: «8–10 тысяч», "11–15 September".
 
-- **Написать (`author`).** Создай текст из предоставленного материала, соблюдая правила голоса и ясности. Если навык подключён как правило для другой задачи, применяй его без отдельного ответа о работе навыка.
-- **Переписать (`edit`).** Работай с последней версией автора, включая его ручные правки. Редактируй сразу в разрешённом объёме; понятные места оставляй. Верни текст и, если полезно, коротко назови изменения.
-- **Посмотреть (`detect`).** На просьбу проверить или сначала предложить дай конкретное место, проблему и вариант исправления. Отдели языковые ошибки от смысловых предложений и вкусовых предпочтений. Не переписывай весь текст и не набирай замечания до фиксированного числа.
+## Every verb has an actor
 
-После выбора автора внеси согласованное; отклонённую правку не возвращай под другой формулировкой. Файл изменяй только по запросу на изменение файла; иначе верни текст в ответе.
+«Это позволяет ускорить процессы» / "This helps speed up processes": who makes what faster, and by how much.
 
-«Собери всё вместе» означает собрать актуальные фрагменты с принятыми заменами и перестановками. Не начинай ещё одну самовольную редактуру и не возвращай старую версию соседнего абзаца. Неясность, которая мешает сборке, уточни отдельно.
+The passive stays only when the actor is truly unknown or unimportant.
 
-## Что сохранять при редактуре
+## Rhythm
 
-Факты, числа, имена, источники, оговорки, причинные связи и степень уверенности остаются, если автор не попросил или не согласовал их изменение. Пути, команды, идентификаторы и технические пороги сохраняй точно. Не меняй код, цитаты, frontmatter и адреса ссылок без запроса на работу с ними.
+Connected paragraphs with sentences of different lengths. Split a sentence when it is hard to understand on first reading. Do not turn an explanation into a string of short slogans and do not fit sentences to a "long one, then a short punch" pattern.
 
-Упрощай жаргон, когда он мешает читателю; точные термины сохраняй и при необходимости объясняй. Не выдумывай опыт, цифры или источники ради убедительности. Учебный пример запроса допустим, если он явно предложен как пример и опирается на подтверждённые возможности; не выдавай его за реальную сессию автора. По особенностям текста не делай вывода о том, писал ли его человек или модель.
+When shortening, first remove explanations and conclusions that repeat each other, and merge close sections that share one job. Keep the links between thoughts, the main capabilities and the differences between ways of working. A short sentence does not make a text clearer by itself. After shortening, reread the neighboring paragraphs as one continuous explanation: if it reads like notes, restore the links and the natural flow. Swapping periods for commas or adding «ну», «вот», "well", "so" does not bring the conversational tone back. Short commands and step lists do not need to be stretched.
 
-Сохраняй точку зрения и границы утверждения. «Для пользователя экран работает мгновенно» описывает воспринимаемое поведение, а не скорость всей системы. При неоднозначности предложи уточнить аспект, прежде чем ослаблять или оспаривать авторскую формулировку.
+## What not to add
 
-## Первое предложение несёт суть
+- Jokes invented for a conversational tone. A joke that is not in the material sounds foreign.
+- Emoji inside the text.
+- Opinions, judgements or memories the author did not express.
+- Claims about an industry without a number or a specific case.
 
-Начинай с конкретной мысли, наблюдения или вопроса по существу. В статье можно сразу обозначить проблему и прийти к ответу через примеры; не обязательно выдавать финальный вывод в первой фразе. Убирай общий разгон и объявление темы без содержания. В инструкции или сообщении об ошибке сразу дай нужное действие или факт.
+## Clarity and pattern check
 
-## Название, summary и перевод
+Keep these questions in mind when writing, and check the result against them when editing:
 
-Подбирай название и summary по актуальному смыслу всей статьи. После изменения главной мысли синхронизируй их, если они входят в запрос. Summary коротко передаёт вопрос статьи и авторский угол зрения, а не перечисляет заголовки и не обещает недоказанный результат. Не превращай цель, к которой автор стремится, в уже достигнутый эффект.
+1. **What exactly is said?** In a product description, replace general praise with an action or a property. In a personal text, keep the feelings and their link to events.
+2. **Is there content?** A sentence that fits any project may be empty. But a transition, a personal reaction or a conclusion from the examples is not redundant just because it is general.
+3. **Who acts?** Restore the actor from the source if the sentence is unclear without one; do not guess an unknown participant.
+4. **Clear on first reading and natural?** Split a tangled sentence or simplify the words. Leave a clear long sentence. After shortening, check that neighboring paragraphs connect, per "Rhythm".
+5. **Does a device help, or repeat mechanically?** One device alone is fine. A combination of several patterns, or one repeated constantly, needs a check by meaning, not automatic removal.
+6. **Is the main idea in place?** The reader does not have to dig through an introduction and meta-commentary to reach the point.
+7. **Is there enough context?** The reader understands the thought without access to someone else's notes or code. For an article, see `references/articles.md`.
 
-Переводи последнюю согласованную версию естественным языком, сохраняя структуру аргумента, факты, степень уверенности и намеренный приём в названии. Перевод не даёт разрешения возвращать отвергнутые правки или заново редактировать смысл. Проверь, что название, summary и основной текст согласованы между языками.
-
-## Запрещённые обороты
-
-Встретил — переписывай.
-
-- «в современном мире», «в наши дни», «не секрет, что», «как известно»
-- «в этой статье мы рассмотрим», «давайте разберёмся», «поехали»
-- «важно отметить», «стоит отметить», «следует учитывать», «таким образом», «подводя итог»
-- «является», «осуществлять», «в рамках», «данный» вместо «этот»
-- «эффективный», «инновационный», «уникальный», «мощный инструмент», «гибкий и масштабируемый»
-- «позволяет» без того, кто именно позволяет
-
-## Тире
-
-В новом тексте предпочитай точку, запятую, двоеточие или скобки длинному тире. Не удаляй тире, которые автор сам оставил или добавил, при точечной редактуре. Знак препинания сам по себе ничего не говорит о происхождении текста.
-
-Короткое «–» в диапазонах («8–10 тысяч», «11–15 сентября») можно.
-
-## У глагола есть действующее лицо
-
-«Это позволяет ускорить процессы» — кто и что делает быстрее, и на сколько.
-
-Пассив остаётся, только когда деятель правда неизвестен или неважен.
-
-## Ритм
-
-Связные абзацы с разной длиной предложений. Делить фразу стоит, когда её трудно понять с первого чтения. Не превращай объяснение в череду коротких лозунгов и не подгоняй предложения под схему «длинное, потом короткий удар».
-
-При сокращении сначала убирай повторяющие друг друга объяснения и выводы, объединяй близкие разделы, если у них одна задача. Сохраняй связи между мыслями, основные возможности и различия способов работы. Короткое предложение само по себе не делает текст яснее. После сокращения перечитай соседние абзацы как непрерывное объяснение: если получается конспект, восстанови связи и естественное течение фраз. Простая замена точек запятыми или добавление «ну», «вот» и «при этом» разговорность не возвращает. Краткие команды и списки шагов не нужно искусственно растягивать.
-
-Доступные приёмы, если они к месту:
-
-- стрелка `→` вместо «поэтому/значит» — не чаще одного-двух раз на текст;
-- самопоправка на ходу: «Нет, не для того, чтобы X, а чтобы Y»;
-- повтор как нажим: «важнее X, важнее Y, важнее Z».
-
-Это возможности, не обязательные признаки голоса. Не добавляй стрелку, противопоставление или повтор ради узнаваемости.
-
-## Что не добавлять от себя
-
-- Не придумывай шутки ради разговорности. Шутка, которой нет в материале, звучит чужой.
-- Эмодзи внутри текста.
-- Мнения, оценки или воспоминания, которых автор не высказывал. Не додумывай за него.
-- Утверждений про индустрию без цифры или конкретного случая.
-
-## Проверка ясности и шаблонов
-
-При написании учитывай эти вопросы, при редактуре проверь результат:
-
-1. **Что именно сказано?** В описании продукта замени общую похвалу действием или свойством. В личном тексте сохрани чувства и связь с событиями.
-2. **Есть ли содержание?** Фраза, подходящая любому проекту, может быть пустой. Но переход, личная реакция или вывод из примеров не становятся лишними только из-за своей обобщённости.
-3. **Кто действует?** Восстанови действующее лицо из исходника, если без него неясно; не угадывай неизвестного участника.
-4. **Понятно с первого чтения и естественно звучит?** Раздели запутанную фразу или упрости слова. Понятную длинную фразу оставь. После сокращения проверь связность нескольких соседних абзацев по разделу «Ритм».
-5. **Приём помогает или повторяется механически?** Один приём сам по себе нормален. Сочетание нескольких шаблонов или постоянное повторение одного требует проверки по смыслу, а не автоматического удаления.
-6. **Главная мысль на месте?** Читателю не приходится добираться до сути через вступление и метакомментарии.
-7. **Хватает ли контекста?** Адресат понимает мысль без доступа к чужим заметкам или коду. В практической статье проверь понимание инструмента и вариантов работы по соответствующему разделу; статья другого жанра не обязана давать указание в каждом абзаце.
-
-Для подробной вычитки речевых шаблонов прочитай [references/editing-patterns.md](references/editing-patterns.md). Справочник содержит примеры на русском и английском и применяется с учётом жанра и авторской интонации. Не добавляй к результату отчёт о внутренних проверках или выбранном языковом каталоге.
+For a detailed pass on formulaic phrasing, read `references/editing-patterns.md`. Apply it with the genre and the author's intonation in mind. Do not add a report on internal checks or on which catalogue was used to the result.
