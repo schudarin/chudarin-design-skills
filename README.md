@@ -1,14 +1,14 @@
-# chudarin-figma-skills
+# chudarin-design-skills
 
-**A design agent for Figma. A plugin for Claude Code.** Five skills: the agent works in your
-file, from your components and variables. Plans flows, builds screens, finds design system debt,
-fixes bindings.
+**A design agent for Figma. A plugin for Claude Code.** The agent works in your file, from
+your components and variables. Plans flows, builds screens, finds design system debt, fixes
+bindings, and writes text that doesn't read as generated.
 
 Agents can write into Figma now. Left to themselves they design badly and break the file quietly:
 a variable that never bound, a component set that deleted itself when its last variant moved out, a
 screen assembled from hardcoded values that looks right until someone switches the theme.
 
-This is what fixed that on real product files. Five skills: the process for each stage of design work,
+This is what fixed that on real product files. A skill for each stage of design work,
 plus a pack of recorded Plugin API failures with the way around each one. Every rule here is a case
 that broke exactly this way, not a reading of the docs.
 
@@ -27,17 +27,18 @@ from your components and variables, reads back every binding it set instead of a
 and shows you the result. You ask to change one element, and it changes that element, not the screen
 around it.
 
-## The five skills
+## The skills
 
 | Skill | You type something like | What happens |
 |---|---|---|
-| `figma-plan-user-flows` | "What screens do we need for checkout?" | You get every screen and state, entry and exit points, and a page structure for the Figma file, before anything is drawn |
-| `figma-audit-design-system` | "Go through this file and tell me what the design system holds" | The agent reads the file and reports components, tokens, patterns and design debt, and writes documentation pages if you ask. Read-only otherwise |
-| `figma-design-screens` | "Design a settings screen" · "Change the header on this frame" | The design process itself: where the style comes from, a brief per screen, checks afterwards, edits to approved work one element at a time |
+| `plan-user-flows` | "What screens do we need for checkout?" | You get every screen and state, entry and exit points, and a page structure for the Figma file, before anything is drawn |
+| `audit-design-system` | "Go through this file and tell me what the design system holds" | The agent reads the file and reports components, tokens, patterns and design debt, and writes documentation pages if you ask. Read-only otherwise |
+| `design-screens` | "Design a settings screen" · "Change the header on this frame" | The design process itself: where the style comes from, a brief per screen, checks afterwards, edits to approved work one element at a time |
 | `figma-plugin-api-rules` | nothing, it loads on its own | Real Plugin API failures and the way around each one. Loads before the agent writes anything into your file |
 | `figma-fix-variable-bindings` | "Variables on this page are detached, fix them" | Finds detached, orphaned and hardcoded values, shows you a report, and rebinds only after you approve it |
+| `writing-texts` | "Rewrite this so it sounds like a person" · "Check the button labels" | Plain words instead of formulaic ones, in Russian and English: interface text, docs, articles, slides. The rules inside are written in Russian |
 
-Five `SKILL.md` files and the topic files behind them. Some of those make up the Plugin API pack:
+A `SKILL.md` per skill and the topic files behind them. Some of those make up the Plugin API pack:
 components and variants, instances, layout and geometry, text and fonts, variables and modes,
 connectors, annotations, publishing hygiene, FigJam, prototype links, the tool layer, building a
 screen from code. The rest carry the audit checklists, the per-screen briefs, the checks that run
@@ -62,7 +63,7 @@ Five steps: a Figma seat, Claude Code, three plugins, one restart at the end.
 **Or hand it to the agent.** If Claude Code is already installed, paste this into the chat:
 
 ```
-Install https://github.com/schudarin/chudarin-figma-skills: run the commands from install steps 3, 4 and 5 of its README
+Install https://github.com/schudarin/chudarin-design-skills: run the commands from install steps 3, 4 and 5 of its README
 ```
 
 The agent runs those commands itself. Three things stay with you: the seat from step 1, the
@@ -108,7 +109,7 @@ claude plugin install figma@claude-plugins-official
 ### 4. These skills
 
 ```bash
-claude plugin marketplace add schudarin/chudarin-figma-skills
+claude plugin marketplace add schudarin/chudarin-design-skills
 claude plugin install chudarin@chudarin
 ```
 
@@ -137,7 +138,7 @@ Check the skills landed:
 claude plugin details chudarin@chudarin
 ```
 
-Five skills in the list. Inside a chat they're `chudarin:figma-design-screens`,
+Every skill is in the list. Inside a chat they're `chudarin:design-screens`,
 `chudarin:figma-plugin-api-rules`, and so on. The agent picks them up by itself when the task
 matches, and you can name one directly.
 
@@ -151,7 +152,7 @@ cd ~/Design/my-product
 claude
 ```
 
-The folder matters. `figma-design-screens` writes what it learned about your project (design
+The folder matters. `design-screens` writes what it learned about your project (design
 system, style source, the Figma file) into `.claude/design.md` inside it, and every later session
 reads that instead of asking you again. Start from a different folder and you start from zero.
 
@@ -178,12 +179,13 @@ wrong.
 
 ## Which skill when
 
-- "What screens do we need for this feature?" → `figma-plan-user-flows`
-- "What's in this design system, where is the debt, document it" → `figma-audit-design-system`
-- "Design / change / rebuild this screen" → `figma-design-screens`, which pulls in
+- "What screens do we need for this feature?" → `plan-user-flows`
+- "What's in this design system, where is the debt, document it" → `audit-design-system`
+- "Design / change / rebuild this screen" → `design-screens`, which pulls in
   `figma-plugin-api-rules` by itself
 - Anything that writes to Figma → `figma-plugin-api-rules`
 - "Variables are detached / hardcoded / Figma says «Variable was deleted»" → `figma-fix-variable-bindings`
+- "Rewrite this so it doesn't read as generated" → `writing-texts`
 
 ## Update and remove
 
@@ -206,11 +208,11 @@ claude plugin list                          # what is installed right now
 
 ## Recommended alongside
 
-**Nothing in this section is required.** With the plugins from steps 3 and 5 in place the five
+**Nothing in this section is required.** With the plugins from steps 3 and 5 in place the
 skills work on their own. What follows makes the runs better, and every piece of it is someone
 else's skill, not mine.
 
-`figma-design-screens` also uses one visual skill per task: a mobile-UI, web, motion or charts
+`design-screens` also uses one visual skill per task: a mobile-UI, web, motion or charts
 skill, whichever matches the screen. It requires none of them. It reads the list of skills your
 session actually has, loads the one matching the task type, and on an empty shelf says so and works
 from your design system, your existing screens and its own copy-and-control rules instead. The
@@ -256,11 +258,11 @@ them all.
 
 Any other skill on skills.sh installs the same way, `npx skills add owner/repo@skill-name`, and
 `npx skills find <word>` searches the catalogue from Terminal. Read the licence before installing
-someone else's work. If a name above has since moved or gone, nothing breaks: `figma-design-screens`
+someone else's work. If a name above has since moved or gone, nothing breaks: `design-screens`
 checks the shelf at run time rather than trusting this list, so a retired name costs nothing.
 
-Also worth having: a writing skill of your own for button labels and interface text. These skills
-place the text, they don't write it.
+Button labels and interface text go through `writing-texts`. If you already have a writing skill of
+your own, keep using it instead.
 
 ## Other agents, and installing by hand
 
@@ -271,21 +273,21 @@ Every skill is a folder: `SKILL.md` + `references/` + `agents/openai.yaml` for C
 CLI from [skills.sh](https://skills.sh) installs them anywhere it knows; it needs Node.js.
 
 ```bash
-npx skills add schudarin/chudarin-figma-skills -a codex -g -y          # Codex
-npx skills add schudarin/chudarin-figma-skills -a claude-code -g -y    # Claude Code, no plugin system
+npx skills add schudarin/chudarin-design-skills -a codex -g -y          # Codex
+npx skills add schudarin/chudarin-design-skills -a claude-code -g -y    # Claude Code, no plugin system
 ```
 
 `-g` installs for every project; drop it for one project. `npx skills update` pulls newer versions
 later. In Codex, call a skill explicitly with `$skill-name`; implicit invocation is enabled on all
-five.
+of them.
 
 Without Node.js, clone and link the folders where your agent looks for skills, `~/.agents/skills/`
 for Codex and `~/.claude/skills/` for Claude Code:
 
 ```bash
-git clone https://github.com/schudarin/chudarin-figma-skills ~/chudarin-figma-skills
+git clone https://github.com/schudarin/chudarin-design-skills ~/chudarin-design-skills
 mkdir -p ~/.agents/skills
-for s in ~/chudarin-figma-skills/skills/*; do ln -sfn "$s" ~/.agents/skills/; done
+for s in ~/chudarin-design-skills/skills/*; do ln -sfn "$s" ~/.agents/skills/; done
 ```
 
 Re-run the loop after `git pull` to pick up updates.
