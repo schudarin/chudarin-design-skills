@@ -1,0 +1,7 @@
+interface:
+  display_name: Writing Texts
+  short_description: Write, rewrite, or review Russian and English prose so it reads as written by a person — plain words, no formulaic patterns.
+  icon: pencil
+  brand_color: "#1E1E1E"
+policy:
+  allow_implicit_invocation: true
