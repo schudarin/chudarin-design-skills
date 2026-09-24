@@ -1,4 +1,16 @@
-# chudarin-design-skills
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/banner-dark.svg">
+    <img alt="chudarin-design-skills: a design agent for Figma" src="assets/banner-light.svg" width="100%">
+  </picture>
+</p>
+
+<p align="center">
+  <a href="#-install"><img alt="Claude Code plugin" src="https://img.shields.io/badge/Claude_Code-plugin-D97757"></a>
+  <a href="#-other-agents-and-installing-by-hand"><img alt="Codex skills" src="https://img.shields.io/badge/Codex-skills-111111"></a>
+  <a href="https://developers.figma.com/docs/figma-mcp-server/"><img alt="Figma MCP" src="https://img.shields.io/badge/Figma-MCP-F24E1E?logo=figma&logoColor=white"></a>
+  <a href="LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-2EA44F"></a>
+</p>
 
 **A design agent for Figma. A plugin for Claude Code.** The agent works in your file, from
 your components and variables. Plans flows, builds screens, finds design system debt, fixes
@@ -14,7 +26,7 @@ that broke exactly this way, not a reading of the docs.
 
 [Русская версия](README.ru.md)
 
-## Who it's for
+## 👋 Who it's for
 
 Designers. You install it once, then work in a chat: paste a Figma link, say what you need in one
 sentence. No code, no code editor, no plugin to build.
@@ -27,17 +39,28 @@ from your components and variables, reads back every binding it set instead of a
 and shows you the result. You ask to change one element, and it changes that element, not the screen
 around it.
 
-## The skills
+## 🧩 The skills
+
+```mermaid
+flowchart LR
+  plan["🗺️ Plan<br/>plan-user-flows"] --> design["🎨 Design<br/>design-screens"]
+  audit["🔍 Audit<br/>audit-design-system"] --> design
+  design --> fix["🔗 Repair<br/>figma-fix-variable-bindings"]
+  rules["🧰 figma-plugin-api-rules"] -. before every write .-> design
+  rules -.-> fix
+  text["✍️ writing-texts"] -. interface text .-> design
+  text -.-> slides["🖼️ Slides<br/>design-slides"]
+```
 
 | Skill | You type something like | What happens |
 |---|---|---|
-| `plan-user-flows` | "What screens do we need for checkout?" | You get every screen and state, entry and exit points, and a page structure for the Figma file, before anything is drawn |
-| `audit-design-system` | "Go through this file and tell me what the design system holds" | The agent reads the file and reports components, tokens, patterns and design debt, and writes documentation pages if you ask. Read-only otherwise |
-| `design-screens` | "Design a settings screen" · "Change the header on this frame" | The design process itself: where the style comes from, a brief per screen, checks afterwards, edits to approved work one element at a time |
-| `design-slides` | "Make a pitch deck from this doc" · "Fix this deck, it looks generated" | Story first, one claim per slide, style from your template or brand, numbers checked against sources, export checked before you get it |
-| `figma-plugin-api-rules` | nothing, it loads on its own | Real Plugin API failures and the way around each one. Loads before the agent writes anything into your file |
-| `figma-fix-variable-bindings` | "Variables on this page are detached, fix them" | Finds detached, orphaned and hardcoded values, shows you a report, and rebinds only after you approve it |
-| `writing-texts` | "Rewrite this so it sounds like a person" · "Check the button labels" | Plain words instead of formulaic ones, in Russian and English: interface text, docs, articles, slides. Learns how you write from your corrections, with your consent, in `~/.agents/voice.md`. The rules inside are written in Russian |
+| 🗺️ `plan-user-flows` | "What screens do we need for checkout?" | You get every screen and state, entry and exit points, and a page structure for the Figma file, before anything is drawn |
+| 🔍 `audit-design-system` | "Go through this file and tell me what the design system holds" | The agent reads the file and reports components, tokens, patterns and design debt, and writes documentation pages if you ask. Read-only otherwise |
+| 🎨 `design-screens` | "Design a settings screen" · "Change the header on this frame" | The design process itself: where the style comes from, a brief per screen, checks afterwards, edits to approved work one element at a time |
+| 🖼️ `design-slides` | "Make a pitch deck from this doc" · "Fix this deck, it looks generated" | Story first, one claim per slide, style from your template or brand, numbers checked against sources, export checked before you get it |
+| 🧰 `figma-plugin-api-rules` | nothing, it loads on its own | Real Plugin API failures and the way around each one. Loads before the agent writes anything into your file |
+| 🔗 `figma-fix-variable-bindings` | "Variables on this page are detached, fix them" | Finds detached, orphaned and hardcoded values, shows you a report, and rebinds only after you approve it |
+| ✍️ `writing-texts` | "Rewrite this so it sounds like a person" · "Check the button labels" | Plain words instead of formulaic ones, in Russian and English: interface text, docs, articles, slides. Learns how you write from your corrections, with your consent, in `~/.agents/voice.md`. The rules inside are written in Russian |
 
 A `SKILL.md` per skill and the topic files behind them. Some of those make up the Plugin API pack:
 components and variants, instances, layout and geometry, text and fonts, variables and modes,
@@ -46,7 +69,7 @@ screen from code. The rest carry the audit checklists, the per-screen briefs, th
 afterwards, and the UX rules routed by what the screen contains. All plain Markdown. Nothing runs on
 your machine, nothing phones home.
 
-## Why it's not just prompting
+## 💡 Why it's not just prompting
 
 Most of what goes wrong between an agent and Figma is silent. The call returns success, the file
 looks plausible, the binding was never applied. `setBoundVariable('cornerRadius', v)` binds four
@@ -57,7 +80,7 @@ hidden descendants, so the inventory you built from it is wrong.
 Asking nicely fixes none of that. Knowing the case and checking the result does, and that is what
 these files carry.
 
-## Install
+## 📦 Install
 
 Five steps: a Figma seat, Claude Code, three plugins, one restart at the end.
 
@@ -143,7 +166,7 @@ Every skill is in the list. Inside a chat they're `chudarin:design-screens`,
 `chudarin:figma-plugin-api-rules`, and so on. The agent picks them up by itself when the task
 matches, and you can name one directly.
 
-## Where to run it
+## 📁 Where to run it
 
 Make one folder per product and always start Claude Code from that folder:
 
@@ -157,7 +180,7 @@ The folder matters. `design-screens` writes what it learned about your project (
 system, style source, the Figma file) into `.claude/design.md` inside it, and every later session
 reads that instead of asking you again. Start from a different folder and you start from zero.
 
-## Your first task
+## 🚀 Your first task
 
 1. In Figma, right-click the frame or page you want → **Copy link to selection**.
 2. In Terminal: `cd ~/Design/my-product`, then `claude`.
@@ -178,7 +201,7 @@ https://figma.com/design/…  — the padding on these cards is hardcoded, put i
 Always paste a link. Without one the agent guesses which file and page you mean, and it guesses
 wrong.
 
-## Which skill when
+## 🧭 Which skill when
 
 - "What screens do we need for this feature?" → `plan-user-flows`
 - "What's in this design system, where is the debt, document it" → `audit-design-system`
@@ -189,7 +212,7 @@ wrong.
 - "Rewrite this so it doesn't read as generated" → `writing-texts`
 - "Make / restyle / fix a presentation" → `design-slides`
 
-## Update and remove
+## 🔄 Update and remove
 
 ```bash
 claude plugin update chudarin@chudarin      # newest version, restart to apply
@@ -197,7 +220,7 @@ claude plugin uninstall chudarin@chudarin   # remove
 claude plugin list                          # what is installed right now
 ```
 
-## When it doesn't work
+## 🩺 When it doesn't work
 
 | What you see | What it means | What to do |
 |---|---|---|
@@ -208,7 +231,7 @@ claude plugin list                          # what is installed right now
 | The skills don't show up | The plugin is installed but the session is the old one | Quit Claude Code and start it again |
 | The agent changed something you didn't want | Figma keeps the file's history | **File → Show version history**, restore the earlier version |
 
-## Recommended alongside
+## ➕ Recommended alongside
 
 **Nothing in this section is required.** With the plugins from steps 3 and 5 in place the
 skills work on their own. What follows makes the runs better, and every piece of it is someone
@@ -266,7 +289,7 @@ checks the shelf at run time rather than trusting this list, so a retired name c
 Button labels and interface text go through `writing-texts`. If you already have a writing skill of
 your own, keep using it instead.
 
-## Other agents, and installing by hand
+## 🤖 Other agents, and installing by hand
 
 <details>
 <summary>Codex, or Claude Code without the plugin system</summary>
@@ -303,13 +326,13 @@ resource `skill://figma/figma-use/SKILL.md` does.
 
 </details>
 
-## Contributing
+## 🤝 Contributing
 
 Each skill documents how to extend it; for `figma-plugin-api-rules` the protocol is at the end of
 its [`SKILL.md`](skills/figma-plugin-api-rules/SKILL.md). Facts about one specific Figma file (node
 IDs, local conventions) don't belong here. Keep those in `<project>/.claude/design.md` or your own
 notes.
 
-## License
+## 📄 License
 
 MIT, see [`LICENSE`](LICENSE).
