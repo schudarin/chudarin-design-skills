@@ -1,7 +1,7 @@
 {
   "name": "chudarin",
-  "version": "1.0.0",
-  "description": "Skills for agents that design and write: plan flows, audit a design system, design screens, write to the Figma Plugin API without silent failures, repair detached variable bindings, write text that doesn't read as generated.",
+  "version": "1.1.0",
+  "description": "Skills for agents that design and write: plan flows, audit a design system, design screens, make presentations with a story first and numbers checked against sources, write to the Figma Plugin API without silent failures, repair detached variable bindings, write text in Russian and English that doesn't read as generated and follows your voice.",
   "author": {
     "name": "Sergey Chudarin",
     "url": "https://chudarin.com"
@@ -9,5 +9,5 @@
   "repository": "https://github.com/schudarin/chudarin-design-skills",
   "homepage": "https://chudarin.com",
   "license": "MIT",
-  "keywords": ["figma", "figma-plugin-api", "design-systems", "design-tokens", "skills", "writing"]
+  "keywords": ["figma", "figma-plugin-api", "design-systems", "design-tokens", "skills", "writing", "presentations"]
 }
