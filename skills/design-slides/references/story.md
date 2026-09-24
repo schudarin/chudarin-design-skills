@@ -1,75 +1,77 @@
-# План колоды
+# Deck plan
 
-## Утверждение, а не тема
+## A claim, not a topic
 
-Каждая строка плана говорит, что слайд доказывает. «Рынок» это тема. «Рынок переводов для фрилансеров растёт на 8% в год» это утверждение. Если утверждение не получается сформулировать, слайд не нужен или ему не хватает данных.
+Each plan row says what the slide proves. "Market" is a topic. "Independent bakeries throw away a fifth of the bread they bake" is a claim (an invented example). If the claim cannot be written, the slide is not needed or lacks data.
 
-## Задача слайда и раскладка
+## Slide job and layout
 
-У каждого слайда в плане есть задача и раскладка под неё, с причиной. Задачи ниже это примеры, а не закрытый список. Другая задача допустима: запиши, какую раскладку она требует и почему.
+Every slide in the plan has a job and a layout for it, with the reason. The jobs below are examples, not a closed list. Another job is fine: write down which layout it needs and why.
 
-| Задача | Раскладка-подсказка |
+| Job | Layout hint |
 |---|---|
-| титул | название и одно утверждение, крупно |
-| проблема | одна фраза или сцена, без списка |
-| одна цифра | цифра на весь слайд, подпись и источник мелко |
-| динамика во времени | график по периодам с подписанными значениями |
-| сравнение | таблица или две колонки, выделена своя строка |
-| шаги | последовательность слева направо или сверху вниз |
-| продукт | настоящий экран, макет или демо; текст рядом, не поверх |
-| устройство системы | схема связей |
-| география | карта или список регионов с цифрами |
-| люди | фото, имя, роль, одна строка опыта |
-| цитата | цитата крупно, автор мелко |
-| просьба | сумма или действие и на что, без украшений |
+| title | the name and one claim, large |
+| problem | one sentence or one scene, no list |
+| one number | the number across the slide, caption and source small |
+| change over time | a chart by period with labeled values |
+| comparison | a table or two columns, your own row highlighted |
+| steps | a sequence left to right or top to bottom |
+| product | a real screen, mockup or demo; text beside it, not on top |
+| how the system works | a diagram of connections |
+| geography | a map or a list of regions with numbers |
+| people | photo, name, role, one line of experience |
+| quote | the quote large, the author small |
+| ask | the amount or the action and what it is for, no decoration |
 
-Два слайда с разными задачами не получают одну раскладку, если её не задаёт утверждённый шаблон. Два слайда с одной задачей используют одну раскладку.
+Two slides with different jobs do not share a layout unless an approved template sets it. Two slides with the same job use the same layout.
 
-Формат строки плана: `утверждение · задача · раскладка (причина)`.
+Plan row format: `claim · job · layout (reason)`.
 
-## Обязательные части по типам
+## Required parts by deck type
 
-| Тип | Части |
+| Type | Parts |
 |---|---|
-| питч инвестору | проблема, продукт, доказательство спроса (выручка, пользователи, пилоты), рынок, альтернативы или конкуренты, команда с доказательствами масштаба (что построили, сколько пользователей, а не только должности), просьба с тем, на что пойдут деньги |
-| показ работы | задача и ограничения, решение, чем оно лучше прежнего, что дальше |
-| доклад | вопрос, ход ответа, вывод, что слушатель сделает иначе |
-| внутренний отчёт | итог периода, отклонения от плана и причины, решения, которые нужны |
+| investor pitch | problem, product, proof of demand (revenue, users, pilots), market, alternatives or competitors, team with proof of scale (what they built, how many users, not only titles), the ask with what the money is for |
+| work showcase | the task and constraints, the solution, how it beats what came before, what is next |
+| talk | the question, how the answer unfolds, the conclusion, what the listener will do differently |
+| internal report | the period's result, deviations from plan and their causes, decisions needed |
 
-Приложение не повторяет основную часть: в нём только то, чего в основной нет.
+The appendix does not repeat the main part: it holds only what the main part lacks.
 
-## Таблица источников
+## Source table
 
-| Утверждение | Цифра | Источник | Период | Единицы | Статус |
+| Claim | Number | Source | Period | Units | Status |
 |---|---|---|---|---|---|
-| Активные пользователи | 3 400 | панель аналитики | сентябрь 2026 | человек в месяц | факт |
+| Active users | 3,400 | analytics dashboard | September 2026 | people per month | fact |
 
-- **Статус.** Факт, оценка или прогноз. «Оценка» и «прогноз» пишутся на слайде рядом с цифрой.
-- **Источник со слов.** Если источник указан как «со слов», «не проверено», статус «оценка», и перед слайдом задаётся вопрос, есть ли подтверждение.
-- **Нет источника.** Цифра не попадает на слайд. Задаётся вопрос.
-- **Заглушки.** «TBD», «to follow», «данные позже», «[скриншот]», график без чисел не ставятся ни на слайд, ни в предложение человеку. Недостающее перечисляется списком вопросов.
-- **Графики** строятся только из чисел таблицы.
+- **Status.** Fact, estimate or forecast. "Estimate" and "forecast" are written on the slide next to the number.
+- **Source by word of mouth.** If the source is "as told", "not verified", the status is "estimate", and before the slide a question is asked whether there is confirmation.
+- **No source.** The number does not go on a slide. A question is asked.
+- **Placeholders.** "TBD", "to follow", "data later", "[screenshot]", a chart without numbers go neither on a slide nor into a proposal to the person. What is missing is listed as questions.
+- **Charts** are built only from the table's numbers.
 
-## Формат `slides.md`
+## Deck file format
+
+`<project>/.claude/slides/<deck>.md`:
 
 ```markdown
-# Слайды: <колода>
+# Slides: <deck>
 
-## Настройки
-Слушатель и задача: <кто, что решает>
-Использование и формат: <показ, отправка, правка другими; формат>
-Источник стиля: <дизайн-система, шаблон, прошлые колоды или направление N>
-Инструмент: <…>
+## Settings
+Audience and decision: <who, what they decide>
+Use and format: <shown live, sent, edited by others; format>
+Style source: <design system, template, past decks or direction N>
+Tool: <…>
 
-## План
-| # | Утверждение | Задача | Раскладка и причина |
+## Plan
+| # | Claim | Job | Layout and reason |
 
-## Источники
-| Утверждение | Цифра | Источник | Период | Единицы | Статус |
+## Sources
+| Claim | Number | Source | Period | Units | Status |
 
-## Подтверждено
-| Слайд | Где | Скриншот | Дата |
+## Confirmed
+| Slide | Where | Screenshot | Date |
 
-## Отклонено: не предлагать
-<что> → «<слова человека>», <дата>
+## Rejected: do not offer
+<what> → "<the person's words>", <date>
 ```

@@ -3,62 +3,62 @@ name: design-slides
 description: Use when creating, restyling, reviewing, or editing a presentation, pitch deck, slide deck, talk, or design review deck, in Figma Slides, Figma Design, pptx, Google Slides, or HTML. Also use when a deck looks generic, templated, or AI-made and needs fixing.
 ---
 
-# Слайды
+# Slides
 
-Колода, собранная по умолчанию, узнаётся сразу: все слайды на одном шаблоне, главное подано с тем же весом, что второстепенное, продукта не видно, вместо данных стоят заглушки, экспорт никто не открывал. Этот скилл ставит сюжет раньше вёрстки, берёт стиль у человека или компании и проверяет колоду в том виде, в каком она уйдёт.
+A deck built on defaults is recognized at once: every slide on one template, the main point given the same weight as the minor ones, no product in sight, placeholders instead of data, an export nobody opened. This skill puts the story before the layout, takes the style from the person or the company, and checks the deck in the form it will be sent in.
 
-Текст на слайдах пишется по скиллу `writing-texts`, с голосом человека и продукта. Состояние колоды живёт в `<project>/.claude/slides.md` (формат в `references/story.md`).
+Text on slides follows the `writing-texts` skill, with the person's and the product's voice. The deck's state lives in `<project>/.claude/slides/<deck>.md`, one file per deck (format in `references/story.md`).
 
-## Какая ветка
+## Which branch
 
-| Что есть | Ветка |
+| What exists | Branch |
 |---|---|
-| Колоды нет | новая колода |
-| Колода есть, просят изменить часть | правка части |
-| Колода есть, просят посмотреть или оценить («что не так?») | разбор без правок |
-| Колода есть, просят проверить и отдать или отправить | проверка перед отправкой |
-| Колода есть, просят переделать целиком | полная переработка |
+| No deck | new deck |
+| A deck; asked to change part of it | partial edit |
+| A deck; asked to look at it or assess it ("what's wrong?") | review without edits |
+| A deck; asked to check it and hand it over or send it | pre-send check |
+| A deck; asked to redo it entirely | full rework |
 
-## Новая колода
+## New deck
 
-Каждый шаг заканчивается там, где написано «ждать». Следующий шаг начинается только после ответа человека.
+Each step ends where it says "wait". The next step starts only after the person answers.
 
-1. **Первый ответ: вопросы и план, без слайдов.** Одно сообщение:
-   - вопросы, которых нет в запросе: кто смотрит и что решает; как колода будет использована (показ вживую, отправка файлом, правка другими людьми, печать, анимация) и в каком формате;
-   - план по `references/story.md`: таблица «утверждение · задача слайда · раскладка»;
-   - вопросы про данные: каждое утверждение, для которого нет цифры или источника, превращается в вопрос. На слайд такое утверждение не попадает, пока данных нет.
+1. **First reply: questions and a plan, no slides.** One message:
+   - questions the request does not answer: who is watching and what they decide; how the deck will be used (shown live, sent as a file, edited by others, printed, animated) and in which format;
+   - a plan per `references/story.md`: a table "claim · slide job · layout";
+   - data questions: every claim without a number or a source becomes a question. Such a claim does not go on a slide until the data exists.
 
-   Ждать подтверждения плана и ответов.
-2. **Стиль и инструмент** по `references/style.md` и `references/tools.md`. Своего стиля по умолчанию нет: если у человека ничего нет, три направления на выбор. Ждать выбора.
-3. **Два-три ключевых слайда** с разными задачами и разными раскладками, скриншотами. Ждать подтверждения.
-4. **Остальные слайды** по плану: раскладка каждого следует за его задачей и берётся из ключевых, если задача та же.
-5. **Проверки** по `references/checks.md`, исправления, повторный экспорт. Человек получает колоду после этого.
+   Wait for the plan to be confirmed and the questions answered.
+2. **Style and tool** per `references/style.md` and `references/tools.md`. There is no default style: if the person has nothing, three directions to choose from. Wait for the choice.
+3. **Two or three key slides** with different jobs and different layouts, as screenshots. Wait for confirmation.
+4. **The remaining slides** per the plan: each slide's layout follows its job and is taken from a key slide when the job is the same.
+5. **Checks** per `references/checks.md`, fixes, export again. The person gets the deck after this.
 
-Состояние после каждого шага записывается в `slides.md`: план, источники, стиль, подтверждённое и отклонённое.
+After each step the state is written to the deck file: plan, sources, style, what was confirmed and what was rejected.
 
-## Готовая колода
+## Existing deck
 
-**Правка части.** Меняется только запрошенное; план, стиль и ключевые слайды заново не согласуются. Затронутые слайды проверяются и экспортируются. Если при этом заметно что-то по остальной колоде (повтор раскладки, цифра без источника, признак из `references/tells.md`), ответ заканчивается списком «Заметил попутно, не менял» с номером слайда и одной строкой на пункт.
+**Partial edit.** Only what was asked changes; plan, style and key slides are not agreed again. The affected slides are checked and exported. If something else in the deck stands out along the way (a repeated layout, a number without a source, a tell from `references/tells.md`), the reply ends with a list "Noticed, not changed": slide number and one line per item.
 
-**Разбор без правок.** Все проверки из `references/checks.md`, но файлы колоды не меняются: ни исправлений, ни экспорта поверх. Ответ: что нашёл, по слайдам, и что предлагаю изменить.
+**Review without edits.** All checks from `references/checks.md`, but the deck files do not change: no fixes, no export over them. Reply: what I found, by slide, and what I suggest changing.
 
-**Проверка перед отправкой.** Все проверки из `references/checks.md` на всей колоде. Без согласия исправляются только дефекты: элемент пропал или сломался при экспорте, опечатка. Стиль, план и раскладки не меняются. Остальное идёт списком «Предлагаю изменить». Финальный экспорт проверяется заново. Ответ: что нашли, что исправили, что предлагаю.
+**Pre-send check.** All checks from `references/checks.md` on the whole deck. Only defects are fixed without asking: an element lost or broken in export, a typo. Style, plan and layouts do not change. Everything else goes into a "Suggested changes" list. The final export is checked again. Reply: what was found, what was fixed, what is suggested.
 
-- **Цифра на слайде расходится с таблицей источников.** Это не опечатка: человек мог обновить слайд, а таблицу нет. Цифру не меняй. Покажи оба значения и спроси, какое верное и откуда оно; экспорт ждёт ответа.
-- **Нет `slides.md`** (колода сделана не здесь). Таблица источников не заполняется из самой колоды: «источник: слайд» или «источник: колода» не источник. Каждая цифра записывается со статусом «не сверено», по каждой задаётся вопрос.
+- **A number on a slide differs from the source table.** This is not a typo: the person may have updated the slide and not the table. Do not change the number. Show both values and ask which is right and where it comes from; the export waits for the answer.
+- **No deck file** (the deck was made elsewhere). The source table is not filled from the deck itself: "source: slide" or "source: deck" is not a source. Every number is recorded with the status "unverified", and a question is asked about each.
 
-**Полная переработка.** План восстанавливается из колоды (утверждение и задача каждого слайда) и показывается на подтверждение. Дальше шаги 2–5 новой колоды.
+**Full rework.** The plan is rebuilt from the deck (the claim and the job of each slide) and shown for confirmation. Then steps 2–5 of a new deck.
 
-## Данные
+## Data
 
-Цифра на слайде есть только если она есть в таблице источников `slides.md`. Нет источника: вопрос человеку. Заглушка на слайде или в предложении («TBD», «to follow», «данные позже», столбцы без чисел, «[скриншот]») не ставится и не предлагается: вместо неё вопрос, а слайд без данных ждёт ответа или уходит из плана. Статус «оценка» и «прогноз» остаётся рядом с цифрой. Подробно в `references/story.md`.
+A number is on a slide only if it is in the deck file's source table. No source: a question to the person. A placeholder on a slide or in a proposal ("TBD", "to follow", "data later", bars without values, "[screenshot]") is neither placed nor offered: a question goes in its place, and a slide without data waits for the answer or leaves the plan. The status "estimate" or "forecast" stays next to the number. Details in `references/story.md`.
 
-## Файлы
+## Files
 
-| Файл | Когда читать |
+| File | When to read |
 |---|---|
-| `references/story.md` | план, задачи слайдов, типы колод, таблица источников, формат `slides.md` |
-| `references/style.md` | выбор стиля, раскладка по задаче |
-| `references/tells.md` | каталог признаков; перед ключевыми слайдами и при проверке |
-| `references/checks.md` | проверки перед тем, как отдать колоду |
-| `references/tools.md` | выбор инструмента; Figma, pptx, HTML |
+| `references/story.md` | plan, slide jobs, deck types, source table, deck file format |
+| `references/style.md` | choosing the style, layout by job, grid, type, contrast, accents, charts |
+| `references/tells.md` | catalogue of tells; before the key slides and during checks |
+| `references/checks.md` | checks before the deck is handed over |
+| `references/tools.md` | choosing the tool; Figma, pptx, HTML |

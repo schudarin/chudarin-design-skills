@@ -1,20 +1,20 @@
-# Инструмент
+# Tool
 
-Сначала требования к использованию и формату (шаг 1 новой колоды), потом место, где живёт стиль.
+First the requirements for use and format (step 1 of a new deck), then where the style lives.
 
-| Нужно | Инструмент |
+| Needed | Tool |
 |---|---|
-| Показ из Figma, стиль в шаблоне Figma Slides | Figma Slides |
-| Показ из Figma, стиль в дизайн-системе Figma Design | фреймы 1920×1080 в Figma Design |
-| Редактируемый файл для других людей | pptx или Google Slides, если человек в них работает; стиль переносится из источника |
-| Отправка только для чтения | PDF из любого инструмента |
-| Анимация при показе | инструмент, в котором колоду будут показывать |
-| Figma нет, требований к формату нет | HTML, экспорт в PDF для проверки |
+| Shown from Figma, style in a Figma Slides template | Figma Slides |
+| Shown from Figma, style in a Figma Design design system | 1920×1080 frames in Figma Design |
+| An editable file for other people | pptx or Google Slides, whichever the person works in; the style is carried over from the source |
+| Sent read-only | PDF from any tool |
+| Animation during the show | the tool the deck will be shown from |
+| No Figma, no format requirements | HTML, exported to PDF for the checks |
 
 ## Figma
 
-Перед любой записью в Figma загрузи `figma-use` (для Slides ещё `figma-use-slides`) и `figma-plugin-api-rules`. Компоненты и переменные берутся из дизайн-системы, как в `design-screens`.
+Before any write to Figma, load `figma-use` (for Slides also `figma-use-slides`) and `figma-plugin-api-rules`. Components and variables come from the design system, as in `design-screens`.
 
-## Без Figma
+## Without Figma
 
-Посмотри список доступных в сессии скиллов и инструментов и выбери по таблице: например, скилл `pptx` для редактируемого файла. Ничего подходящего нет: HTML со слайдами 1920×1080 и `@page` того же размера, экспорт в PDF через браузер, PNG страниц для проверки.
+Look at the skills and tools available in the session and pick by the table: for example, a `pptx` skill for an editable file. Nothing suitable: HTML with 1920×1080 slides and an `@page` of the same size, exported to PDF from the browser, PNGs of the pages for the checks.

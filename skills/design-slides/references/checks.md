@@ -1,38 +1,38 @@
-# Проверки перед тем, как отдать колоду
+# Checks before the deck is handed over
 
-Пять проверок. Что из найденного исправлять без согласия, решает ветка в `SKILL.md`: в разборе без правок ничего, при проверке перед отправкой только дефекты, в новой колоде и переработке всё. После исправлений проверки 1, 2 и 4 повторяются на финальном экспорте (проверка 3 повторяется, если правки меняли раскладку).
+Five checks. What to fix without asking is set by the branch in `SKILL.md`: nothing in a review without edits, only defects in a pre-send check, everything in a new deck and a full rework. After fixes, checks 1, 2, 4 and 5 run again on the final export (check 3 runs again if the fixes changed layouts).
 
-## 1. Чеклист признаков
+## 1. Tells checklist
 
-Каждый слайд и колода целиком по `tells.md`, с правилом «утверждённый стиль важнее».
+Every slide and the deck as a whole against `tells.md`, with the rule "the approved style wins".
 
-## 2. Сверка цифр
+## 2. Numbers against sources
 
-Каждая цифра на слайде есть в таблице источников `slides.md` с тем же значением, периодом и единицами; статус на слайде совпадает с таблицей; график построен из чисел таблицы. Делает агент, у которого есть источники.
+Every number on a slide is in the deck file's source table with the same value, period and units; the status on the slide matches the table; every chart is built from the table's numbers. Done by the agent that has the sources.
 
-## 3. Свежий взгляд
+## 3. Fresh eyes
 
-Вспомогательный агент получает только PNG слайдов: без плана, без переписки, без источников. Поручение:
+A helper agent gets only the slide PNGs: no plan, no conversation, no sources. The brief:
 
-> Перед тобой слайды презентации, по одному PNG на слайд. Ответь коротко:
-> 1. Какая задача у каждого слайда (что он показывает или доказывает)?
-> 2. Какой слайд главный и почему?
-> 3. Какие слайды сделаны по одному шаблону, хотя показывают разное?
-> 4. Какую одну мысль ты унёс из колоды?
-> 5. Где ритм, отступы, визуальный вес, выравнивание или контраст выглядят не так (номер слайда, что именно)? Какие цветные детали непонятно что значат?
+> These are the slides of a presentation, one PNG per slide. Answer briefly:
+> 1. What is each slide's job (what does it show or prove)?
+> 2. Which slide is the main one, and why?
+> 3. Which slides use the same template although they show different things?
+> 4. What one idea did you take away from the deck?
+> 5. Where do rhythm, spacing, visual weight, alignment or contrast look off (slide number, what exactly)? Which colored details have no clear meaning?
 
-Его «задача слайда» сверяется с задачей из плана. Расхождение означает, что раскладка или текст не доносят задачу: в новой колоде и переработке слайд правится, в остальных ветках это пункт списка «Предлагаю изменить».
+Its "slide job" is compared with the job in the plan. A mismatch means the layout or the text does not carry the job: in a new deck and a full rework the slide is fixed; in the other branches it goes into the "Suggested changes" list.
 
-## 3б. Шрифты и детали
+## 4. Type and details
 
-На рендере посчитай разные сочетания размера и начертания текста (скриптом по вычисленным стилям или глазами по слайдам). Больше восьми размеров или одна роль, набранная по-разному на разных слайдах: свести к шкале из `style.md`. Проверь каждую цветную деталь: есть ли у неё одно значение и понятно ли оно.
+On the render, count the distinct combinations of text size and weight (with a script over computed styles, or by eye across the slides). More than eight sizes, or one role set differently on different slides: reduce to the scale from `style.md`. Check every colored detail: does it have one meaning, and is that meaning clear?
 
-Подписи, статусы и ярлыки на слайдах сверяются со словами источника: «signed», «live», «in progress» ставятся, только если источник говорит именно это. Слово из источника не переносится в чужую колонку (характеристика рынка не становится характеристикой компании).
+Labels, statuses and tags on slides match the source's words: a status such as "signed" or "live" appears only if the source says exactly that. A property stays with the subject the source attaches it to; it does not move to another column or another subject.
 
-## 4. Экспорт
+## 5. Export
 
-Колода проверяется в формате, в котором уйдёт (PDF, pptx, ссылка на Figma): каждый слайд смотрится на рендере экспорта, а не в редакторе. Пропавшие блоки, обрезанный текст, сломанные тени, пустые области, которых нет в исходнике, это дефекты. Открой PDF и в обычном просмотрщике: граница между слайдами должна быть видна.
+The deck is checked in the format it will be sent in (PDF, pptx, Figma link): every slide is looked at in the export's render, not in the editor. Missing blocks, clipped text, broken shadows, empty areas that are not in the source file are defects. Open the PDF in a regular viewer too: the boundary between slides must be visible.
 
-## 5. Ответ человеку
+## Reply to the person
 
-Колода и короткий список: что нашли, что исправили, что предлагаю изменить (с номерами слайдов).
+The deck and a short list: what was found, what was fixed, what I suggest changing (with slide numbers).

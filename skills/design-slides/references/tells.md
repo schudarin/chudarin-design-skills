@@ -1,24 +1,24 @@
-# Признаки колоды, собранной по умолчанию
+# Tells of a deck built on defaults
 
-**Признак это повод проверить решение, а не ошибка.** Если элемент задан утверждённым стилем (дизайн-система, шаблон компании, выбранное направление), он остаётся. Разнообразие ради разнообразия не нужно. Правится признак, который агент добавил сам и у которого нет причины ни в содержании, ни в стиле.
+**A tell is a reason to check a decision, not an error.** If an element is set by the approved style (design system, company template, chosen direction), it stays. Variety for its own sake is not the goal. Fix a tell the agent added itself that has no reason in the content or the style.
 
-## Дизайн
+## Design
 
-- Один шаблон на все слайды: надзаголовок капсом с разрядкой, под ним крупный заголовок с выделенным цветом концом.
-- Палитра и шрифты, которые никто не выбирал: индиго, салатовый акцент, Inter или Manrope, пятна градиента в углах.
-- Одни и те же блоки для разных задач: три карточки в ряд, плашка с полосой слева, овальные метки дат.
-- Продукт не показан, хотя существует: ни скриншота, ни макета. Вместо лиц инициалы в кружках, хотя фото есть.
-- Следы непроверенного экспорта: сломанные тени, пустые половины слайдов, карточки разной высоты в одном ряду, пропавшие при печати блоки.
+- One template on every slide: an all-caps letter-spaced eyebrow, below it a large heading whose last words are colored.
+- A palette and fonts nobody chose: indigo, a lime accent, Inter or Manrope, gradient blobs in the corners.
+- The same blocks for different jobs: three cards in a row, a card with a stripe on the left, oval date tags.
+- The product is not shown although it exists: no screenshot, no mockup. Initials in circles instead of faces although photos exist.
+- Traces of an unchecked export: broken shadows, empty halves of slides, cards of different heights in one row, blocks lost in print.
 
-## Текст
+## Text
 
-- Тройки везде: три колонки, три пункта, три эпитета подряд.
-- Каждый пункт в форме «Термин — объяснение», части через «·».
-- Лозунги из двух-трёх слов вместо мысли: «Просто работает.»
-- Заглушки вместо данных: «TBD», «to follow», «illustrative».
-- Сноски в стиле отчёта, даты в формате ISO.
-- Приложение повторяет основную часть.
+- Threes everywhere: three columns, three points, three adjectives in a row.
+- Every point shaped as "Term — explanation", parts joined with "·".
+- Two- or three-word slogans instead of a thought: "It just works."
+- Placeholders instead of data: "TBD", "to follow", "illustrative".
+- Report-style footnotes, dates in ISO format.
+- The appendix repeats the main part.
 
-## Общий признак
+## The general tell
 
-Всё подано с одинаковым весом: главный слайд не отличается от второстепенного, главная мысль на слайде не отличается от сноски.
+Everything has the same weight: the main slide looks like a minor one, the main idea on a slide looks like a footnote.
