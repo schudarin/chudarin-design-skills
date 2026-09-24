@@ -36,7 +36,7 @@ around it.
 | `design-screens` | "Design a settings screen" · "Change the header on this frame" | The design process itself: where the style comes from, a brief per screen, checks afterwards, edits to approved work one element at a time |
 | `figma-plugin-api-rules` | nothing, it loads on its own | Real Plugin API failures and the way around each one. Loads before the agent writes anything into your file |
 | `figma-fix-variable-bindings` | "Variables on this page are detached, fix them" | Finds detached, orphaned and hardcoded values, shows you a report, and rebinds only after you approve it |
-| `writing-texts` | "Rewrite this so it sounds like a person" · "Check the button labels" | Plain words instead of formulaic ones, in Russian and English: interface text, docs, articles, slides. The rules inside are written in Russian |
+| `writing-texts` | "Rewrite this so it sounds like a person" · "Check the button labels" | Plain words instead of formulaic ones, in Russian and English: interface text, docs, articles, slides. Learns how you write from your corrections, with your consent, in `~/.agents/voice.md`. The rules inside are written in Russian |
 
 A `SKILL.md` per skill and the topic files behind them. Some of those make up the Plugin API pack:
 components and variants, instances, layout and geometry, text and fonts, variables and modes,
