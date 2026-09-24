@@ -14,7 +14,7 @@
 
 **A design agent for Figma. A plugin for Claude Code.** The agent works in your file, from
 your components and variables. Plans flows, builds screens, finds design system debt, fixes
-bindings, and writes text that doesn't read as generated.
+bindings, makes presentations, and writes text that doesn't read as generated.
 
 Agents can write into Figma now. Left to themselves they design badly and break the file quietly:
 a variable that never bound, a component set that deleted itself when its last variant moved out, a
@@ -24,7 +24,7 @@ These skills fixed exactly those breakages on real product files. A skill for ea
 work, plus a pack of recorded Plugin API failures with the way around each one. Every rule here comes
 from a real breakage, not a reading of the docs.
 
-[Русская версия](README.ru.md)
+Overview and install on one page: [skills.chudarin.com](https://skills.chudarin.com) · [Русская версия](README.ru.md)
 
 ## 👋 Who it's for
 
