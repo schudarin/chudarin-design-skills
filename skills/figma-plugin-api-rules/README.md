@@ -20,7 +20,7 @@ add a rule to it.
 
 - `SKILL.md`: hard rules, the universal principles that keep recurring, a routing table by topic, a
   quick-scan table of common mistakes, and the protocol for adding to the pack.
-- `references/*.md`: pitfalls by topic: components and variants, instances, layout and geometry,
+- `references/*.md`: pitfalls by topic, covering components and variants, instances, layout and geometry,
   text and fonts, variables and modes, connectors, annotations, publishing hygiene, FigJam, prototype
   links, the MCP tool layer, and building a screen from code.
 
