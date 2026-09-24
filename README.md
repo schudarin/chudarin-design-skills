@@ -1,5 +1,9 @@
 # chudarin-figma-skills
 
+**A design agent for Figma. A plugin for Claude Code.** Five skills: the agent works in your
+file, from your components and variables. Plans flows, builds screens, finds design system debt,
+fixes bindings.
+
 Agents can write into Figma now. Left to themselves they design badly and break the file quietly:
 a variable that never bound, a component set that deleted itself when its last variant moved out, a
 screen assembled from hardcoded values that looks right until someone switches the theme.
