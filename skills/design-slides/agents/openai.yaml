@@ -1,0 +1,7 @@
+interface:
+  display_name: Design Slides
+  short_description: Presentations with a story first, a style taken from the person or company, numbers checked against sources, and the export checked before handing over.
+  icon: figma
+  brand_color: "#1E1E1E"
+policy:
+  allow_implicit_invocation: true
