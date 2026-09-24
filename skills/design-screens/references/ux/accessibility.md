@@ -3,7 +3,7 @@
 Reached from `references/ux-rules.md`, with no exemption: every screen has text, targets and
 states. These are the design-time rules — what to do while the screen is being built.
 
-**The audit-time twin** is `figma-audit-design-system/references/accessibility-checklist.md`: the
+**The audit-time twin** is `audit-design-system/references/accessibility-checklist.md`: the
 same ground as yes/no questions for auditing a file someone else drew. When a rule here changes,
 change the question there too — two copies that drift are worse than one.
 

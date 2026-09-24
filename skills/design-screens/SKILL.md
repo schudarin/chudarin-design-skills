@@ -1,6 +1,6 @@
 ---
-name: figma-design-screens
-description: Use when designing, building, or changing a product screen, flow, or component in Figma — new screens, states, redesigns, or edits to already-approved work. Use when a design result was rejected, when a screen must match an existing product, or when starting design on a product with no visual direction yet. Not for auditing or documenting an existing design system without changing screens — that is figma-audit-design-system.
+name: design-screens
+description: Use when designing, building, or changing a product screen, flow, or component in Figma — new screens, states, redesigns, or edits to already-approved work. Use when a design result was rejected, when a screen must match an existing product, or when starting design on a product with no visual direction yet. Not for auditing or documenting an existing design system without changing screens — that is audit-design-system.
 ---
 
 # Figma Design Screens

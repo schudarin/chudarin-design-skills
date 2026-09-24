@@ -1,6 +1,6 @@
 ---
-name: figma-audit-design-system
-description: Analyze, audit, inventory, and document an existing Figma design system through the Figma MCP server — components, variables, tokens, patterns, design debt, usage rules, causal relationships — and create design-system documentation pages in Figma on request. Use when the user asks to audit, inventory, map, document, or find debt in a Figma file, page, frame, component set, or selection. Read-only by default; modify Figma only when the user explicitly asks. Not for designing or building screens — that is figma-design-screens; not for repairing broken variable bindings — that is figma-fix-variable-bindings.
+name: audit-design-system
+description: Analyze, audit, inventory, and document an existing Figma design system through the Figma MCP server — components, variables, tokens, patterns, design debt, usage rules, causal relationships — and create design-system documentation pages in Figma on request. Use when the user asks to audit, inventory, map, document, or find debt in a Figma file, page, frame, component set, or selection. Read-only by default; modify Figma only when the user explicitly asks. Not for designing or building screens — that is design-screens; not for repairing broken variable bindings — that is figma-fix-variable-bindings.
 ---
 
 # Figma Audit Design System

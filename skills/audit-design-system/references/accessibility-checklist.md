@@ -3,7 +3,7 @@
 Use this checklist for component specs, interactive states, and design-system quality gates — that
 is, for auditing a file that already exists.
 
-**The design-time twin** is `figma-design-screens/references/ux/accessibility.md`: the same ground
+**The design-time twin** is `design-screens/references/ux/accessibility.md`: the same ground
 stated as rules to follow while a screen is being drawn. When a rule changes there, change the
 question here too.
 

@@ -1,5 +1,5 @@
 interface:
-  display_name: Figma Design Screens
+  display_name: Design Screens
   short_description: Process for designing or changing product screens in Figma — style source, briefs, checks, and editing approved work one element at a time.
   icon: figma
   brand_color: "#1E1E1E"
