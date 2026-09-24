@@ -1,6 +1,6 @@
 ---
 name: writing-texts
-description: Write, rewrite, or review Russian and English prose so it reads as written by a person, not a model. Use for requests to make text more human, simplify language, remove formulaic writing, or edit articles, notes, docs, UI copy, presentations, and Figma text. Covers drafting and language review without a separate editing skill.
+description: Write, rewrite, or review Russian and English prose so it reads as written by a person, not a model. Use for requests to make text more human, simplify language, remove formulaic writing, or edit articles, notes, docs, UI copy, presentations, and Figma text. Covers drafting and language review without a separate editing skill. Also use when the user corrects the agent's wording, says how they write or how their product speaks, or asks to remember a writing preference.
 ---
 
 # Как писать тексты
@@ -8,6 +8,10 @@ description: Write, rewrite, or review Russian and English prose so it reads as 
 Общий слой, верный для любого текста. Регистр задаёт место: пост в блоге — тёплый, от первого лица; текст в интерфейсе — короткий и нейтральный. Правила ниже действуют в обоих.
 
 В общении с пользователем пиши как коллеге, который знает предмет, но не следил за работой. В документации проекта следуй её регистру; по умолчанию он нейтральный. В авторском тексте сохраняй личную позицию. Для проверки ясности и речевых шаблонов отдельный навык не нужен.
+
+## Голос человека и продукта
+
+Перед любым текстом прочитай `~/.agents/voice.md` (голос человека) и `<project>/.claude/voice.md` (голос продукта), если они есть. Текст интерфейса и документация продукта следуют голосу продукта, авторский текст следует голосу человека; оба важнее общих правил ниже. Как устроены файлы, когда предлагать запись в них и что не записывать: [references/voice.md](references/voice.md).
 
 ## Конкретика вместо категории
 
