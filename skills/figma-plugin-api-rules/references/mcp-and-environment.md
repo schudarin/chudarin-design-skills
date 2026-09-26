@@ -9,7 +9,7 @@ description: Read when actively orchestrating use_figma and the MCP read tools �
 _Core: full text — `../SKILL.md`._
 
 ### mcp-read-tools-subagent-propagation
-**Principle:** The Figma MCP read tools (`get_screenshot`, `get_metadata`, `get_design_context`, `get_variable_defs`) propagate into subagents' context and work there; the shared rate limit of a Professional plan is ~70–100 calls/day (aggregate), reset at 00:00 UTC.
+**Principle:** The Figma MCP read tools (`get_screenshot`, `get_metadata`, `get_design_context`, `get_variable_defs`) propagate into subagents' context and work there; subagents draw on the same tool-call limit, set by plan and seat — on a Professional Dev or Full seat, 200 calls a day and 10 a minute (September 2026; current numbers on Figma's MCP "Rate limits & access" page (developers.figma.com)).
 
 ### page-ids-unstable-refind-by-name
 _Core: full text — `../SKILL.md`._
@@ -18,7 +18,7 @@ _Core: full text — `../SKILL.md`._
 **Principle:** In `search_design_system` filter results by the target library's `libraryName`, and bear in mind that component names in the library may have been renamed — check the actual name, not the expected one.
 
 ### setcurrentpageasync-edit-vs-createinstance
-**Principle:** `getNodeByIdAsync` works cross-page for `createInstance` but not for editing: `setCurrentPageAsync` is needed only before changing a component's properties, while when inserting an instance the target page must be the active one.
+**Principle:** Setting a property on a node fetched by `getNodeByIdAsync` works on any page (`annotation-writes-via-getnodebyidasync-need-no-page-switch` in `annotations.md`). Page-relative operations — `figma.currentPage.appendChild`, placing a new instance or node, `page.findAll` — need the target page active first (`currentpage-resets-to-first-page` in SKILL.md). When unsure, the prologue from hard rule 5 costs nothing: set the page, write, read back.
 
 ### appendchild-returns-void
 _Core: full text — `../SKILL.md`._
@@ -47,9 +47,6 @@ sips --resampleWidth 4096 wide.png --out wide_4096.png
 # the frame can stay any width (e.g. 4808) — FILL upscales 4096→frame; the text stays readable
 ```
 
-### annotations-color-enum-violet
-_Core: moved to `references/annotations.md`._
-
 ### findone-type-guard-first-operand
 _Core: full text — `../SKILL.md`._
 
@@ -62,7 +59,7 @@ _Core: full text — `../SKILL.md`._
 ### screenshot-clipscontent-scroll-crop
 **Principle:** `node.screenshot()` / `get_screenshot` on a descendant inside a clip-scroll container (`clipsContent:true`, narrower than its content) renders only the visible area — even when screenshotting the widest child itself, and even after a temporary `clipsContent=false` + resize of the ancestors in a previous call; verify content beyond the visible area by property inspection, not by screenshot.
 **Symptom:** the screenshot stably returns the clip container's width instead of the node's full width, as if the unclip + resize hadn't taken (looks like a server-side render cache).
-**Pattern:** verify via `componentProperties`, x/width, INSTANCE_SWAP values via `getNodeById`; don't spend calls on repeat screenshot attempts after the first failure. To verify the TEXT content (not structure/variant) of a clipped node — `get_design_context` is more reliable: it returns the exact text of all nested `<p>`/text nodes as code, not a render, and the parent's clipping doesn't affect it at all (checked on a production admin-dashboard table: `get_screenshot` on a `TABLE` node inside a clipped table container stably returned the container's 1152 width instead of the real 4984+ px; `get_design_context` on the same ROW node immediately gave the full exact list of 24 columns).
+**Pattern:** verify via `componentProperties`, x/width, INSTANCE_SWAP values via `getNodeById`; don't spend calls on repeat screenshot attempts after the first failure. To verify the TEXT content (not structure/variant) of a clipped node — `get_design_context` is more reliable: it returns the exact text of all nested `<p>`/text nodes as code, not a render, and the parent's clipping doesn't affect it at all.
 ```js
 // Doesn't work reliably for checking content beyond the visible width of a scroll container:
 tableContainer.clipsContent = false;
@@ -70,32 +67,26 @@ tableContainer.resize(2900, tableContainer.height);
 // ... the next get_screenshot(nodeId) still returns width:1152/1176
 ```
 
-**Clarification (when a visual screenshot is needed after all, not only text):** if the structure HAS several nested clip containers (e.g. an outer layout wrapper and an inner table container — both `clipsContent:true` independently), temporarily disabling the clip only on the OUTER ancestor has no effect — the export is still cut by the clip container NEAREST to the target node. Walk the whole parent chain (`let p = node.parent; while (p) {...}`) and collect ALL `clipsContent:true` nodes; disable precisely the nearest one (usually the table container itself, not the outer layout wrapper); then `node.screenshot({scale})` returns the full unclipped width — don't forget to restore `clipsContent=true` right after the screenshot.
+**Clarification (when a visual screenshot is needed after all, not only text):** a structure may hold several `clipsContent:true` ancestors at DIFFERENT levels, not necessarily adjacent links of one chain (e.g. the table container's own horizontal scroll, its wrapper frame, an outer layout wrapper, a tab frame above that) — disabling the clip on only one of them, even the nearest, may have no effect: the export is still cut by another. Walk the whole parent chain (`let p = node.parent; while (p) {...}`), collect ALL `clipsContent:true` ancestors and disable them ALL at once; then `node.screenshot({scale})` returns the full unclipped width — restore them all right after the screenshot.
 ```js
-// Find ALL clip ancestors, not just one — the nearest to the target is usually the culprit
+// Find ALL clip ancestors and disable every one — not just the nearest
 let p = targetNode.parent, clips = [];
-while (p) { if ('clipsContent' in p) clips.push({ id: p.id, name: p.name, clipsContent: p.clipsContent }); p = p.parent; }
-// clips[0] (the nearest parent) — often the one that clips, not the outer "Main layout"
-const nearest = await figma.getNodeByIdAsync(clips[0].id);
-nearest.clipsContent = false;
+while (p) { if ('clipsContent' in p && p.clipsContent) clips.push(p); p = p.parent; }
+for (const c of clips) c.clipsContent = false;
 const shot = await targetNode.screenshot({ scale: 0.5 }); // full width now
-nearest.clipsContent = true; // restore right after
+for (const c of clips) c.clipsContent = true; // restore all right after
 ```
-
-**Clarification (a table in another tab of the same file):** "disable only the nearest" isn't universal — there may be more than one pair of clips, and they are NOT necessarily adjacent links of one chain. On that node 4 independent `clipsContent:true` ancestors were found at DIFFERENT levels: the table container (the nearest — the table's own horizontal-scroll mechanism), its wrapper frame (second level), the outer layout wrapper (covering the whole tab, unrelated to the table), and the tab frame above that. Disabling only the nearest (the table container) had no effect — the same cropped width of 1152. All 4 had to be collected via the parent-chain walk and disabled at once; only then did `node.screenshot()` return the full 2328 px. Practical conclusion: don't take "nearest = culprit" as an axiom — collect ALL `clipsContent:true` ancestors and disable them ALL at once for inspection; restore them all at once afterwards too. `contentsOnly:true` on `get_screenshot` doesn't help here at all — that flag is about isolation from overlapping neighbours (connectors over a section, etc.), not about clip ancestors.
+`contentsOnly:true` on `get_screenshot` doesn't help here at all — that flag is about isolation from overlapping neighbours (connectors over a section, etc.), not about clip ancestors.
 
 ### findone-object-identity-indexof
 _Core: full text — `../SKILL.md`._
-
-### annotations-label-escapes-angle-brackets
-_Core: moved to `references/annotations.md`._
 
 ## Screenshots and export to disk
 
 **The right workflow:**
 1. `get_screenshot(nodeId, fileKey)` — for viewing in the dialogue only, NOT for saving to disk. By default it returns a **short-lived URL, not image bytes** — treat anything you don't consume immediately as already expired. Either pass `enableBase64Response: true` to get the image inline, or `curl` the URL to disk right away and read it from there.
 2. The only reliable way to save a node's screenshot to disk otherwise is a manual Export via Figma Desktop: select the node → Inspector → the Export section → `+` → "Export [name]" appears → click → the Save As dialogue → choose a folder → Save.
-3. The Figma MCP Professional limit resets once a day, at 00:00 UTC.
+3. `get_screenshot` counts against the daily MCP tool-call limit; the reset time isn't documented, so don't plan around one.
 
 **Dead ends — don't spend calls on these:**
 - A desktop-screenshot tool with a save-to-disk option (e.g. a computer-use MCP) — saves the wrong window (not the one visible in the dialogue).
@@ -125,7 +116,7 @@ return {identical: before === h(await master.exportAsync({format: 'PNG'}))};
 Checking a design edit (a DS migration, a rebind, a refactor) for regressions without manually viewing the screens, by agents. A three-layer pipeline, cheap → expensive:
 
 1. **Structural diff (free, no render).** `use_figma` dumps every document-level node of the page (w/h, position, mainComponent set key, variant, text) in both files (current vs backup) → comparison by id → categories: an expected swap (the key changed, geometry stable) vs flags (layout_shift / text / vis / removed / added). Catches the regression signal across the whole file without rate-limit cost.
-2. **Pixel diff only on the flagged screens.** `get_screenshot` in both files, `pixelmatch` (includeAA=false) → diff + ratio. Fits within the Figma daily limit (~70–100 screenshots/day).
+2. **Pixel diff only on the flagged screens.** `get_screenshot` in both files, `pixelmatch` (includeAA=false) → diff + ratio. Fits within the daily MCP tool-call limit (200 a day on a Professional Dev or Full seat).
 3. **AI triage** of the flags: a vision agent separates real regressions from AA noise.
 
 Key facts:
@@ -165,13 +156,11 @@ function dump(n, depth = 0) {
 **Pattern:** for reference icons whose semantics aren't obvious from one magnified screenshot — check `instance.name` (the literal component name, e.g. `Checkbox` — already a signal) and `mainComponent.name` (the variant combination, e.g. `Selected=Yes` — also a signal) before trusting only the visual reading of a zoomed screenshot; or embed the reference into a real demo context at once (native size, next to text) before fixing the choice in the canon/plan. If the name/properties suggest a different meaning from the expected one — stop and clarify with the user; don't keep building on an unverified visual impression.
 
 ### get-metadata-zero-children-on-raster-fill-frame
-_Checked while cataloguing a photo-verification scenario._
 **Principle:** `get_metadata` returns `childCount: 0` (literally zero child layers) for a frame with visually rich content (a modal, a bottom sheet with text and buttons) — if that content is inserted as **a flat raster image fill on the frame itself** rather than as live child nodes. The node tree doesn't see the content inside a fill, only real child layers. Confirmed twice by independent `get_metadata` calls (both via a desktop-bridge server and via the remote server with a real fileKey) on 4 different nodes — not a fluke of one call.
 **Symptom:** a frame with a telling name ("How it works", "Before you start...") and clearly non-empty visual content is reported as `childCount: 0` / empty — easy to misclassify as a decorative stub or a placeholder and miss real content.
 **Pattern:** don't trust `childCount: 0` as an indicator of "nothing here" without a re-check via `get_screenshot` on the same node. If the screenshot shows content and `get_metadata` shows zero children, the frame is a flat image fill, not a live structure: `get_design_context` won't extract anything useful either (nothing to extract structurally). For a file audit/catalogue — record the raster-vs-live status explicitly per frame; it matters if the content is planned to be reused/changed programmatically (a raster version can't be edited other than by fully replacing the image).
 
 ### get-screenshot-maxdimension-caps-never-upscales
-_Checked during a per-frame export of 18 frames of an onboarding-verification flow._
 **Principle:** The `maxDimension` parameter of `get_screenshot` only **caps** (downscales) the long side — it NEVER upscales above the node's natural pixel size. A node smaller than `maxDimension` renders at its natural 1x resolution. The response carries both `width`/`height` (what was actually rendered) and `original_width`/`original_height` (the node's natural size before clamping) — compare them to tell whether a downscale happened.
 **Symptom:** an export with `maxDimension: 2048`: desktop frames 1104×712 came back exactly 1104×712; mobile 375×812 → 375×812 (1x), not 2048 on the long side. For small mobile frames (375 px wide) this means a low final image resolution, and raising `maxDimension` doesn't cure it.
 **Pattern:** to raise export sharpness ABOVE the node's natural size — `maxDimension` is useless; you need `node.exportAsync({format:'PNG', constraint:{type:'SCALE', value:2}})` via `use_figma`, or actually enlarge the node. The URL in the response is short-lived ("treat like a secret") — download with `curl` at once in the same batch; batch get_screenshot by ~6 and curl the batch while the URLs are alive (18 exports = 3 batches of 6; download each batch immediately).
@@ -179,14 +168,15 @@ _Checked during a per-frame export of 18 frames of an onboarding-verification fl
 ### parallel-workflow-agents-growing-sibling-sections-need-a-page-level-coordination-pass
 **Principle:** When several parallel workflow agents independently fix/re-lay content inside THEIR OWN SECTION nodes (each in isolation — the right pattern to avoid write conflicts), and at least one agent **grows its section's size** (`resizeWithoutConstraints`) for new content — none of the agents sees or checks the positions of NEIGHBOURING sections on the page, because each is (rightly, for isolation) given only its own scope. If the sections on the page originally stood flush against each other (without a large X/Y margin), the growth of one section "eats" the gap to the neighbour, and the page acquires a NEW page-level section-on-section overlap that didn't exist before the parallel pass.
 **Symptom:** the final cross-check agent (or a manual check) finds several sections visually overlapping — the content of one section (especially later z-order neighbours) covers/clips the content of another, although EACH section separately (on an isolated screenshot) looks perfectly tidy with no internal overlaps. A separate trap: the final checking agent may ITSELF read the bboxes of different sections with DIFFERENT methods (a `use_figma` direct read of `node.x` vs a `get_metadata` XML dump) — if the coordinate spaces of these methods diverge even slightly, the check gives a FALSELY CLEAN result for some section pairs (matching by chance for some pairs, not for others) — don't trust bbox comparisons of mixed provenance; read ALL sections with ONE method in ONE script for an honest pairwise comparison.
-**Pattern:** (1) after a parallel pass in which ANY agent may have grown its section — a separate, sequential (not parallel) final pass is mandatory, reading `x/y/width/height` of ALL affected top-level SECTION nodes in ONE script (`node.x`/`node.y`/`node.width`/`node.height` directly on each, without mixing sources) and computing pairwise bbox intersections arithmetically. (2) If intersections are found — fix by shifting `.x`/`.y` of the SECTION ITSELF (without touching the content inside): a section's children are stored in coordinates LOCAL to the section's origin (like a FRAME), so shifting `section.x` moves the whole section with its content as one — no need to recompute the children's positions by hand. (3) Build a "who can collide with whom" dependency graph by the actual intersection of Y ranges (sections with non-overlapping Y are automatically safe at any X — don't waste a shift on them), and resolve the remaining X conflicts by a sequential left-to-right shift with a constant gap (100–200 px, by the file's convention).
+**Pattern:** (1) after a parallel pass in which ANY agent may have grown its section — a separate, sequential (not parallel) final pass is mandatory, reading `x/y/width/height` of ALL affected top-level SECTION nodes in ONE script (page-absolute X/Y from `node.absoluteTransform[0][2]`/`[1][2]` plus `node.width`/`node.height` on each, without mixing sources — raw `.x`/`.y` aren't comparable across sections with different parents; see `sibling-sections-may-not-share-a-parent-raw-xy-not-comparable-across-them` in `../SKILL.md`) and computing pairwise bbox intersections arithmetically. (2) If intersections are found — fix by shifting `.x`/`.y` of the SECTION ITSELF (without touching the content inside): a section's children are stored in coordinates LOCAL to the section's origin (like a FRAME), so shifting `section.x` moves the whole section with its content as one — no need to recompute the children's positions by hand. (3) Build a "who can collide with whom" dependency graph by the actual intersection of Y ranges (sections with non-overlapping Y are automatically safe at any X — don't waste a shift on them), and resolve the remaining X conflicts by a sequential left-to-right shift with a constant gap (100–200 px, by the file's convention).
 ```js
 // The final check with ONE method on ALL sections — don't mix a use_figma read and a get_metadata XML for different sections
 const ids = ['id1', 'id2', 'id3'];
 const boxes = [];
 for (const id of ids) {
   const n = await figma.getNodeByIdAsync(id);
-  boxes.push({ id, x: n.x, y: n.y, right: n.x + n.width, bottom: n.y + n.height });
+  const ax = n.absoluteTransform[0][2], ay = n.absoluteTransform[1][2]; // page-absolute, not n.x/n.y
+  boxes.push({ id, x: ax, y: ay, right: ax + n.width, bottom: ay + n.height });
 }
 // pairwise intersections arithmetically, then fix by shifting section.x (not the content inside)
 ```
@@ -240,7 +230,7 @@ for (const id of pageIds) {
 }
 return out;
 ```
-This isn't suitable for writing — there `setCurrentPageAsync` and its restrictions still apply (see `currentpage-resets-to-first-page` in the core). Verified on a production admin dashboard — 13 pages (11 sections + Patterns + sandbox) read in one call instead of thirteen.
+This isn't suitable for writing — there `setCurrentPageAsync` and its restrictions still apply (see `currentpage-resets-to-first-page` in the core).
 
 ### sharedplugindata-namespace-is-not-enumerable
 
@@ -257,11 +247,11 @@ node.setSharedPluginData('admin_canon', 'fingerprintAlgo', 'sha256/v1 <path to t
 
 **Principle:** `get_screenshot` can return a correct-looking response (real `original_width`/`original_height`, a live `image_url`) and yet **a 149-byte 1×1 PNG**; an inline `await node.screenshot()` in the same window returns an empty frame. This is a render failure on the service side, not a node problem (see also the differentiator from the clip variant in `get-screenshot-degenerate-1x1-when-clipped` below): the same node renders fine via the Figma REST `/v1/images`. Don't spend attempts on tweaking `maxDimension`, `scale` and the node type — check the fact of the downloaded file (`file`/`sips`), not the response fields.
 **Symptom:** the response says `"width":1,"height":1` with correct `original_*`; `curl` downloads 149 bytes; `file` says `PNG image data, 1 x 1`. The inline screenshot looks like a tiny white rectangle. Easy to take for "the node is empty" or "the clip ate the content".
-**Pattern:** fall back to REST — a specific project's REST API token usually lives in its own repository as a separate `.env` file with its own variable names (project-specific — record the exact path and variable names in your own per-project notes; in one project it was a `FIGMA_REST_API_TOKEN`/`FIGMA_FILE_KEY` pair in its own credentials directory):
+**Pattern:** fall back to REST — a specific project's REST API token usually lives in its own repository as a separate `.env` file with its own variable names (project-specific — record the exact path and variable names in your own per-project notes):
 ```bash
 curl -s -H "X-Figma-Token: $FIGMA_REST_API_TOKEN" \
-  "https://api.figma.com/v1/images/$KEY?ids=9259-3575,9277-4702&format=png&scale=2"
-# → {"images":{"9259:3575":"https://…"}}; the id in the query uses a hyphen, in the response a colon
+  "https://api.figma.com/v1/images/$KEY?ids=<a>-<b>,<c>-<d>&format=png&scale=2"
+# → {"images":{"<a>:<b>":"https://…"}}; the id in the query uses a hyphen, in the response a colon
 ```
 A separate rule of the same REST: for some **SECTION** nodes it stably returns `null` in `images` (three times in a row, with `err: null`), while the FRAMEs nested in them render at once. Render frames, not the section.
 
@@ -362,9 +352,8 @@ for (let seed = 0, guard = 0; out.length < N; seed++) {
 }
 // ✅✅ better: a closed form, injective by construction — nothing to search for
 ```
-**The adjacent trap that spawned that loop (an LCG mod 2^32 + `% 16`):** a generator of the form `s = (Math.imul(s, 1103515245) + 12345) >>> 0; out += hex[s % 16]` takes the LOW 4 bits. The low k bits of an LCG modulo 2^32 have a period ≤ 2^k, because `(a·s + c) mod 16` depends only on `s mod 16`. Result: the whole output is a function of `seed % 16`, **exactly 16 distinct values over the whole 32-bit seed space**, each a rotation of one cycle (`674d2309efc5ab81`). Two consequences: (a) "unique" values silently duplicate every 16 seeds; (b) a search for "an unused value" becomes unsatisfiable as soon as 16 are used. For pseudo-random mock data take an avalanche mixer (murmur3 `fmix32` — a composition of bijections on Z/2^32, injective by construction), and render the field carrying the uniqueness requirement from the FULL 32 bits without truncation. Uniqueness is then proven, not searched for. A cheap safeguard at the script's start: `if ((Math.imul(0x85ebca6b, 3) >>> 0) !== 2445500225) throw...` — the injectivity proof relies on a spec-correct `Math.imul`, and the sandbox's behaviour isn't directly observable.
-**Honest caveats (don't present as established):** the link "hang → precisely this error string" is a plausible reconstruction, not an observation: the proxy/session internals are inaccessible, and the "connection lost" string hadn't appeared in any repo or pack before this case. Separately: one trivial ping WITHOUT any loops also failed (1 of 4) — most likely it hit the teardown window after the hang (~65–70%), but an independent transient (~30–35%) isn't ruled out. Practical consequence: **don't automatically attribute a failure of a loop-free call to a second bug in the script**. Raw call timestamps would have separated these hypotheses — keep them in the next such investigation.
-**A mechanical rail (don't rely on memory) — worth building once.** A PreToolUse hook on `use_figma` calls (matcher `use_figma`, registered in your agent's hook configuration) can read the code BEFORE sending and **block** (`permissionDecision: deny`) two provably dangerous forms — (1) a search with a membership check (`.has`/`.includes`/`.indexOf`) inside a loop with no `throw` anywhere in the script (the literal form of the incident; caught in both `while` and `for` spellings); (2) `while(true)`/`for(;;)` without a single `break`/`return`/`throw`. Everything else — a warning, not a block. **Deliberately narrow:** the first version of the hook blocked any `while` without a "hint word" and, on measurement, rejected 9 of 11 loops taken verbatim from this very pack (8 of which provably terminate) — the standard `while (stack.length)` tree walk and the parent-chain pass. A tool with that false-positive rate gets disabled and stops catching anything at all. Opt-out — a comment `// LOOP-GUARD: <why it terminates>` (specifically a comment: a marker inside a string literal deliberately doesn't count).
+**Caveat (don't present as established):** the link "hang → precisely this error string" is a plausible reconstruction, not an observation: the proxy/session internals are inaccessible. A trivial call WITHOUT any loops that fails right after a hang most likely hit the teardown window, though an independent transient isn't ruled out. Practical consequence: **don't automatically attribute a failure of a loop-free call to a second bug in the script**.
+**A mechanical rail (don't rely on memory) — worth building once.** A PreToolUse hook on `use_figma` calls (matcher `use_figma`, registered in your agent's hook configuration) can read the code BEFORE sending and **block** (`permissionDecision: deny`) two provably dangerous forms — (1) a search with a membership check (`.has`/`.includes`/`.indexOf`) inside a loop with no `throw` anywhere in the script (the ❌ form above; caught in both `while` and `for` spellings); (2) `while(true)`/`for(;;)` without a single `break`/`return`/`throw`. Everything else — a warning, not a block. **Deliberately narrow:** a hook that blocks any `while` without a "hint word" rejects most ordinary, provably terminating loops — the standard `while (stack.length)` tree walk and the parent-chain pass. A tool with that false-positive rate gets disabled and stops catching anything at all. Opt-out — a comment `// LOOP-GUARD: <why it terminates>` (specifically a comment: a marker inside a string literal deliberately doesn't count).
 
 ### clipscontent-plus-fixed-height-plus-shadow-child-renders-phantom-box-in-get-screenshot
 **Principle:** `get_screenshot` on a FRAME with `primaryAxisSizingMode: 'FIXED'` (an explicit height larger than the content) **and** `clipsContent: true` **and** a child with a visible `DROP_SHADOW` effect near the content boundary can draw, in the empty area below the content, an extra floating white rounded rectangle — visually resembling a duplicate copy of the shadow-bearing child, but corresponding to no node in the tree.
@@ -386,13 +375,12 @@ grp.remove(); // ❌ Error: The node with id "..." does not exist → rolls back
 for (const c of grp.children) page.appendChild(c);
 return { restoredIds: grp.children.map(c => c.id) }; // ✅ grp no longer exists by now; delete nothing
 ```
-_(moved from `connectors.md` — the GROUP/remove fact is general to screenshots, not CONNECTOR-specific)_
 
 ### get-screenshot-stale-immediately-after-use-figma-mutation-in-same-turn
 **Principle:** `get_screenshot` called right after a `use_figma` mutation of the same node in the same dialogue turn can return a cached render of the OLD state — a separate cache from the one described in `use-figma-stale-reads-after-mutation` (the core SKILL.md): that one is about a repeat READ via `use_figma`; this one is about a DIFFERENT tool (`get_screenshot`), with its own independent cache on the render service's side.
 **Symptom:** a read-only check via `use_figma` (`getNodeByIdAsync` / a children walk) confirms the mutation applied (the needed node is removed/added/renamed), but `get_screenshot` of the same nodeId visually shows the old picture — a discrepancy between "the structure is right" and "the picture is right" at one and the same moment.
 **Pattern:** don't trust the first `get_screenshot` right after a mutation as final proof — if it looks unexpected (shows what should have vanished/appeared), first re-ask `get_screenshot` once more with the same nodeId (without a repeat mutation) — the second call usually returns a fresh render. Don't confuse with the case where the script really didn't apply (for that — `use-figma-stale-reads-after-mutation` / `use-figma-timeout-may-have-partially-or-fully-executed`).
-**Not only the same turn.** The stale render can survive a second `get_screenshot` in the next turn and more than a minute of real time — two consecutive shots 80 s apart both showed 17px titles while the readback said 34px, and a shot taken later showed the 34px titles. So the readback decides, never the picture: when `use_figma` reports `fontSize: 34` and the screenshot shows small text, the file is right and the render is old. Three consequences. (1) Don't edit the file to match the screenshot — the "fix" lands on a node that was already correct and breaks the layout for real (a title bumped a second time overflowed its container). (2) Don't save a screenshot as the project's reference frame while it disagrees with the readback on any property you just changed; verify agreement on one changed property first. (3) A Look-based check (`references/checks.md` in a design skill, or your own eyeballing) counts only on a frame that agrees with Read — until then it's a check of the cache.
+**Not only the same turn.** The stale render can survive a second `get_screenshot` in the next turn and more than a minute of real time. So the readback decides, never the picture: when `use_figma` reports `fontSize: 34` and the screenshot shows small text, the file is right and the render is old. Three consequences. (1) Don't edit the file to match the screenshot — the "fix" lands on a node that was already correct and breaks the layout for real. (2) Don't save a screenshot as the project's reference frame while it disagrees with the readback on any property you just changed; verify agreement on one changed property first. (3) A Look-based check (`references/checks.md` in a design skill, or your own eyeballing) counts only on a frame that agrees with Read — until then it's a check of the cache.
 ```js
 // freshness gate: one changed property, read back, compared with what the shot shows
 const t = await figma.getNodeByIdAsync('TITLE_ID');
@@ -408,4 +396,4 @@ return { fontSize: t.fontSize, chars: t.characters };   // 34 → the shot must 
 **Principle:** `get_variable_defs` doesn't accept a page id — pass a node or frame id instead, or it fails with `You currently have nothing selected`.
 
 ### never-walk-a-whole-production-page-with-findallwithcriteria
-**Principle:** A single read-only pass over a large interface page (collecting `effects` per node) hung the plugin until the MCP client gave up after 928 s. Scope every traversal to a specific frame or component, and when you need one fact about the design system — a shadow, a radius, a padding — read it off one known node instead of surveying for it.
+**Principle:** A single read-only pass over a large interface page (collecting `effects` per node) can hang the plugin until the MCP client gives up. Scope every traversal to a specific frame or component, and when you need one fact about the design system — a shadow, a radius, a padding — read it off one known node instead of surveying for it.

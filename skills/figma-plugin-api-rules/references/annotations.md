@@ -18,7 +18,7 @@ node.annotations = [{ label: 'First fact.\n\nSecond fact.', categoryId: category
 
 ### annotations-category-existing-only
 **Principle:** A category — only from those already existing in the file (`figma.annotations.getAnnotationCategoriesAsync()`); don't create a new one via `addAnnotationCategoryAsync()` without an explicit user request — categories are organisation-wide and adding a superfluous one litters Dev Mode for all files.
-**Pattern:** find an existing one by `label` (`categories.find(c => c.label === '...')`); the choice is contextual to the fact's content (example: dynamic UI behaviour in response to a user action → `Interaction`; a structural layout decision without interactivity → `Design note`; data reflecting an entity's state → `Content`).
+**Pattern:** find an existing one by `label` (`categories.find(c => c.label === '...')`); the choice is contextual to the fact's content (example: dynamic UI behaviour in response to a user action → `Interaction`; a structural layout decision without interactivity → a custom category the file already has, e.g. `Design note`; data reflecting an entity's state → `Content`).
 
 ### annotations-content-rules
 **Principle:** An annotation is a fact about a component's FINISHED behaviour ("this works like this"), not a TODO and not a process log. Content rules (cross-project, not specific to one file):
@@ -30,7 +30,6 @@ node.annotations = [{ label: 'First fact.\n\nSecond fact.', categoryId: category
 - Format — a bullet list, or (without bullets) one fact per paragraph: `\n\n` between facts inside one `label`.
 
 ### annotations-color-enum-violet
-_(moved from `mcp-and-environment.md` — a basic Dev Mode annotation API fact, not MCP/environment)_
 **Principle:** Dev Mode Annotations are a channel separate from Comments (`figma.annotations.addAnnotationCategoryAsync({label, color})` + `node.annotations = [{label, categoryId}]`) with a valid colour enum `yellow|orange|red|pink|violet|blue|teal|green`, where purple is `'violet'`, and `'purple'` fails validation.
 **Symptom:** `Error: Property "categoryInput" failed validation: Invalid enum value... received 'purple'`.
 **Pattern:** before creating a category check `getAnnotationCategoriesAsync` (see also `annotations-category-existing-only` above) — the preset categories Development/Interaction/Accessibility/Content (`isPreset:true`) exist in every file; a comment = a temporary TODO with resolve; an annotation = a permanent fact about the component's behaviour.
@@ -39,13 +38,12 @@ _(moved from `mcp-and-environment.md` — a basic Dev Mode annotation API fact, 
 const category = await figma.annotations.addAnnotationCategoryAsync({ label: 'Design note', color: 'purple' });
 // Error: Property "categoryInput" failed validation: Invalid enum value... received 'purple'
 
-// ✅ RIGHT
+// ✅ RIGHT (only when the user asked for a new category)
 const category = await figma.annotations.addAnnotationCategoryAsync({ label: 'Design note', color: 'violet' });
 node.annotations = [{ label: 'Default state on creation: disabled', categoryId: category.id }];
 ```
 
 ### annotations-label-escapes-angle-brackets
-_(moved from `mcp-and-environment.md` — a basic Dev Mode annotation API fact, not MCP/environment)_
 **Principle:** `node.annotations = [{label, categoryId}]` HTML-escapes angle brackets in `label` (`<`/`>` → `&lt;`/`&gt;`) — don't use `<...>` placeholders in annotation text.
 **Pattern:** don't carry `<...>` placeholders into annotation text literally.
 ```js
@@ -61,7 +59,7 @@ node.annotations = [{ label: 'Search: the query text', categoryId }];
 **Pattern:** place the annotation on the semantically same node INSIDE an uncropped/full-width reference (if one exists nearby), not on the hidden "real" node of the original.
 
 ### annotations-write-rejects-both-label-fields-read-may-return-both
-_The same fact and the same fix as `annotations-read-returns-label-and-empty-labelmarkdown-write-rejects-both` below (WRITE requires exactly one of label/labelMarkdown; READ may return both — never re-assign/spread a read object as is). The difference of this case: legacy annotations were met where READ returned BOTH fields filled with REAL (not empty) identical text — written earlier through another API path / an older plugin version, not through the current `use_figma`._
+_The same fact and the same fix as `annotations-read-returns-label-and-empty-labelmarkdown-write-rejects-both` below (WRITE requires exactly one of label/labelMarkdown; READ may return both — never re-assign/spread a read object as is). The difference of this case: on legacy annotations READ may return BOTH fields filled with REAL (not empty) identical text — written earlier through another API path / an older plugin version, not through the current `use_figma`._
 
 ### annotations-copy-raw-label-double-escapes-html-entities
 **Principle:** Reading `node.annotations[0].label` from an already existing annotation, the returned string is the RAW stored representation, already containing HTML entities (e.g. `&quot;` instead of a literal `"`) if the source text was ever entered with quotes. If that string is copied 1:1 into the `label` of a NEW annotation on another node (the typical "duplicate an existing fact onto a paired node" pattern), the Plugin API escapes it ONCE MORE on write — `&quot;` becomes `&amp;quot;`, double escaping, visible only on a repeat read of the written value.
@@ -148,7 +146,7 @@ const hasAnnotation = annotated.length > 0;
 **Symptom:** the intuitive (and superfluous) urge to group a batch of annotations/targeted edits by page and make one `use_figma` call per page — while the `figma-use` skill's rule "one setCurrentPageAsync per call" concerns the operations THIS call does via `figma.currentPage`, not any call touching several pages.
 **Pattern:** one script can walk a list of ids from different pages and write/read a property of each pointwise — without a single `setCurrentPageAsync`, if the only operation is `getNodeByIdAsync` + a mutation/read of the node's own property.
 ```js
-// ✅ 49 annotations on nodes of three different pages (02 Section A / 03 Section B / 05 Section C) in one script — no page switch
+// ✅ annotations on nodes of several different pages in one script — no page switch
 for (const item of ITEMS) {
   const node = await figma.getNodeByIdAsync(item.id);
   node.annotations = [{ label: item.label, categoryId: item.categoryId }];
@@ -157,5 +155,5 @@ for (const item of ITEMS) {
 
 ### annotation-verify-pass-misses-language-consistency-unless-asked
 **Principle:** An LLM verifier explicitly given a text-hygiene checklist (dates/names/paths/service vocabulary/negations) and a fact check against a packet file reliably catches those specific violations — but checks nothing the checklist doesn't name literally. The text's language (conformance to the file's own convention — one language throughout) isn't part of the standard hygiene list, and a verifier that didn't get an explicit "check the language" silently passes an annotation written in another language.
-**Symptom:** an adversarial verify pass over 52 annotation drafts gave 27 approved + 25 needs_revision on content/format — not one verdict mentioned that 2 of the drafts (siblings, the same wording) were in a different language from the other 50. The difference was found only by a separate, non-LLM pass (a deterministic alphabet regex, e.g. Latin vs Cyrillic).
+**Symptom:** an adversarial verify pass over a batch of annotation drafts returns detailed content/format verdicts, yet not one verdict mentions that a few drafts are in a different language from the rest. The difference is found only by a separate, non-LLM pass (a deterministic alphabet regex, e.g. Latin vs Cyrillic).
 **Pattern:** when composing a verify prompt for annotations — explicitly list any file-wide convention (language, tone, node-number format, etc.) the draft must obey, rather than relying on an "obvious" inconsistency being caught within a general "check for violations" assignment. Additionally — a deterministic regex sweep (Cyrillic/Latin, dates, service words) over ALL final texts before writing to Figma as a cheap last line of defence, independent of LLM verdicts.

@@ -30,7 +30,7 @@ Accumulated, field-tested knowledge of the Figma Plugin API as driven through an
 8. **A thrown error rolls back the whole `use_figma` call.** Mutations that ran before the failing line are undone with it — even the ones that "visibly applied" in the same script. After any error: re-read the state before re-applying; put a risky operation (an untested API, a nested-instance write) in its own call or a `try/catch` so it can't erase the work next to it.
 9. **The sandbox hides invisible instance children by default.** `figma.skipInvisibleInstanceChildren` is `true` here (the documented Plugin API default is `false`): hidden descendants of an INSTANCE are missing from `children`/`findAll`, and a hidden INSTANCE reads `children: []`. To reach a hidden node (e.g. a `Reset` button hidden in the master), set `figma.skipInvisibleInstanceChildren = false` as the first line of the script — don't conclude the node is unreachable and redesign the master around it.
 10. **Any text that leaves for Figma is a publication.** Before writing a component `description`, a Dev Mode annotation, a node/page/section name or a TEXT layer, check `references/publishing-hygiene.md`: no dates, no people's names, no internal code names, no paths to internal docs, no phase/version/task numbers, no `SANDBOX`/`WIP`/`TODO`. After transferring anything by clone, sweep the subtree.
-11. **New insight → into the pack immediately**, per the protocol at the end. Don't defer it.
+11. **New insight → record it.** If this pack is a checkout you commit to, add it now per the protocol at the end. If it came with a plugin install, tell the user what you found instead of editing the pack.
 
 ## Universal principles
 
@@ -96,7 +96,7 @@ actionRow.layoutSizingVertical = 'HUG';
 **Pattern:** a `Set` of container types (FRAME, COMPONENT, COMPONENT_SET, INSTANCE, GROUP, SECTION, PAGE, BOOLEAN_OPERATION) checked with `CONTAINER_TYPES.has(node.type)` before reading `children`; for other properties, membership checks — `if ('cornerRadius' in n) …`, `if ('characters' in n) …`.
 
 ### use-figma-stale-reads-after-mutation
-**Principle:** Reads right after mutations (delete / append / rebuild) may return stale state — `getNodeByIdAsync` returns `null` for a live node, a container looks empty — so the only source of truth is a repeated page-wide check through `figma.currentPage.findAll(...)`.
+**Principle:** Reads right after mutations (delete / append / rebuild) may return stale state — `getNodeByIdAsync` returns `null` for a live node, a container looks empty — so re-check with a fresh read, scoped to the container you changed: an explicit recursive walk of that container. Not a page-wide `findAll` — it can silently return part of the subtree and hang on a large page (`findall-returns-a-partial-subtree-count-with-an-explicit-dfs`, `never-walk-a-whole-production-page-with-findallwithcriteria` in `references/mcp-and-environment.md`).
 **Symptom:** a read straight after delete/append shows the section empty although the children exist.
 **Pattern:** re-laying an element = delete the old node by id first, then create the new one — never place on top, or you get back-to-back duplicates.
 
@@ -241,7 +241,7 @@ If you accumulate facts about one specific Figma file (Set IDs / Page IDs of par
 | Reading `node.fontName` on multi-font text | It's `figma.mixed` — loop `getStyledTextSegments(['fontName'])` and load each run's font |
 | Assuming a binding applied | Read it back — library-swatch and `cornerRadius` bindings fail silently |
 | `setBoundVariable('cornerRadius', v)` then checking the aggregate key | It binds the four per-corner fields — bind and verify all four |
-| Setting paint opacity before the paint is on the node | Assign the bound paint first, clone + set opacity second — `variables-and-tokens.md` |
+| Setting paint opacity before the paint is on the node | Bind in one call; set opacity on a plain copy in a separate next call, then read both back — `variables-and-tokens.md` |
 | Treating local bindings in a library file as orphaned | They're correct; only hardcoded values are fix candidates |
 | Calling `deleteComponentProperty` without snapshotting instances | It resets every instance to the component default — capture content first — `components-and-variants.md` |
 | Expecting properties to survive a dissolved variant set | They belong to the SET; re-create them on the standalone component |

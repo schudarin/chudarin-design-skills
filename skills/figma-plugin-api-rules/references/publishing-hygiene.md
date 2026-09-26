@@ -45,7 +45,7 @@ A phrasing passes if it makes equal sense **in a year** and **to a person who to
 ## Mandatory checks
 
 1. **Before writing** into any channel from the table — re-read the text against the "Forbidden" list.
-2. **After any transfer by clone** — `await figmaHygieneSweep(clonedRoot.id, 'post-clone')`: removes foreign Dev Mode annotations unconditionally (see `references/annotations.md`, `clone-carries-dev-mode-annotations-invisibly`) and simultaneously checks node names/description/TEXT with the `LEAK` regex. SECTION nodes carry no `annotations` (see `annotations-not-supported-on-section-nodes` in `references/annotations.md`) — the sweep skips them explicitly by type guard rather than descending.
+2. **After any transfer by clone** — `await figmaHygieneSweep(clonedRoot.id, 'post-clone')`: removes foreign Dev Mode annotations unconditionally (see `references/annotations.md`, `clone-carries-dev-mode-annotations-invisibly`) and simultaneously checks node names/description/TEXT with the `LEAK` regex. SECTION nodes carry no `annotations` (see `annotations-not-supported-on-section-nodes` in `references/annotations.md`) — the sweep skips reading `annotations` on them by type guard and still descends into their children.
 3. **Before handing over a screen** — `await figmaHygieneSweep(screenRoot.id, 'pre-handoff')`: the same `LEAK` check over names/description/TEXT PLUS the content (not just the presence) of the remaining Dev Mode annotations. Sift product texts in cells by hand — `LEAK` gives false positives; that's expected: a deterministic candidate detector, not a judge of an open vocabulary — free-form names and handles of people aren't caught by a regex. Extend the regex with your own language's process words.
 
 ```js
@@ -84,4 +84,4 @@ async function figmaHygieneSweep(nodeId, mode /* 'post-clone' | 'pre-handoff' */
 
 ## Why the whole table, not just annotations
 
-A rule that covers one channel gets applied to that channel only. A component `description` with a date in it, or a node name carrying an internal code name, leaks exactly as far as an annotation does — and no automated check catches either. There are many channels; the rule is one.
+A rule that covers one channel gets applied to that channel only. A component `description` with a date in it, or a node name carrying an internal code name, leaks exactly as far as an annotation does — and a check scoped to annotations catches neither. There are many channels; the rule is one.

@@ -423,7 +423,7 @@ frame.clipsContent = reference.clipsContent;
 
 ### variant-switch-can-silently-replace-text-content-not-just-styling
 **Principle:** Switching a COMPONENT_SET instance's variant via `setProperties` can replace a TEXT layer's content with the NEW variant's default, even if the real application code uses this variant axis exclusively for STYLING (a class/colour), not for content — if the master variant being switched to originally had different demo text hard-coded (e.g. a placeholder word instead of a real value) on the same named TEXT layer.
-**Symptom:** after `row.setProperties({Kind: 'best'})` the `Label` text layer, which used to show real data (`"12–34"`), started showing `"Top"` — while the React code (`ChartRow.tsx`) renders `{row.label}` identically for ANY `kind` value, i.e. no such text change happens in the app at all; it's a purely Figma-side artefact: the `Kind=best` master variant was originally assembled/tested with static demo text in place of Label, and the variant switch substituted exactly that default instead of carrying the text over from the source variant.
+**Symptom:** after `row.setProperties({Kind: 'best'})` the `Label` text layer, which used to show real data, started showing the target variant's demo word — while the application code renders the label identically for ANY `kind` value, i.e. no such text change happens in the app at all; it's a purely Figma-side artefact: the `Kind=best` master variant was originally assembled/tested with static demo text in place of Label, and the variant switch substituted exactly that default instead of carrying the text over from the source variant.
 **Pattern:** after ANY `setProperties` switch of a variant axis that per the code affects ONLY styling — explicitly re-read ALL TEXT nodes inside the instance and compare with the expected content (don't assume "since the axis is stylistic, the text won't be touched"); if they diverged — restore the needed text by hand right after the switch, in the same script, before `detachInstance` / further mutations.
 ```js
 const labelBefore = row.findOne(n => n.name === 'Label').characters; // "12–34"
@@ -445,7 +445,7 @@ if (labelAfter !== labelBefore) {
 const chipComp = await figma.importComponentByKeyAsync('component-key-placeholder');
 
 // ✅ the same component, accessed directly by the live node's id (or via an existing instance)
-const chipComp = await figma.getNodeByIdAsync('116:790');
+const chipComp = await figma.getNodeByIdAsync('<component-node-id>');
 // or: (await existingChipInstance.getMainComponentAsync()).key === 'component-key-placeholder' // confirms the match
 ```
 
@@ -466,7 +466,7 @@ st[0] = figma.variables.setBoundVariableForPaint(st[0], 'color', iconInverse);
 vec.strokes = st;
 ```
 
-**Adjacent — the reason the switch was made in the first place:** a hidden (`visible:false`) child in a variant that declares N buttons **breaks the neighbour's rendering**. The layout reserves the hidden one's slot (the hidden one's width + `itemSpacing`), and draws the visible button **at the hidden one's dimensions** — on screen the button is cut off at the right edge with a flat cut and the label is truncated. Property reads meanwhile show correct values (`width: 162`, label `106`, `textTruncation: DISABLED`), i.e. the defect exists only in the raster. Diagnostic sign: the width measured on the render equals the width of the **hidden** child, and the visible one's offset equals `hidden width + itemSpacing`. Cured not by an override but by switching the group to the variant with the right number of buttons.
+**Adjacent:** a hidden (`visible:false`) child in a variant that declares N buttons **breaks the neighbour's rendering**. The layout reserves the hidden one's slot (the hidden one's width + `itemSpacing`), and draws the visible button **at the hidden one's dimensions** — on screen the button is cut off at the right edge with a flat cut and the label is truncated. Property reads meanwhile show correct values (the button and label widths, `textTruncation: DISABLED`), i.e. the defect exists only in the raster. Diagnostic sign: the width measured on the render equals the width of the **hidden** child, and the visible one's offset equals `hidden width + itemSpacing`. Cured not by an override but by switching the group to the variant with the right number of buttons.
 
 ### importcomponentsetbykeyasync-required-for-set-level-key
 **Principle:** `search_design_system` for assets with `assetType: "component_set"` returns the `componentKey` of the SET itself — that key doesn't resolve via `figma.importComponentByKeyAsync` (which expects the key of a specific variant component); a separate `figma.importComponentSetByKeyAsync(key)` is needed.
@@ -491,7 +491,7 @@ const inputSet = await figma.importComponentSetByKeyAsync('component-set-key-pla
 inst.setProperties({ 'Text in field#3533:0': '...' }); // Error: property not found
 
 // ✅ resolve from a live, definitely correct instance right in this script
-const knownGoodInst = await figma.getNodeByIdAsync('4059:3810'); // a known correct node on the confirmation form
+const knownGoodInst = await figma.getNodeByIdAsync('<known-good-instance-id>'); // a known correct instance on the canvas
 const inputMaster = await figma.getNodeByIdAsync(knownGoodInst.mainComponent.id); // or .mainComponent directly
 const inst2 = inputMaster.createInstance();
 inst2.setProperties({ 'Text in field#3533:0': '...' }); // works
@@ -504,30 +504,29 @@ inst2.setProperties({ 'Text in field#3533:0': '...' }); // works
 
 ### mega-component-non-text-variants-hide-nested-instance-with-own-property-key
 
-**Principle:** In a mega-component with a `type` axis (e.g. a `table cell` with `type=Text/Status/Progress/Link/Icon/...`), top-level componentProperty keys like `Title#256:0` belong ONLY to the text/simple variants. The `Status`/`Progress`/`Link` variants (and probably other non-trivial types) render their content through a NESTED INSTANCE with its OWN set of componentProperties, under a different key: the status badge → `Text#125:3` (+ a `Type` variant for colour), the labelled progress bar → `Amount#281:3`, the text-button component (inside `type=Link`) → `Text#147:1`. Calling `outerInstance.setProperties({ 'Title#256:0': value })` on such a variant throws no error and doesn't roll the script back — the property simply doesn't exist on this instance in this variant, so a `try/catch` around `setProperties` silently swallows the mismatch, and the visible text stays the master component's default placeholder (`x%`, `Status`, `Label`).
+**Principle:** In a mega-component with a `type` axis (e.g. a `table cell` with `type=Text/Status/Progress/Link/Icon/...`), top-level componentProperty keys like `Title#<id>` belong ONLY to the text/simple variants. The `Status`/`Progress`/`Link` variants (and probably other non-trivial types) render their content through a NESTED INSTANCE with its OWN set of componentProperties, under a different key: e.g. the status badge → `Text#<id>` (+ a `Type` variant for colour), the labelled progress bar → `Amount#<id>`, the text-button component (inside `type=Link`) → `Text#<id>`. Calling `outerInstance.setProperties({ 'Title#<id>': value })` on such a variant throws no error and doesn't roll the script back — the property simply doesn't exist on this instance in this variant, so a `try/catch` around `setProperties` silently swallows the mismatch, and the visible text stays the master component's default placeholder (`x%`, `Status`, `Label`).
 **Symptom:** after a script that passed without a single error, the render shows the master's literal placeholders — `x%` on the progress bar, `Status` on the badge, `✳ Label ✳` on the link — instead of the passed values; structurally everything looks right (the `type` variant is correct), but the visible text matches none of the script's arguments.
 **Pattern:** for every non-trivial `type` variant first read its inner structure (`variantMaster.children` recursively, with `componentProperties` on every `INSTANCE`) EXACTLY ONCE to learn the real nested component and its property key, and cache that mapping for all further cells of the same table — don't expect the text visible in a screenshot to hint by itself which property didn't work.
 ```js
 // ❌ passes without error, but the text stays at the default "x%"/"Status"/"Label"
-progressCell.setProperties({ 'Title#256:0': '68%' });
-statusCell.setProperties({ 'Title#256:0': 'Enabled' });
-linkCell.setProperties({ 'Title#256:0': 'f2940de4-…' });
+progressCell.setProperties({ 'Title#<id>': '68%' });
+statusCell.setProperties({ 'Title#<id>': 'Enabled' });
+linkCell.setProperties({ 'Title#<id>': '<record-id>' });
 
 // ✅ find the nested instance and its OWN key
 const bar = progressCell.findOne(n => n.type === 'INSTANCE' && n.name === 'Progress Bar / Labeled');
-bar.setProperties({ 'Amount#281:3': '68%' });
+bar.setProperties({ 'Amount#<id>': '68%' });
 
 const badge = statusCell.findOne(n => n.type === 'INSTANCE' && n.name === 'Badge / Status');
-badge.setProperties({ 'Text#125:3': 'Enabled', Type: 'Positive' });
+badge.setProperties({ 'Text#<id>': 'Enabled', Type: 'Positive' });
 
 const textBtn = linkCell.findOne(n => n.type === 'INSTANCE' && n.name === 'Text button');
-textBtn.setProperties({ 'Text#147:1': 'f2940de4-…' });
+textBtn.setProperties({ 'Text#<id>': '<record-id>' });
 ```
 
 ### api-created-frames-block-component-property-references
 **Principle:** `componentPropertyReferences` can't be set on frames created via the API (`createFrame`/`createAutoLayout`) — the attempt throws "Can only set component property references on symbol sublayer".
 **Pattern:** keep the binding on the component's original child node (the symbol sublayer), and control visibility/structure by hand (e.g. collapsing a HUG frame — see `createautolayout-default-size-hug-collapse` in the core SKILL.md), not via `componentPropertyReferences` on an API-created container.
-_(moved from the core SKILL.md — it was nested inside an unrelated rule about HUG collapse)_
 
 ### componentpropertyreferences-scope-limited-to-visible-characters-instance-swap
 **Principle:** `componentPropertyReferences` supports binding only for `visible` / `characters` / instance-swap — effects like a font swap, a transparent background, opacity are NOT bindable through this mechanism, even if a boolean component property was created for them.
@@ -546,7 +545,7 @@ const phantom = root.type !== 'DOCUMENT';   // the master is deleted; only this 
 ```
 
 ### deleting-a-component-property-resets-every-instance-override
-**Principle:** Deleting a component property resets every instance's override to the component default. Removing 26 TEXT and BOOLEAN properties across three components rewrote 21 instances: a mandatory notice started reading "Unanswered letters", a per-day chart tooltip started showing per-pair figures, hidden rows and switched-off swatches became visible again. The override was *stored as the property value*, so deleting the property deleted the value with it.
+**Principle:** Deleting a component property resets every instance's override to the component default: text overrides revert to the default string, hidden layers become visible again. The override was *stored as the property value*, so deleting the property deleted the value with it.
 **Pattern:** snapshot every instance's content before deleting a property, then re-apply it by editing the nested nodes.
 ```js
 // Snapshot BEFORE any deleteComponentProperty call — after it, the values are gone.
