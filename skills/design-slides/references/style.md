@@ -6,7 +6,7 @@ Down the chain; the first thing found is the style:
 
 1. **The company's design system or template** (Figma library, Figma Slides template, pptx master, brand book). This is law.
 2. **Past decks** of the person or the company. The style is taken from them: fonts, colors, grid, how numbers and the product are shown.
-3. **Nothing.** Three different directions from references the person provides, per the "From scratch" section in `../design-screens/references/setup.md`. The person picks one or mixes them. One direction instead of three is not offered.
+3. **Nothing.** Three different directions from references the person provides or, when they have none, marks from a set the agent gathers, per the "From scratch" section in `design-screens/references/setup.md`. The person picks one or mixes them. One direction instead of three is not offered.
 
 The agent has no default style of its own. A neutral light background with one accent, chosen "because there was nothing", is also a default style.
 
@@ -26,7 +26,7 @@ The layout is chosen for the slide's job from the plan (`story.md`). Key slides 
 
 ## Grid, rhythm and weight
 
-Spacing scale and grid per `../design-screens/references/ux/spacing.md`: one scale for the whole deck, text sits on the grid on both axes. On top of that, for slides:
+Spacing scale and grid per `design-screens/references/ux/spacing.md`: one scale for the whole deck, text sits on the grid on both axes. On top of that, for slides:
 
 - **One title height.** The title starts at the same height on every slide except the title slide. Content is not centered vertically if that moves the title.
 - **One zone for the footer and notes.** Footnotes, sources and rows of partner logos sit at the same distance from the footer on every slide.

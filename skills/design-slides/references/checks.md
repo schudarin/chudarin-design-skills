@@ -1,6 +1,6 @@
 # Checks before the deck is handed over
 
-Five checks. What to fix without asking is set by the branch in `SKILL.md`: nothing in a review without edits, only defects in a pre-send check, everything in a new deck and a full rework. After fixes, checks 1, 2, 4 and 5 run again on the final export (check 3 runs again if the fixes changed layouts).
+Five checks. What to fix without asking is set by the branch in `SKILL.md`: nothing in a review without edits, only defects in a pre-send check, only the asked-for change in a partial edit, everything in a new deck and a full rework. After fixes, checks 1, 2, 4 and 5 run again on the final export (check 3 runs again if the fixes changed layouts).
 
 ## 1. Tells checklist
 
@@ -21,7 +21,7 @@ A helper agent gets only the slide PNGs: no plan, no conversation, no sources. T
 > 4. What one idea did you take away from the deck?
 > 5. Where do rhythm, spacing, visual weight, alignment or contrast look off (slide number, what exactly)? Which colored details have no clear meaning?
 
-Its "slide job" is compared with the job in the plan. A mismatch means the layout or the text does not carry the job: in a new deck and a full rework the slide is fixed; in the other branches it goes into the "Suggested changes" list.
+Its "slide job" is compared with the job in the plan. A mismatch means the layout or the text does not carry the job: in a new deck and a full rework the slide is fixed; in a partial edit it goes into the "Noticed, not changed" list; in the other branches, into the "Suggested changes" list.
 
 ## 4. Type and details
 
