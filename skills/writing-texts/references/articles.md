@@ -18,13 +18,7 @@ The author's clarifications can change the meaning, not just add detail. Revisit
 
 ## A practical article about a tool
 
-Apply this section when the article's job is to help the reader choose or use a tool. Show the main tasks and ways of working; a personal case can illustrate them. A striking result in one case must not narrow the description of what the tool does. This is not a requirement to list every feature or to always put the case after the explanation. If the story of how the tool was made is already told in another article the reader can reach, link to it and keep only the needed context here.
-
-Check that the reader understands how the tool is built and what the first step is: what they install, which parts they get and how they use them. Describe the structure the way the tool's documentation or code does, consistently across the whole article. Do not attribute the capabilities of the whole to one part.
-
-Tell a possibility from a required order of work. If the reader can get the whole result at once or first discuss a plan, keep both options. Check against the version of the docs or code the reader can access; keep internal details when they explain a result or a user's choice. A README gives facts, not necessarily the article's structure. A check built into the tool does not by itself prove the result is error-free.
-
-If the author asks readers for feedback, make it clear what to send and where. Do not turn useful extras into a mandatory questionnaire. Keep the author's distinction between what is needed and what is optional.
+Apply this section when the article helps the reader choose or use a tool. Describe what the tool does and the reader's first step — what they install, which parts they get, how they use them — the way its docs or code do, consistently, and checked against the version the reader can reach. A personal case can illustrate, but one striking result must not stand for everything the tool does, and one part must not get the credit for the whole. Keep options the tool allows as options, not as a required order. If the author asks for feedback, say what to send and where, and keep optional extras optional.
 
 ## Title, summary and translation
 

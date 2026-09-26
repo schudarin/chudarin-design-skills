@@ -38,7 +38,7 @@ One short emphasis, a deliberate repetition, a professional term or a real contr
 24. **The point hidden behind the justification.** Move the conclusion or decision earlier, then explain. In a targeted edit, do not restructure the whole article without a request.
 25. **The first sentence repeats the heading.** Start with content if the repetition adds nothing.
 26. **An ending that retells the text.** «Подводя итог», "overall", a list of what was already said. End with a conclusion or action that follows from the article; do not add a new one for a striking ending.
-27. **Chopped explanation.** Short sentences can add emphasis or just read like artificially compressed notes. «Подключи плагин. Внутри три модуля. Настраивать их не нужно» reads more naturally as «Ты подключаешь плагин целиком, и три модуля внутри него начинают работать сразу, поэтому настраивать каждый отдельно не нужно». This is an example of keeping the links, not a sentence-length template. One short emphasis and short commands stay fine.
+27. **Chopped explanation.** Short sentences can add emphasis or just read like artificially compressed notes. «Открой настройки. Там три вкладки. Менять их не нужно» reads more naturally as «В настройках три вкладки, и по умолчанию они уже настроены, так что менять ничего не нужно». This is an example of keeping the links, not a sentence-length template. One short emphasis and short commands stay fine.
 28. **A colon that announces a reveal.** "The detail that makes it work: a separate grader." Check whether the construction helps clarity. Do not ban an ordinary explanatory colon for its form alone.
 
 ## Formatting
