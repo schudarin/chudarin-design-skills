@@ -21,7 +21,7 @@ Figma nodes lose variable bindings when collections get orphaned, libraries upda
 
 A node can have **dual bindings** (remote library + local) on the same property. The local one wins at render time. `setBoundVariable(field, null)` only removes the remote binding — the local persists. `variable.remove()` silently no-ops if referenced. These are platform limitations.
 
-## Workflow (target: 4–5 tool calls total)
+## Workflow
 
 **This skill writes to the user's file. Nothing is bound, changed or deleted before the user has seen the scan and said "apply".** Phase 1 and 2 are read-only; Phase 3 runs only after an explicit go-ahead on the report; Phase 4 (deleting variables and collections) needs its own separate confirmation — never bundle it into the "apply" answer.
 
