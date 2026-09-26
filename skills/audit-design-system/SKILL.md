@@ -19,7 +19,7 @@ If the user asks to analyze, audit, find, compare, document, propose, or recomme
 
 If the user asks to create, add, insert, update, modify, rename, organize, or publish in Figma, you may use write-capable Figma MCP tools, but do not modify source product screens unless the user specifically asks.
 
-Do not analyze codebase or Code Connect mappings in this version.
+Do not analyze the codebase or Code Connect mappings.
 
 ## Primary objective
 
@@ -67,8 +67,6 @@ If a listed tool is unavailable in the current MCP server, use the closest avail
 
 ## Evidence rules
 
-Do not make unsupported claims.
-
 For each important conclusion, include:
 
 - Figma page or frame
@@ -101,7 +99,7 @@ Classify every repeated UI element as one of:
 - Local exception
 - Design debt
 
-A component candidate should be recommended only when it meets at least one condition:
+A component candidate should be recommended only when it passes the new-component gate in `references/governance-rules.md` and meets at least one condition:
 
 - Appears in three or more places
 - Has multiple states
@@ -130,7 +128,7 @@ For each component or component candidate, document:
 - Design debt
 - Recommendations
 
-Load `references/component-checklist.md` when documenting or auditing components — the spec structure, the required checks per interactive component, and the order to audit component families in.
+Load `references/component-checklist.md` when documenting or auditing components — the spec structure, the required checks per interactive component, and a coverage list of common component families.
 
 Check states for all interactive components:
 
@@ -263,41 +261,7 @@ Use slash-style Figma variable names when appropriate:
 
 ## Causal relationship format
 
-For repeated elements, produce this structure:
-
-```md
-## Element
-Name of component, pattern, or token.
-
-## Observed in
-Pages, frames, flows, or nodes.
-
-## Product scenario
-What user or product context causes this element to appear.
-
-## User intent
-What the user is trying to accomplish.
-
-## Interface decision
-Why this UI solution is used.
-
-## System implication
-Whether this should become a component, variant, state, token, pattern, template, rule, or migration task.
-
-## Tokens
-Current and proposed tokens.
-
-## Rule
-The design-system rule to document.
-
-## Evidence
-Figma references and observed values.
-
-## Confidence
-High, medium, or low.
-```
-
-Load `references/causal-map-template.md` when the user asks why elements are used, how components relate to scenarios, or which rule should be documented.
+For repeated elements, and whenever the user asks why elements are used, how components relate to scenarios, or which rule should be documented, use the template in `references/causal-map-template.md`.
 
 ## Figma documentation pages
 
@@ -366,7 +330,7 @@ Load `references/governance-rules.md` when the user asks how to maintain, versio
 ## Do not
 
 - Do not modify Figma unless explicitly asked.
-- Do not analyze codebase or Code Connect in this version.
+- Do not analyze the codebase or Code Connect.
 - Do not invent components without labeling them as recommendations.
 - Do not treat every repeated value as a token.
 - Do not create components from one-off layout details.

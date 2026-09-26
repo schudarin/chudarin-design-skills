@@ -13,12 +13,18 @@ question here too.
 - Non-text UI indicators such as borders, icons, focus rings, and selected states have sufficient contrast.
 - Focus-visible state is present and not hidden by custom styling.
 - Keyboard order follows visual and logical order.
-- Interactive targets are large enough for the platform.
+- Interactive targets meet the minimum the product holds itself to (the twin says which number applies).
 - Color is not the only way to communicate meaning.
 - Error states include text or structural indicators, not color alone.
-- Disabled content remains understandable where needed.
+- Disabled content stays legible.
 - Motion is avoidable or reducible for users with reduced-motion preferences.
 - Icon-only controls have accessible names documented.
+- Headings form a hierarchy: one first-level heading per screen, no skipped levels.
+- The focus ring is visible against every background a focusable element sits on.
+- Sticky or floating layers do not cover the element that has focus (WCAG 2.4.11).
+- Anything done by dragging has a single-pointer alternative (WCAG 2.5.7).
+- Help sits in the same relative place on every screen (WCAG 3.2.6).
+- The layout survives larger text and increased letter, word and line spacing.
 
 ## Component-specific prompts
 

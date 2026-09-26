@@ -22,8 +22,8 @@ What the user is trying to accomplish.
 ## Interface decision
 Why this UI solution is used instead of an alternative.
 
-## Component or pattern implication
-Whether this should become a component, variant, state, pattern, template, or local exception.
+## System implication
+Whether this should become a component, variant, state, token, pattern, template, rule, local exception, or migration task.
 
 ## Token implication
 Current and proposed primitive, semantic, and component tokens.
@@ -60,7 +60,7 @@ Confirm the action and move forward.
 ## Interface decision
 Primary CTA is visually dominant to reduce ambiguity and guide completion.
 
-## Component or pattern implication
+## System implication
 Create or normalize `Button / Primary` with default, hover, pressed, focus, disabled, and loading states.
 
 ## Token implication

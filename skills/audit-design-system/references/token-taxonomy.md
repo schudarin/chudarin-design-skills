@@ -130,8 +130,8 @@ belongs next to the token, not in someone's memory.
 
 | Token | Permitted surfaces | Forbidden |
 |---|---|---|
-| `color.action.primary.bg` | buttons, interactive containers | icons, body text, page background |
-| `color.feedback.success.*-500` | filled indicators on neutral surfaces | text or icons on white — use the darker step |
+| `color.action.primary.bg.default` | buttons, interactive containers | icons, body text, page background |
+| `color.feedback.success.bg` (aliases a 500 step) | filled indicators on neutral surfaces | text or icons on white — use a token that aliases a darker step |
 
 ## Anti-patterns
 

@@ -4,7 +4,7 @@ Use this reference when documenting or auditing components.
 
 ## Component qualification
 
-Recommend a component when at least one condition is true:
+Recommend a component when it passes the gate in `governance-rules.md` ("Before a new component exists at all") and at least one condition is true:
 
 - Appears in three or more places.
 - Has multiple states.
@@ -68,12 +68,12 @@ What existing layouts need to change.
 - Disabled state exists and remains legible.
 - Loading state exists if action can take time.
 - Error/success/warning states exist when relevant.
-- Touch target is appropriate for the platform.
+- Touch target meets the product's recorded minimum (`accessibility-checklist.md`).
 - Label is not replaced by icon alone unless accessible name is documented.
 
 ## Common component families
 
-Audit these first:
+A coverage list, not an order:
 
 - Button
 - Icon button
