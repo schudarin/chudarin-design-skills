@@ -5,8 +5,8 @@ a screen — it is a **map of what the product currently does and where it fails
 next to the screens it describes. Everything the redesign later claims as an improvement is measured
 against this map, so a wrong note here becomes a wrong screen two phases later.
 
-For scale: one authenticated area of a product runs to roughly 80 screens across 9 flow groups and
-60 notes. That is normal, not large — plan the phase as days, not as one pass.
+For scale: one authenticated area of a product can run to dozens of screens and notes — plan the
+phase as days, not as one pass.
 
 ## 1. Capture
 
@@ -40,7 +40,7 @@ two strong findings in the same block.
 
 A critical re-read of one 64-note audit found **17 defects — one in four**. The notes had been
 written by the same agent that had just done the walkthrough, with the observations still fresh, and
-a quarter of them were still wrong. Assume the same rate in your own set.
+a quarter of them were still wrong. Expect errors in your own set too.
 
 What it actually finds:
 
@@ -75,7 +75,7 @@ Praise and criticism separated: [yes / list of notes split]
 ```
 
 `none found` in every row, on a set larger than about 20 notes, is a result that needs an
-explanation, not a pass — the observed rate is one defect in four. An unfilled block means the
+explanation, not a pass. An unfilled block means the
 re-read didn't happen, and notes that haven't been re-read are not ready to show.
 
 ## 4. Handing the audit to the redesign

@@ -76,9 +76,10 @@ ten self-checks embedded at the block each one governs, follows in the next sect
    your own result against that idea and the references, and revise at least once. You have real
    freedom in how you arrange this."*
 
-8. **Response format — short.** Cap the answer so the agent doesn't narrate the whole build back.
-   *Example: "Reply in 15 lines or fewer: what you built, the frame's node id, and anything you're
-   unsure passes the product's own style."*
+8. **Response format — what the orchestrator needs.** Name what the reply contains so the agent
+   doesn't narrate the whole build back.
+   *Example: "Reply with what you built, the frame's node id, and anything you're unsure passes the
+   product's own style."*
 
 ## Designer Brief — ready to send
 
@@ -108,7 +109,9 @@ of them?
 SELF-CHECK 9 — is there a node id above to clone from, or only a worded description of the
 screen's anatomy? A cloned node keeps spacing, styles, and bindings identical; a description
 invites the agent to author from scratch — and authored-from-scratch screens drift off product style.
-If only a description exists, STOP and find a node before sending this brief.
+If only a description exists, STOP and find a node before sending this brief. From scratch with no
+screens yet: write "none — from scratch" and point block 5 at the chosen direction's variables and
+references.
   [ ]
 
 ## 4. Work zone and forbidden zones
@@ -163,9 +166,9 @@ SELF-CHECK 4 — is compositional freedom granted in explicit words, not just th
   [ ]
 
 ## 8. Response format
-Reply in 15 lines or fewer: the node id, what you built, and anything you're unsure passes the
-product's own style.
-SELF-CHECK 7 — is a response cap stated, at or under 15 lines?
+Reply with the node id, what you built, and anything you're unsure passes the product's own
+style. Nothing else.
+SELF-CHECK 7 — does the reply ask for exactly those three things?
   [ ]
 
 ## Economy
@@ -230,10 +233,9 @@ same call — not scheduled as a separate check for later — and a check agains
 the next node starts. A batch of five writes verified once at the end means a failure on node two
 is discovered four nodes too late.
 
-These disciplines are prose today, and the same reasoning that put ten self-checks into the
-designer template applies here without a discount: a checklist that sits beside the template gets
-read once and forgotten by the time the template is filled in. The mechanic template below carries
-the same kind of slots, for its own three real requirements, with the same blocking send status.
+A checklist that sits beside a template gets read once and forgotten by the time the template is
+filled in, so the mechanic template below carries slots for its three real requirements, with the
+same blocking send status as the designer template.
 
 ## Mechanic Brief — ready to send
 
@@ -269,9 +271,8 @@ change, not scheduled as a separate check for later?
 ## Economy
 [paste the full text from "Economy," below, unedited]
 
-Reply in 15 lines or fewer: one line per node — node id, property, before → after. Nothing else.
-SELF-CHECK M3 — is the reply held to the 15-line, one-line-per-node contract above, with nothing
-else added?
+Reply with one line per node — node id, property, before → after. Nothing else.
+SELF-CHECK M3 — is the reply held to one line per node, with nothing else added?
   [ ]
 
 SEND STATUS: [NOT READY / READY] — do not mark READY while any SELF-CHECK line above still shows
@@ -306,4 +307,4 @@ id and the number attached.
 
 | Compress | Never compress |
 |---|---|
-| Mechanic status reports (the ≤15-line contract), `design.md` log lines | The brief to the design agent; the critic's findings text |
+| Mechanic status reports (the one-line-per-node contract), `design.md` log lines | The brief to the design agent; the critic's findings text |

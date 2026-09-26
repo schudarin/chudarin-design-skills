@@ -22,16 +22,19 @@ by what the screen contains, and each rule states whether it is verified by **Re
 properties and numbers) or by **Look** (the render). A Look rule reported without saying what was
 looked at didn't run.
 
-- **Tap zones ≥ 44pt.** A 28px-tall field reads as a caption rule rather than a field: it
+- **Tap zones meet the product's recorded minimum** (`ux/accessibility.md`); inline text links are
+  exempt (`ux/controls.md`). A 28px-tall field reads as a caption rule rather than a field: it
   passes a visual glance and fails the moment someone tries to tap it.
 - **Integer coordinates.** A frame sitting at `x=132.5` split every edge across two pixels and
   blurred the composition — a half-pixel offset is invisible in the layers panel and obvious on
   export.
-- **Colors bound to variables**, never typed in by hand. A hand-typed hex is a color that silently
-  stops following the palette the next time the palette changes.
-- **Text on text styles, effects on effect styles** — and every style created for this screen has at
-  least one user. A type ramp in the styles panel with `textStyleId` empty on every node is the same
-  defect as a hand-typed hex: it looks identical today and stops following the ramp tomorrow. Read.
+- **Colors bound to variables** where the product has them (`ux-rules.md`, the tokens note), never
+  typed in by hand. A hand-typed hex is a color that silently stops following the palette the next
+  time the palette changes.
+- **Text on text styles, effects on effect styles**, where the product has them — and every style
+  created for this screen has at least one user. A type ramp in the styles panel with `textStyleId`
+  empty on every node is the same defect as a hand-typed hex: it looks identical today and stops
+  following the ramp tomorrow. Read.
 - **Shadows and outside strokes not cut by a clipping ancestor.** The cut lands on the card, but the
   cause is a wrapper two levels up with the default `clipsContent`; checked by computing each shadow's
   reach against its clipping ancestors, not by glancing at the card. Read.

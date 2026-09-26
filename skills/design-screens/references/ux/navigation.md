@@ -3,7 +3,7 @@
 Reached from `references/ux-rules.md`. Read when the screen sits inside a flow, opens over
 something, or is one of several places the user moves between.
 
-### Modal, sheet or page — decided by the task, not by the size of the content
+### Modal, sheet or page — decided by the task
 
 A **modal** interrupts and demands a decision before anything else continues; use it when the
 answer really is required now. A **sheet** is for a short task that keeps the context visible

@@ -9,8 +9,14 @@ Names, amounts, statuses, anything the row exists to communicate. Truncate the s
 instead. If every string in the row is essential and none fits, the layout is wrong — the text is
 not the thing to fix.
 
+What counts as essential depends on what the screen is for. Where values are compared — a table, a
+data list — nothing essential truncates. Where a string only labels an item — a card caption, a book
+title on a storefront — a long one may take an ellipsis at the end, as long as the item stays
+recognisable and the full value is one step away.
+
 **Read:** for each truncated node, whether the row would still make sense with that value hidden.
-**Blocking:** an amount or an identity cut mid-word is a defect, not a compromise.
+**Blocking:** an amount cut anywhere, or a name cut so that the item can't be told apart from its
+neighbours, is a defect.
 
 ### Truncation is a decision made per node, not a fallback
 
@@ -97,14 +103,6 @@ number is the threshold is a product decision — but there is one, and it is th
 the product rather than per screen.
 
 **Read:** the threshold on this screen against `design.md`.
-
-### A name in a row truncates; it does not wrap
-
-In a list, a timeline or a table row, a long name takes an ellipsis at its maximum width and keeps
-the row one line tall. Wrapping one cell re-flows the whole row and breaks the alignment that makes
-the list scannable. The full value stays reachable — a tooltip, the detail view.
-
-**Read:** name cells have a max width and truncate; row height is unaffected by content length.
 
 ### A timeline states its direction
 

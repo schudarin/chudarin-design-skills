@@ -136,7 +136,7 @@ The same rule covers any other condition swapped mid-task — a hung Figma bridg
 - "The user already said to proceed" — proceeding was authorised, the downgrade wasn't.
 - "There's no signature-traits list, so nothing's off-limits" or "this property is basically part of what they asked for" — empty means unknown, not unrestricted, and unnamed means not requested.
 - "The note says so" — a quarter of the audit notes were wrong on the first pass, and they were written by you. Re-read the note against the screen before designing to it.
-- "Nothing found on the re-read" — on a set over ~20 notes the observed rate is one defect in four, so an empty result is a claim about your re-read, not about the notes.
+- "Nothing found on the re-read" — on a set over ~20 notes, an empty result is a claim about your re-read, not about the notes.
 - "The defect is recorded, so this frame needs that control drawn" — check whether your fix removed the object the defect lived on. If it did, the frame is reassigned, not filled.
 - "I looked at the screenshot myself, that's the check" — the builder looking at its own work is step 3's revision pass, not step 4. The three checks run as a separate read-only pass, against node properties, before the link goes out.
 - "The link is ready, I'll show it and check while they look" — the verdict comes first. A screen shown before SHOW gets rejected for what the checks would have listed, and the rejection costs the round.

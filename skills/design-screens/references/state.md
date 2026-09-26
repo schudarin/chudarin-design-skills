@@ -117,9 +117,9 @@ Rules that follow from the layout:
 | Reader | Sections used |
 |---|---|
 | Brief to the design agent (`references/briefs.md`) | Settings, Signature traits, Rejected |
-| The "everything present" check (`references/checks.md`) | the screen's task list, carried in the brief, not this file |
-| The "accuracy" check (`references/checks.md`) | Settings — design system, tokens |
-| The "product style" check (`references/checks.md`) | Signature traits + the screenshots under Approved |
+| The Completeness check (`references/checks.md`) | the screen's task list, carried in the brief, not this file |
+| The Accuracy check (`references/checks.md`) | Settings — design system, tokens |
+| The Product style check (`references/checks.md`) | Signature traits + the screenshots under Approved |
 | The orchestrator after a context loss | In progress, Project pitfalls |
 
 This is why the six sections don't collapse into fewer: each reader needs a different slice, and a reader that only needs `Signature traits` shouldn't have to load `In progress` to get it.

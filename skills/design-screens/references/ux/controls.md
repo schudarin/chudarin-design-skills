@@ -37,9 +37,6 @@ wrapper, detaches the underline from the text, and breaks the vertical rhythm â€
 link wrappers. Inline targets are explicitly exempted by WCAG 2.2's own target-size criterion, so
 this is not a trade-off against accessibility; it is what the criterion says.
 
-Note the trap: a checklist that says "tap zones â‰¥ 44" is itself what causes this defect, because the
-agent applies it to everything interactive (`ux/accessibility.md` on which number even applies).
-
 **Read:** link wrappers have no `minHeight`; their height equals the text's.
 
 ### Search over a long list is typed into the field itself
