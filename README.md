@@ -97,10 +97,10 @@ restart, and the Figma login in step 6.
 
 Figma limits an agent by seat, not by skill:
 
-| Seat | Starter | Professional | Organization, Enterprise |
-|---|---|---|---|
-| View, Collab | 20 reads a month | 6 reads a month | 6 reads a month |
-| Dev, Full | 200 a day, 10 a minute | 200 a day, 15 a minute | 600 a day, 20 a minute |
+| Seat | Starter | Professional | Organization | Enterprise |
+|---|---|---|---|---|
+| View, Collab | 20 reads a month | 6 reads a month | 6 reads a month | 6 reads a month |
+| Dev, Full | 20 reads a month | 200 a day, 10 a minute | 200 a day, 15 a minute | 600 a day, 20 a minute |
 
 A View or Collab seat is enough to look at the thing once, not to work. You need Dev or Full.
 
