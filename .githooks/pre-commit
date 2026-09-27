@@ -19,4 +19,6 @@ if [ -n "$hits" ]; then
   echo "Scrub them (or, if this is a deliberate placeholder, commit with --no-verify)." >&2
   exit 1
 fi
+# Rule names and .md paths in skills/ must resolve (see check-links.py).
+python3 "$(dirname "$0")/check-links.py" || exit 1
 exit 0

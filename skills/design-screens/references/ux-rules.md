@@ -78,6 +78,6 @@ for one product is a signature trait: it goes into that project's `design.md`
 taste onto every other product this skill touches.
 
 Split a topic file when it stops being one topic — when the routing row would need an "and" to
-describe it. Around 120–140 lines is the signal to check, not the rule itself: `states.md` split
+describe it. Around 120–140 lines is the signal to check, not the rule itself: `ux/states.md` split
 into states and loading because the wait and the failure are different questions, not because of a
 line count.
