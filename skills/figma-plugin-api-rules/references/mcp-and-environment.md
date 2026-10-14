@@ -397,3 +397,20 @@ return { fontSize: t.fontSize, chars: t.characters };   // 34 → the shot must 
 
 ### never-walk-a-whole-production-page-with-findallwithcriteria
 **Principle:** A single read-only pass over a large interface page (collecting `effects` per node) can hang the plugin until the MCP client gives up. Scope every traversal to a specific frame or component, and when you need one fact about the design system — a shadow, a radius, a padding — read it off one known node instead of surveying for it.
+
+### saveversionhistoryasync-not-supported-in-sandbox
+**Principle:** `figma.saveVersionHistoryAsync()` exists on the `figma` global (`typeof` → `"function"`) but throws `"saveVersionHistoryAsync" is not a supported API` in the MCP sandbox — a `typeof` feature-detect does not prove a method works here. A destructive step (page removal, mass delete) cannot be guarded by a named version checkpoint from inside the script.
+**Symptom:** the version save throws in the same call that removes the page; without a `try/catch` the throw rolls the removal back too (see hard rule 8).
+**Pattern:** wrap the call in `try/catch`, report the failure honestly, and rely on Figma's automatic version history — or ask the user to save a named version in the UI before the destructive call.
+```js
+let version = null;
+try { await figma.saveVersionHistoryAsync('before removing page X'); version = 'saved'; }
+catch (e) { version = 'failed: ' + String(e).slice(0, 120); }   // sandbox: always "not a supported API"
+page.remove();
+return { version };
+```
+
+### inline-screenshot-returns-at-most-five-images-per-call
+**Principle:** `await node.screenshot()` inside one `use_figma` call attaches at most 5 images to the response — the 6th and later calls run without error and their images are silently dropped.
+**Symptom:** a loop requesting 26 glyph screenshots returns 5 images, no error, and the script's `return` value is intact.
+**Pattern:** batch 5 nodes per call and fan the batches out as parallel read-only calls (one page switch each).
