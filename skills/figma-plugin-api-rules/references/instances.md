@@ -857,3 +857,17 @@ const main = await inst.getMainComponentAsync();   // ask the component, not the
 ### variant-switch-rebuilds-instance-children-lazily-split-the-calls
 **Principle:** Switching a variant rebuilds the instance's children lazily — within the same script the new subtree is not there yet, so a `setProperties({State: …})` followed by a search for a node that only the new variant has finds nothing. Split it across two `use_figma` calls, or set the property in the call *before* the one that needs the node. And do not assume variants of one set share a structure: a `State=Active` variant held neither the tick nor the radiobutton that `State=Default` had, so no amount of re-reading would have produced them.
 **Symptom:** `inst.setProperties({State: 'Active'}); inst.findOne(n => n.name === 'Tick')` returns `null` in the same call; the same `findOne` in the next call finds it — or never, if the variant genuinely lacks the node.
+
+### alpha-mask-in-a-group-ignores-a-direct-instance-sibling-wrap-it-in-a-frame
+**Principle:** A mask layer (`isMask = true`, e.g. an ALPHA gradient fade) inside a GROUP does not apply to an INSTANCE that sits directly above it in the same group — the instance renders unmasked, with a hard edge. The same image as a plain RECTANGLE fill, or the same instance wrapped in a plain FRAME, is masked correctly. Swapping image-filled rectangles for instances of an image component therefore silently breaks every "photo fades into the UI" effect built on a mask.
+**Symptom:** after replacing image rectangles with component instances, layer order and `isMask` read back unchanged (`Mask > Photo`), yet the photo ends in a hard line; a low-scale screenshot hides it — the edge is only obvious at `scale: 1`.
+**Pattern:** wrap the instance in a FRAME (`fills = []`, `clipsContent = false`, same size and position) and put the frame where the instance was; the instance keeps its component link. Check by rendering a temporary copy at full scale over a contrasting background, then remove the copy.
+```js
+const idx = group.children.findIndex(c => c.id === inst.id);
+const wrap = figma.createFrame();
+wrap.fills = []; wrap.clipsContent = false;
+wrap.resize(inst.width, inst.height);
+group.insertChild(idx, wrap);          // keep it above the mask
+wrap.x = inst.x; wrap.y = inst.y;
+wrap.appendChild(inst); inst.x = 0; inst.y = 0;
+```
