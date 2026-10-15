@@ -332,6 +332,11 @@ for s in ~/chudarin-design-skills/skills/*; do ln -sfn "$s" ~/.agents/skills/; d
 местные договорённости) сюда не идут. Держи их в `<project>/.claude/design.md` или в своих
 заметках.
 
+## 🎛️ Ещё у меня
+
+[chudarin-context-mod](https://github.com/schudarin/chudarin-context-mod): боковая панель для Claude Code, которая показывает,
+чем занят контекст и сколько стоит каждое действие. Отдельный плагин в том же каталоге `chudarin`.
+
 ## 📄 Лицензия
 
 MIT, см. [`LICENSE`](LICENSE).

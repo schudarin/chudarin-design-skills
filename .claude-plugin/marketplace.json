@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "chudarin",
-  "description": "Agent skills by Sergey Chudarin, built and refined on real product files: designing in Figma, making presentations and writing plain text.",
+  "description": "Plugins by Sergey Chudarin for Claude Code: a design agent for Figma, and a context panel mod. Install either one on its own.",
   "owner": {
     "name": "Sergey Chudarin",
     "url": "https://chudarin.com"
@@ -12,6 +12,15 @@
       "description": "Skills for agents that design and write: plan flows, audit a design system, design screens, make presentations with a story first and numbers checked against sources, write to the Figma Plugin API without silent failures, repair detached variable bindings, write text in Russian and English that doesn't read as generated and follows your voice.",
       "source": "./",
       "category": "design"
+    },
+    {
+      "name": "chudarin-context-mod",
+      "description": "A Claude Code mod: side panel /ctx with context and plan limits at a glance, what fills the window with plain-language help for every item, the price of each kind of action, and the session's totals across compactions.",
+      "source": {
+        "source": "github",
+        "repo": "schudarin/chudarin-context-mod"
+      },
+      "category": "productivity"
     }
   ]
 }

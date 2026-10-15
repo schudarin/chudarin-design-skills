@@ -333,6 +333,11 @@ its [`SKILL.md`](skills/figma-plugin-api-rules/SKILL.md). Facts about one specif
 IDs, local conventions) don't belong here. Keep those in `<project>/.claude/design.md` or your own
 notes.
 
+## 🎛️ Also by me
+
+[chudarin-context-mod](https://github.com/schudarin/chudarin-context-mod): a side panel for Claude Code that shows what
+fills your context and what each action costs. A separate plugin in the same `chudarin` catalog.
+
 ## 📄 License
 
 MIT, see [`LICENSE`](LICENSE).
