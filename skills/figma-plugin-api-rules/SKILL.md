@@ -266,7 +266,7 @@ If you accumulate facts about one specific Figma file (Set IDs / Page IDs of par
 | Mistake | Fix |
 |---|---|
 | Reading topic files once at the start, or only their headings | Re-check the identifier list before each script that uses a new API; read the whole file — the fix is in the Pattern, not the heading |
-| Retrying font loads/bindings for a sandbox-absent licensed font | Ask whether it can be uploaded to the org/team — that's the real fix; only then fall back to Inter to spec — `text-and-styles.md` |
+| Retrying font loads for a sandbox-absent licensed font, or building around it (donor text left in place, Inter) before asking | Ask first whether it can be uploaded to the org or team, and wait for the answer: the upload takes minutes and the family shows up in the running session. Re-run `listAvailableFontsAsync` once after the person says it is done. Fall back to Inter to spec only when the upload is refused — `text-and-styles.md` |
 | Writing to a node right after `setTextStyleIdAsync` | It swaps the node's font mid-call — load both current and target fonts first |
 | Reading `node.fontName` on multi-font text | It's `figma.mixed` — loop `getStyledTextSegments(['fontName'])` and load each run's font |
 | Assuming a binding applied | Read it back — library-swatch and `cornerRadius` bindings fail silently |
