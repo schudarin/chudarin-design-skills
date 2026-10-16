@@ -67,3 +67,30 @@ Feature name/
 - [ ] Entry points include all realistic user paths
 - [ ] Out-of-scope section is explicit
 - [ ] Figma file structure matches screen map
+
+## Drawing the map in Figma
+When the map goes on the canvas as blocks and arrows:
+- If the user gives an example board, read it through the API — sizes, colours, text styles, connector ends — not from a screenshot, and ask what each colour or mark means. Without an example, use the default style below; do not invent one.
+- Build inside the frame the user prepared for the map, not in new frames next to it.
+- Place blocks on one grid, left to right in the order of the path.
+- End every connector on a block, never on the frame that holds the scheme.
+- Before showing, walk the connector graph: every block except an entry has an incoming connector, every block except a final exit has an outgoing one. Fix or list the ones that fail.
+
+**Default style.** Four colour roles; when the file has colour variables, map each role to the closest one, otherwise use the values given.
+
+| Role | Default | Used for |
+|---|---|---|
+| Accent | `#3a88f5` | text, other paths, key block fill, outlines |
+| Tint | `#dfecfd` | block fill |
+| Grid | `#daf0ff` | canvas grid lines |
+| Main path | `#ff62b2` | the main path's connectors, marks |
+
+- Font: the file's main sans family; Inter when the file has none. Only Bold and Medium are used — check both styles exist before the first text write.
+- Canvas: white frame with a 1 px grid in the Grid colour.
+- Step: 394 wide, Tint fill, radius 35, vertical auto-layout, padding 40, gap 24; title Bold 36 and description Medium 18 in Accent.
+- Entry or short block: horizontal, height 127, padding 40, width hugs the title; title only.
+- Key block (the finish): Accent fill, white text.
+- Mark on a block: pill 42 high, radius 999, padding 8/16, white Bold 20 on Main path.
+- Connectors: elbowed, 2 px, arrow at the end; the main path in Main path, every other path in Accent; a two-way transition has arrows at both ends. In a Design file connectors cannot be created, only cloned — see the connectors file of `figma-plugin-api-rules`.
+- A sub-scheme sits in an outline: 4 px Accent at 48 %, radius 144.
+- Header: Bold 144, subtitle Bold 46, in Accent.
