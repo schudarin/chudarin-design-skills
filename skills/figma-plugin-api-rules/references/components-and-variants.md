@@ -317,7 +317,7 @@ const items = menu.children.filter(n => n.type === 'INSTANCE' && n.name === 'ite
 
 ### accessing-property-on-removed-node-throws
 **Principle:** After `node.remove()` the node ceases to exist in the document — any subsequent access to its properties (`.parent`, `.x`, `.children`, etc.) in the same script throws `get_parent: The node with id "..." does not exist` (or the analogous error for another property), rather than returning `null`/`undefined`. If after a conditional `remove` you need to return a flag/data about what was removed — save the needed value (id, name, a factory flag) into a variable BEFORE calling `remove`; don't read it off the already-removed node in the `return`.
-**Symptom:** the script fails not at the `remove` itself but later — on an innocent-looking `return`/logging line where the script tries to read `.parent` or another property of a node removed conditionally a few lines earlier.
+**Symptom:** the script fails not at the `remove` itself but later — on an innocent-looking `return`/logging line where the script tries to read `.parent` or another property of a node removed conditionally a few lines earlier. Most often through an array collected before the removals: a later `find`/`filter` over it runs its predicate on a removed element (`in get_y`, `in get_characters`).
 ```js
 // ❌ WRONG — remove() ran, then return reads .parent of the removed node
 let wrapperRemoved = false;
