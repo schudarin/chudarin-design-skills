@@ -1,6 +1,6 @@
 ---
 name: writing-texts
-description: Write, rewrite, or review Russian and English prose so it reads as written by a person, not a model. Use for requests to make text more human, simplify language, remove formulaic writing, or edit articles, notes, docs, UI copy, presentations, and Figma text. Covers drafting and language review without a separate editing skill. Also use when the user corrects the agent's wording, says how they write or how their product speaks, or asks to remember a writing preference.
+description: Write, rewrite, or review Russian and English prose so it reads as written by a person, not a model. Use for requests to make text more human, simplify language, remove formulaic writing, or edit articles, notes, docs, UI copy, presentations, and Figma text. Covers drafting and language review without a separate editing skill. Also use when the user corrects the agent's wording, says how they write or how their product speaks, or asks to remember a writing preference. Also load it before the first draft of any document or message other people will read as part of other work — a spec, a task statement, a ticket, a summary, a message the person will send — even when the request is about the work and not the text.
 ---
 
 # Writing texts
@@ -43,6 +43,8 @@ Replace heavy words with ordinary ones and abstract phrasing with words about wh
 - "Stakeholder alignment on mockups is being conducted" → "I show the mockups to the team and collect edits".
 
 Check that the sentence is easy to say out loud. Do not add filler words, forced slang or chopped sentences to sound conversational. The meaning and the author's degree of certainty matter more than copying an example word for word.
+
+A message the person will send under their name is authored text, not the agent's report to them. It speaks as the person ("we met with…, I showed…, we came to…"), tells what happened and what follows from it, and has no bold section labels or status blocks.
 
 ## Irony
 
@@ -125,5 +127,6 @@ Keep these questions in mind when writing, and check the result against them whe
 5. **Does a device help, or repeat mechanically?** One device alone is fine. A combination of several patterns, or one repeated constantly, needs a check by meaning, not automatic removal.
 6. **Is the main idea in place?** The reader does not have to dig through an introduction and meta-commentary to reach the point.
 7. **Is there enough context?** The reader understands the thought without access to someone else's notes or code. For an article, see `references/articles.md`.
+8. **Does every word fit the register?** In a spec, a task or another project doc, slang (RU «закинул денег» → «пополнил счёт»; EN "threw cash at it" → "paid") and working names coined while discussing the task (a "gate", a "ratchet") become plain neutral words, unless the doc defines the term and uses it throughout. Check the whole doc after each edit, not only the lines the person pointed at.
 
 For a detailed pass on formulaic phrasing, read `references/editing-patterns.md`. Apply it with the genre and the author's intonation in mind. Do not add a report on internal checks or on which catalogue was used to the result.
