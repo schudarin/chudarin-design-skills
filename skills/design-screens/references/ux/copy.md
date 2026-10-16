@@ -59,7 +59,10 @@ engineering abbreviation — are not the words the user has. Say the simple thin
 one. And where the product has a house convention for a term, follow it rather than inventing a
 synonym on this screen.
 
-**Read:** each domain term against what a first-time user would call it.
+**Read:** each domain term against what a first-time user would call it; then, across every frame of
+the feature, the labels that name the same set — filter option, link, table header, caption, tooltip
+— use one term. A label that describes a marker ("without the mark") instead of the set it marks is a
+second term.
 
 ### An error message names the action, not the failure
 

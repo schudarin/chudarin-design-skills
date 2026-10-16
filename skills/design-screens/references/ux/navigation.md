@@ -95,7 +95,12 @@ Multi-step means a step count or a progress bar from step one — "Step 2 of 4",
 length is discovered by walking it. And a step the user can leave says whether returning resumes or
 restarts.
 
-**Read:** the step indicator is present on the first step, not only on later ones.
+A count suits a short flow with a fixed length. When the total is large, or depends on answers still
+to come, show named stages and a bar instead of "Step N of M". A large number on step one is a reason
+to leave, and a total that changes mid-way makes the product look wrong.
+
+**Read:** the step indicator is present on the first step; a numeric total appears only when it is
+small and fixed.
 
 ### Onboarding is skippable, and skipping is not punished
 

@@ -9,9 +9,13 @@ picker, or any panel that opens. What the controls are *called* is in `ux/labels
 
 | Options | Single choice | Multiple choice |
 |---|---|---|
+| 1 | no control: the value as text | no control: the value as text |
 | 2–6 | radio buttons | checkboxes |
 | more than 6, or labels of more than a few words | a dropdown | a multi-select |
 | more than fits a panel, or unknown in advance | a combobox — search in the field itself | a multi-select with search |
+
+A choice of one is not a choice. In a step-by-step flow, a step whose only question has one answer
+is skipped, and the answer is shown on the next step.
 
 A **segmented group** is a presentation choice inside the first row, not a fourth option: it works
 at three to five short labels and stops working past that — five long labels is a row of tabs

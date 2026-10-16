@@ -8,8 +8,11 @@ Accuracy forces a change.
 
 ## 1. Completeness
 
-All elements and tasks from the brief are present. Error, empty, and loading states are drawn, not
-just the happy path. Checked item-by-item against the brief's own list — this requires no taste,
+All elements and tasks from the brief are present. The error, empty and loading states this feature
+introduces are drawn, not just the happy path. A state an existing component already draws (its
+skeleton, its send error) is named in the notes next to that component, not redrawn. A state no
+source names — brief, spec, meeting notes — is a question to the user, not a frame. Behaviour the
+user never sees, such as a server-side queue or delay, is not a screen state. Checked item-by-item against the brief's own list — this requires no taste,
 only a count.
 
 **Result:** PASS, or a list of what's missing.
@@ -41,6 +44,11 @@ looked at didn't run.
 - **Shadows and outside strokes not cut by a clipping ancestor.** The cut lands on the card, but the
   cause is a wrapper two levels up with the default `clipsContent`; checked by computing each shadow's
   reach against its clipping ancestors, not by glancing at the card. Read.
+- **Nothing sticks out of its parent.** After a resize, or a move into a narrower or padded container,
+  a FIXED-width child keeps its old width and runs past the edge; with `clipsContent = false` nothing
+  cuts it, and a few pixels do not show at screenshot scale. Read: each visible node's right and
+  bottom edges against its parent's inner box (size minus padding); every overrun is a finding with
+  node id and pixels.
 - **The frame being looked at agrees with the file.** A Look rule runs only on a screenshot that
   matches the Read of at least one property changed in this round; a render can lag the file by
   minutes, and a finding filed against a stale render is a finding against the cache.
@@ -76,7 +84,24 @@ only the second one.
 Separately: was the task solved **inside the product's own vocabulary** — an existing component,
 pattern, or variable — or with an imported technique that solves the immediate problem but doesn't
 belong to this product. A solution can pass every general UI heuristic and still fail this check on
-vocabulary alone.
+vocabulary alone. Read: every button, alert, progress indicator, avatar and header on this round's
+screens is an instance of a design-system component of that role. Each plain frame, hand-drawn shape,
+or instance of a component with another role is a finding with its node id.
+
+Separately: tells of a screen built on defaults. A tell is a reason to check a decision, not an
+error. One that `design.md` or the user chose stays. A tell the agent added with no reason in the
+content or the style is a finding:
+- an accent word in a heading set in a contrasting serif or italic;
+- all-caps letter-spaced labels above headings;
+- section numbers (01, 02…) above sections;
+- frosted-glass blur on bars and overlays;
+- three equal cards for a list of steps;
+- a card around a single value, and cards nested in cards;
+- numbers that count up on load;
+- big number tiles where the product's real screen could be shown;
+- mono type outside data (prices, codes, file names).
+
+Look: list each tell found, with its element and whether `design.md` or the user chose it.
 
 **Result:** SHOW-compatible, or a list of trait/screenshot mismatches, each naming the specific
 trait or screenshot region it contradicts.
@@ -116,7 +141,10 @@ You are reviewing a Figma screen against three checks: Completeness, Accuracy, P
 
 Skills to load: a critique skill if this session has one on the shelf (`design-critique` is one
 name worth looking for) — otherwise none; the criteria below are self-contained either way.
-figma-use is not required — this is a read-only pass, no use_figma call is made.
+Accuracy reads node properties that get_metadata does not return — fills, fonts, bindings, fractional
+positions — so the critic runs read-only use_figma scripts. Load figma-use and figma-plugin-api-rules
+before the first one; a read-only script is subject to the same return cap and `figma.mixed` traps as
+a write.
 
 Inputs — each line below is an absolute path, filled in before sending. A line left unfilled
 blocks the check that depends on it exactly the way a blank result section does (see Verdict):

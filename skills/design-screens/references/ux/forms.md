@@ -135,6 +135,17 @@ and almost never the right one.
 
 ## Flow steps
 
+### A choice about the user's own data is made on a sample of that data
+
+When the user picks a sheet, a column, a header row or any part of a file they uploaded, the screen
+shows that part: a few real rows per sheet, the column inside its table, clickable in place. What the
+product guessed is marked in the same sample and is visible without a click. A folded summary with
+an Edit button asks the user to trust the guess instead of checking it. Progressive disclosure hides
+options that few people need. It does not hide the evidence for a guess that everyone has to confirm.
+
+**Look:** every choice on the user's data has its sample on the same screen, and every preselected
+value is visible in that sample without opening anything.
+
 ### A container that holds one step of a flow gets a minimum height, not a fixed one
 
 The success step of a flow had a third of the content of the form before it, and the card collapsed

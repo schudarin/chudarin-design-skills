@@ -68,6 +68,18 @@ otherwise a scrolled row cannot be told from its neighbours.
 
 **Read:** the scrolled frame shows the header, and the identity column if the table scrolls sideways.
 
+### One vertical scroll per screen; the actions stick until their place arrives
+
+A table inside a scrolling page does not scroll vertically on its own. Two scrollbars on one axis
+make the user guess which one moves, and the inner one catches the wheel. The page scrolls and the
+header pins. Actions placed after the table stick to the bottom of the viewport while the table runs
+under them, and settle into their place when the end is reached. While content passes under them,
+they are visibly a separate layer, raised from the edge with a border or shadow, so the cut-off row
+reads as continuing and not as the end.
+
+**Look:** scroll a long table. Only one scrollbar moves, the action bar stands apart from the rows
+under it, and it settles into the page at the end.
+
 ### Horizontal scroll is a decision, with its edge shown
 
 A wide table may scroll sideways rather than shrink its columns to illegibility — but the scroll has

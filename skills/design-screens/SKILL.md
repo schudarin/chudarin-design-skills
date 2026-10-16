@@ -1,6 +1,6 @@
 ---
 name: design-screens
-description: Use when designing, building, or changing a product screen, flow, or component in Figma — new screens, states, lo-fi or hi-fi prototypes, redesigns, or edits to already-approved work. Load it alongside figma-generate-design or figma-use, never instead of them: those cover the API, this covers the process. Use when a design result was rejected, when a screen must match an existing product, or when starting design on a product with no visual direction yet. Not for auditing or documenting an existing design system without changing screens — that is audit-design-system.
+description: Use when designing, building, or changing a product screen, flow, or component in Figma — new screens, states, lo-fi or hi-fi prototypes, redesigns, or edits to already-approved work. Load it alongside figma-generate-design or figma-use, never instead of them: those cover the API, this covers the process. Also use, for its UX rules and checks, when a product screen is built directly in code with no Figma step. Use when a design result was rejected, when a screen must match an existing product, or when starting design on a product with no visual direction yet. Not for auditing or documenting an existing design system without changing screens — that is audit-design-system.
 ---
 
 # Figma Design Screens
@@ -30,6 +30,8 @@ user should never have to ask "where are you going to draw this?" after the dire
 | Design system exists | the design system is law | direction, typography, palette phases |
 | No design system, screens exist | existing screens in Figma | same |
 | Neither | external references, curated by the user | nothing |
+
+**No Figma: the screen is built straight in code.** The Figma steps do not run. No frame link, no screens drawn first in another medium, unless the user asks for mockups in words. What still runs: `design.md` is read first and decisions are written back to it. Before a screen's code is written, read the `references/ux-rules.md` rows that match its content, plus `ux/principles.md` when the screen is new or was rejected. Before the user sees the screen, the three checks from `references/checks.md` run on the running build, against the DOM and a screenshot at each width, by a reader that did not write the code.
 
 ## Improving a product that already ships
 
@@ -68,6 +70,11 @@ not a contract: a name that is not on this session's shelf does not exist for yo
 actually found, and only it — never a plausible-sounding substitute you haven't seen listed, and
 never install anything to get one.
 
+The shelf is the skill list this session shows, not a skills folder on disk. A folder can hold a
+skill that the settings disable. If the chosen name fails to load, load the next name in the same
+row before the first screen is built. The lens shapes the build. It is not a pass added after the
+user has seen the screen.
+
 **Nothing found — carry on without it.** Say so in one line, then work from what this skill already
 gives you: the design system, the existing screens, the references recorded in `design.md`, the copy
 and control rules routed by `references/ux-rules.md`, and the three checks in `references/checks.md`. A
@@ -85,6 +92,10 @@ missing visual skill costs an extra lens on composition, not the process.
 | 6 | User hand-finishes it; the resulting screenshot becomes the saved one |
 
 Step 6 is the norm, not an exception — expect the user to finish the screen by hand.
+
+Lay the page out per `references/canvas.md` from the first screen. The working page holds only what is in play, in sections: the current product, the proposal, its states. Section names are the headers; no floating text labels. A variant the person rejected leaves the working page in the turn the choice is made. Read before the link goes out: no top-level node on the page other than a section, and no overlaps inside a section.
+
+The steps hold when the main agent builds the screen itself, with no designer agent. The brief is still written: it is the list Completeness counts against, and it carries the rules in force. Step 4 is still a separate read-only critic. The message that shows a screen carries the critic's verdict line (mode row, SHOW); a message without it is a progress note and says "not checked yet" in its first line.
 
 A brief must point to a source to clone, not describe anatomy: a cloned node guarantees identical spacing, styles, and bindings; a text description invites the agent to author from scratch, and that drifts.
 
@@ -145,4 +156,5 @@ The same rule covers any other condition swapped mid-task — a hung Figma bridg
 - "The defect is recorded, so this frame needs that control drawn" — check whether your fix removed the object the defect lived on. If it did, the frame is reassigned, not filled.
 - "I looked at the screenshot myself, that's the check" — the builder looking at its own work is step 3's revision pass, not step 4. The three checks run as a separate read-only pass, against node properties, before the link goes out.
 - "The link is ready, I'll show it and check while they look" — the verdict comes first. A screen shown before SHOW gets rejected for what the checks would have listed, and the rejection costs the round.
+- "I'll say in the message that it isn't checked" — a disclaimer does not replace step 4. The user's review is not the critic. A same-day deadline shortens the brief, not the checks: the critic runs before the link goes out.
 - "The screenshot shows it, so the file is like that" — when the readback disagrees, the file wins and the render is old. Re-shoot; don't edit the file to match a cache.

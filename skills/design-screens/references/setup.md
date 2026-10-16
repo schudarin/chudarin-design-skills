@@ -39,7 +39,7 @@ Ask only if Step 1 found nothing. No more than these two, in this order.
 ## Never ask
 
 - **Interface language.** Not part of this survey, at any point, regardless of which answer the two questions above produce.
-- **What medium the mockups are built in.** Always Figma. This skill doesn't cover any other medium, so there's nothing to choose.
+- **What medium the mockups are built in.** Figma, or the product's code when the user builds without Figma (`SKILL.md`, Overview); never a third medium chosen by the agent.
 
 Asking either turns a two-question survey into a longer interview, and the rest of the skill has no use for the answer.
 

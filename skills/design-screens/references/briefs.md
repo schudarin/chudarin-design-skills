@@ -129,7 +129,7 @@ not a bare block ("don't touch anything else")?
 Colors: variables only, from [collection name]. Typography: existing text styles only.
 Reuse ladder, in this order, ahead of any create step:
 1. Does the screen need this element at all?
-2. Is there a component in the design system for it?
+2. Is there a component in the design system for it? Answered by searching every library enabled in the file (`search_design_system`), not by looking at the instances already on the donor screen. When the file has more than one library, the one for new work is in `design.md` Settings; not recorded → ask in one line and write the answer there. An instance of a component with another role, renamed or restyled to pass as this one, is a "no".
 3. Is there an existing pattern in the product to clone?
 4. Does an existing variable or text style already solve it?
 Only when all four are "no" — create.
