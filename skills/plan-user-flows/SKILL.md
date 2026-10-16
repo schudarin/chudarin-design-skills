@@ -20,6 +20,8 @@ Plans what needs to be designed before a pixel is touched — mapping all screen
 ### 1. Flow Overview
 Feature, user, goal, entry points, success exit, failure exits.
 
+A flow that puts the user into a mode — a queue walk, a wizard, a guided pass — also maps three paths: where each exit lands, by screen; what an outside event does mid-mode (a new message, opening another item) and what the user sees next; how the user gets back in, and whether progress is kept. Each is a row in the screen map, not a note.
+
 ### 2. Screen Map
 
 | # | Screen name | Type | Triggered by | Notes |
@@ -62,7 +64,7 @@ Feature name/
 [Explicit out-of-scope items — prevents scope creep]
 
 ## Quality Checks
-- [ ] All three state types covered: loading, error, empty
+- [ ] Loading, error and empty are covered for what this feature adds; states that reused components already handle are listed by component name, not mapped as new screens; every state traces to a source or is marked as a question
 - [ ] All decision points mapped with both branches
 - [ ] Entry points include all realistic user paths
 - [ ] Out-of-scope section is explicit
