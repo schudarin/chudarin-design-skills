@@ -16,7 +16,7 @@ Figma file: key, pages
 Models: default from the skill; add a line only if this project needs something else
 
 ## Signature traits
-What looks like an unfinished detail in this product but is actually the style.
+What looks like an unfinished detail in this product but is actually the style, and the usage rules the person states while working: which variant goes where (e.g. "secondary buttons only in the footer"). A rule stated during the work goes here in the same turn, not only into a log line: the brief and the Product style check read this section.
 
 ## Approved
 | Screen | Where in Figma | Screenshot | Date |

@@ -1,6 +1,6 @@
 ---
 name: design-screens
-description: Use when designing, building, or changing a product screen, flow, or component in Figma — new screens, states, redesigns, or edits to already-approved work. Use when a design result was rejected, when a screen must match an existing product, or when starting design on a product with no visual direction yet. Not for auditing or documenting an existing design system without changing screens — that is audit-design-system.
+description: Use when designing, building, or changing a product screen, flow, or component in Figma — new screens, states, lo-fi or hi-fi prototypes, redesigns, or edits to already-approved work. Load it alongside figma-generate-design or figma-use, never instead of them: those cover the API, this covers the process. Use when a design result was rejected, when a screen must match an existing product, or when starting design on a product with no visual direction yet. Not for auditing or documenting an existing design system without changing screens — that is audit-design-system.
 ---
 
 # Figma Design Screens
@@ -49,6 +49,9 @@ Every designer agent loads `figma-use` (mandatory before any `use_figma` call �
 skill in Claude Code, or the MCP resource `skill://figma/figma-use/SKILL.md` in other agents) and
 `figma-plugin-api-rules`. On top of those: exactly **one** visual skill, matched to the task type —
 never the whole shelf, because more lenses on one task dilute focus rather than adding rigour.
+A screen with any copy also loads `writing-texts` from this pack before its first text is written,
+and every brief to a designer agent names it. It is not a visual skill and does not count against
+the one-lens limit.
 
 **Look before you load.** Read the list of skills available in this session, then match by task
 type. Names worth looking for, by role:
@@ -84,6 +87,8 @@ missing visual skill costs an extra lens on composition, not the process.
 Step 6 is the norm, not an exception — expect the user to finish the screen by hand.
 
 A brief must point to a source to clone, not describe anatomy: a cloned node guarantees identical spacing, styles, and bindings; a text description invites the agent to author from scratch, and that drifts.
+
+A block that appears on more than one frame becomes a component before the second copy is placed, and every later change to it goes to the master. Frame-by-frame edits to copies drift apart in text style, spacing and order within a few rounds, and the user is the one who finds the drift.
 
 ## Editing an approved screen
 

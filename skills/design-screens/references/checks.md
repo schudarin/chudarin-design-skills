@@ -35,6 +35,9 @@ looked at didn't run.
   created for this screen has at least one user. A type ramp in the styles panel with `textStyleId`
   empty on every node is the same defect as a hand-typed hex: it looks identical today and stops
   following the ramp tomorrow. Read.
+- **A part that repeats across screens is one component, used without style overrides.** List the
+  instances on this round's screens with overridden fills, effects, radii or text styles, and every
+  repeated frame that is not an instance at all; each is a finding with its node id. Read.
 - **Shadows and outside strokes not cut by a clipping ancestor.** The cut lands on the card, but the
   cause is a wrapper two levels up with the default `clipsContent`; checked by computing each shadow's
   reach against its clipping ancestors, not by glancing at the card. Read.
@@ -44,9 +47,16 @@ looked at didn't run.
 - **Spacing follows the project's grid**, not an eyeballed value that happens to look close. When
   the file has a spacing collection, every gap, padding and corner radius is bound to it, never
   typed as a number: a typed `16` next to a `16` variable is the same defect as a hand-typed hex.
-  The one exception is a gap that reads Auto (`SPACE_BETWEEN`); it stays unbound. A value the scale
+  The one exception is a gap that reads Auto (`SPACE_BETWEEN`); it stays unbound and at
+  `itemSpacing = 0`. A bulk binding pass skips `SPACE_BETWEEN` frames; a leftover number there is the
+  minimum gap and makes the content jump when the group's size changes. Read: every `SPACE_BETWEEN`
+  frame has `itemSpacing === 0` and no `boundVariables.itemSpacing`. A value the scale
   does not have goes to the user as a question, add it to the scale or move to the nearest step,
   and is never left as a number. Read.
+- **No spacer frames.** Space between elements comes from auto-layout — gap, padding,
+  `SPACE_BETWEEN` with grouped children, FILL on the content — never from an empty frame or
+  rectangle whose only job is to push a neighbour. Checked by Read: no childless FRAME or RECTANGLE
+  without fills or strokes inside an auto-layout parent.
 - **No artifacts that read as a bug.** Stray single pixels left over from a resize read as a bug
   rather than a deliberate choice — an artifact doesn't announce itself, it has to be looked for.
 
@@ -85,6 +95,10 @@ singles out one listed check as more required than the others listed beside it.
 | After fixes | only the checks tied to the listed findings, plus "did anything else break" |
 | The user chose this direction themselves | Completeness and Accuracy only. **Taste is out of scope**: the critic does not rule on whether a device the user explicitly asked for belongs in the product — that question was already decided by the person who asked for it |
 | Edit inside approved work | Accuracy, scoped to the touched element, and Product style — both run in full; a batch of textbook-correct edits with no Product style check is exactly the kind that gets rejected. Completeness is out of scope: nothing was added, screen composition didn't change, there's nothing new to count. Reviewed **one element at a time**, never as a batch |
+
+A SHOW covers the file as the critic read it. Any write after it — a one-line fix, a rename, a copy
+pass — voids it for every frame the write touched: run the after-fixes round on those frames before
+the link goes out, or say in the message which frames changed after the check.
 
 ## Critic prompt (copy-paste ready)
 

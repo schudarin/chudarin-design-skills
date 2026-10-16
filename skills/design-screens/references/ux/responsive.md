@@ -80,3 +80,13 @@ collapses.
 
 **Read:** the short-viewport frame; the content area's remaining height with every fixed element
 present.
+
+### A screen that does not scroll keeps the device height
+
+A sheet over content, an empty state, a camera or a confirmation is one viewport: its frame is the
+device height of the product's other screens. Content that no longer fits is tightened inside or
+moved into a scrolling layout. A taller frame draws a phone that does not exist and puts the bottom
+action below the real fold.
+
+**Read:** the frame height against the product's device height, for every screen without a scroll
+area.
