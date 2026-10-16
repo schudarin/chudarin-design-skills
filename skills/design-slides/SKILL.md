@@ -1,6 +1,6 @@
 ---
 name: design-slides
-description: Use when creating, restyling, reviewing, or editing a presentation, pitch deck, slide deck, talk, or design review deck, in Figma Slides, Figma Design, pptx, Google Slides, or HTML. Also use when a deck looks generic, templated, or AI-made and needs fixing.
+description: Use when creating, restyling, reviewing, or editing a presentation, pitch deck, slide deck, talk, portfolio or interview case study shown as slides, or design review deck, in Figma Slides, Figma Design, pptx, Google Slides, or HTML. Also use when a deck looks generic, templated, or AI-made and needs fixing.
 ---
 
 # Slides
@@ -38,9 +38,11 @@ After each step the state is written to the deck file: plan, sources, style, wha
 
 ## Existing deck
 
+**Frames that repeat one text in a row are a build.** A run of frames with the same heading and small changes between them is an animation spread over several frames (a step-by-step reveal, Smart Animate between frames). It is one beat of the talk, not a set of empty slides: count it as one slide in timing and in the plan. Before suggesting to cut or merge such a run, check the prototype connections between its frames or ask how it plays in the show.
+
 **Partial edit.** Only what was asked changes; plan, style and key slides are not agreed again. The affected slides are checked and exported. If something else in the deck stands out along the way (a repeated layout, a number without a source, a tell from `references/tells.md`), the reply ends with a list "Noticed, not changed": slide number and one line per item.
 
-**Review without edits.** All checks from `references/checks.md`, but the deck files do not change: no fixes, no export over them. Reply: what I found, by slide, and what I suggest changing.
+**Review without edits.** All checks from `references/checks.md`, but the deck files do not change: no fixes, no export over them. Reply: what I found, by slide, and what I suggest changing. Each finding names what it rests on: the render, a number checked against its source, or a guess. A guess about how the audience will react ("they will notice this at once") is labelled as a guess and is not ranked above checked defects. If the deck has been shown before, ask how it was received before calling anything the main risk.
 
 **Pre-send check.** All checks from `references/checks.md` on the whole deck. Only defects are fixed without asking: an element lost or broken in export, a typo. Style, plan and layouts do not change. Everything else goes into a "Suggested changes" list. The final export is checked again. Reply: what was found, what was fixed, what is suggested.
 
