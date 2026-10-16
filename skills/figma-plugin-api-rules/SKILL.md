@@ -9,6 +9,8 @@ Accumulated, field-tested knowledge of the Figma Plugin API as driven through an
 
 **Required companion:** your tool's own instructions for calling the Figma API must be loaded before the first call — in Claude Code that is the `figma-use` plugin skill; in other agents load the MCP resource `skill://figma/figma-use/SKILL.md`. This pack adds to that; it does not replace it. For repairing detached or missing variable bindings, also load `figma-fix-variable-bindings`. If a required skill is missing or needs a restart, say so before starting rather than guessing tooling.
 
+**Designing screens?** If the writes build or change a product screen, flow or component, also load `design-screens` before the first write. This pack says how a call behaves; it says nothing about spacing, checks or what to show the user.
+
 ## Hard rules
 
 1. **Your tool's Figma API instructions load before the first call — always.** This pack complements them.
@@ -22,11 +24,11 @@ Accumulated, field-tested knowledge of the Figma Plugin API as driven through an
  - `layoutMode` · `layoutSizing*` · `primaryAxisSizingMode` · `resize(` · `insertChild` · `clone` · `arcData` → `references/layout-and-geometry.md`
  - `connectorStart` · `connectorEnd` → `references/connectors.md` · `annotations` → `references/annotations.md`
  - `setReactionsAsync` · `reactions` · `overlay*` → `references/prototyping.md`
- - `get_metadata` on a page · `findAll` over a page · `exportAsync` · `get_screenshot` for verification → `references/mcp-and-environment.md`
- One read per file per session is enough. Skipping it is how a session re-discovers a documented rule the hard way: a run that never opened `instances.md` hits `swapComponent` returning `void`, a stale child id after `setProperties`, and a hidden instance child that reads as "unreachable" — all three are in that file.
+ - `get_metadata` on a page or on a link's `node-id` · `findAll` over a page · `exportAsync` · `get_screenshot` for verification → `references/mcp-and-environment.md`
+ One read per file per session is enough. The match runs per script, not once at the start: files read at the start do not cover a script that first uses `setProperties` later in the run — that script still owes `instances.md`. Listing the `###` headings is not a read — the Pattern that prevents the error is under the heading. Skipping it is how a session re-discovers a documented rule the hard way: a run that never opened `instances.md` hits `swapComponent` returning `void`, a stale child id after `setProperties`, and a hidden instance child that reads as "unreachable" — all three are in that file.
 5. **Prologue for any write batch:** `await figma.setCurrentPageAsync(page)` before the first mutation, and load every font the batch touches. Both are easy to forget and both fail opaquely mid-batch — a wrong-page mutation or an unloaded-font write doesn't say so, it just throws.
 6. **Atomic operations — never leave a node half-applied.** For multi-property rebinds, apply so that if part fails the rest is not left changed. Verify the whole set landed before moving on.
-7. **Read the result back inside the same call.** Return `{createdNodeIds, mutatedNodeIds, before, after}`, resolving variable ids to **names** in `before`/`after`. A raw variable id tells you nothing when checking; a name lets you spot a wrong binding on sight. Many failures are silent: library-swatch bindings, `cornerRadius` bindings, layout sizing — read back, don't assume.
+7. **Read the result back inside the same call.** Return `{createdNodeIds, mutatedNodeIds, before, after}`, resolving variable ids to **names** in `before`/`after`. A raw variable id tells you nothing when checking; a name lets you spot a wrong binding on sight. Many failures are silent: library-swatch bindings, `cornerRadius` bindings, layout sizing — read back, don't assume. A visual edit — fill swap, re-parenting, replacing nodes with instances — is not proven by readback. Before the batch, record each affected screen (an `exportAsync` PNG hash, or a `scale: 1` screenshot saved to disk) and compare after. A layer order that reads unchanged and a small-scale screenshot both miss a broken mask, fade or blur edge.
 8. **A thrown error rolls back the whole `use_figma` call.** Mutations that ran before the failing line are undone with it — even the ones that "visibly applied" in the same script. After any error: re-read the state before re-applying; put a risky operation (an untested API, a nested-instance write) in its own call or a `try/catch` so it can't erase the work next to it.
 9. **The sandbox hides invisible instance children by default.** `figma.skipInvisibleInstanceChildren` is `true` here (the documented Plugin API default is `false`): hidden descendants of an INSTANCE are missing from `children`/`findAll`, and a hidden INSTANCE reads `children: []`. To reach a hidden node (e.g. a `Reset` button hidden in the master), set `figma.skipInvisibleInstanceChildren = false` as the first line of the script — don't conclude the node is unreachable and redesign the master around it.
 10. **Any text that leaves for Figma is a publication.** Before writing a component `description`, a Dev Mode annotation, a node/page/section name or a TEXT layer, check `references/publishing-hygiene.md`: no dates, no people's names, no internal code names, no paths to internal docs, no phase/version/task numbers, no `SANDBOX`/`WIP`/`TODO`. After transferring anything by clone, sweep the subtree.
@@ -38,8 +40,13 @@ Accumulated, field-tested knowledge of the Figma Plugin API as driven through an
 **Principle:** `node.query` does not match node names that contain spaces, and its selector language has no escape syntax — `query('FRAME[name=Title\\ Block]')` throws `Invalid selector: unexpected character '\'`. Find such nodes with `findOne(n => n.name === '…')` and exact string comparison.
 **Symptom:** a query by a name with a space returns empty although the node exists.
 
-### page-ids-unstable-refind-by-name
-**Principle:** Page IDs are unstable even within one call — never cache a page id; re-find the page by name: `figma.root.children.find(p => p.name === '…')`.
+### find-pages-by-id-names-change
+**Principle:** Names are the unstable handle, not ids. People rename pages and sections while the agent works; renaming or reordering a page does not change its id. A lookup by an old name returns `undefined`, and the next line throws far from the cause (`setCurrentPageAsync` → `cannot read property 'id' of undefined`), rolling the call back.
+**Pattern:** take ids from a read in this session and address by id; fall back to the name; throw a named error when both miss.
+```js
+const page = figma.root.children.find(p => p.id === PAGE_ID) || figma.root.children.find(p => p.name === PAGE_NAME);
+if (!page) throw new Error('page not found: ' + figma.root.children.map(p => p.id + ' ' + p.name).join(' | '));
+```
 
 ### createframe-default-white-fill
 **Principle:** `createFrame` and `createAutoLayout` create a frame with a white `#ffffff` fill by default — set `frame.fills = []` on structural containers right after creation.
@@ -67,7 +74,7 @@ bar.layoutSizingHorizontal = 'FILL';
 ```
 
 ### layout-sizing-only-after-appendchild
-**Principle:** `layoutSizingHorizontal` / `layoutSizingVertical` can only be set **after** the node is inside its auto-layout parent — set earlier, they are silently ignored because the property resolves against the parent's layout mode. Same order for `resize`: resize first, then sizing modes; wrapping text is `textAutoResize = 'HEIGHT'` + `layoutSizingHorizontal = 'FILL'`.
+**Principle:** `layoutSizingHorizontal` / `layoutSizingVertical` can only be set **after** the node is inside its auto-layout parent — set earlier, they are silently ignored because the property resolves against the parent's layout mode. On a child of a frame with `layoutMode = 'NONE'`, `'FILL'` throws `FILL can only be set on children of auto-layout frames` and the whole call rolls back; when editing a screen whose structure you have not read, check `node.parent.layoutMode !== 'NONE'` first and fall back to `resize` with a FIXED width. Same order for `resize`: resize first, then sizing modes; wrapping text is `textAutoResize = 'HEIGHT'` + `layoutSizingHorizontal = 'FILL'`.
 ```js
 parentFrame.appendChild(node);
 node.layoutSizingHorizontal = 'FILL';
@@ -91,7 +98,7 @@ actionRow.layoutSizingVertical = 'HUG';
 **Pattern:** walk all IDs, collect `v.name`, compare with expectations; if an ID resolves to `null`, enumerate via `getLocalVariableCollectionsAsync` + walk `variableIds` and find the right ID by name.
 
 ### node-children-throws-non-container
-**Principle:** `node.children` on non-container types (VECTOR / ELLIPSE / LINE / RECTANGLE / TEXT / STAR / POLYGON / SLICE) throws a `TypeError` instead of returning `undefined` — `if (node.children)` and `node.children?.length` don't protect you; type-guard on `node.type` before touching it. The same holds for every type-specific property: a single collector over a mixed-type list throws on the first node missing the property (`no such property 'strokeTopWeight' on VECTOR node`, `no such property 'characters' on FRAME node`).
+**Principle:** `node.children` on non-container types (VECTOR / ELLIPSE / LINE / RECTANGLE / TEXT / STAR / POLYGON / SLICE) throws a `TypeError` instead of returning `undefined` — `if (node.children)` and `node.children?.length` don't protect you; type-guard on `node.type` before touching it. The same holds for every type-specific property: a single collector over a mixed-type list throws on the first node missing the property (`no such property 'strokeTopWeight' on VECTOR node`, `no such property 'characters' on FRAME node`). Methods are properties too: `findOne`, `findAll` and `appendChild` exist only on containers, so `n.findOne && n.findOne(…)` throws `no such property 'findOne' on RECTANGLE node`.
 **Symptom:** `TypeError "no such property 'children' on VECTOR node"` during a recursive walk — usually on VECTOR icons inside an INSTANCE.
 **Pattern:** a `Set` of container types (FRAME, COMPONENT, COMPONENT_SET, INSTANCE, GROUP, SECTION, PAGE, BOOLEAN_OPERATION) checked with `CONTAINER_TYPES.has(node.type)` before reading `children`; for other properties, membership checks — `if ('cornerRadius' in n) …`, `if ('characters' in n) …`.
 
@@ -112,7 +119,7 @@ actionRow.layoutSizingVertical = 'HUG';
 ### currentpage-resets-to-first-page
 **Principle:** `figma.currentPage` at the start of EVERY call points at the file's first page — any `figma.currentPage.appendChild(newNode)` without a prior `await figma.setCurrentPageAsync(targetPage)` silently drops the new top-level node on the default first page, even though `getNodeByIdAsync` works cross-page.
 **Symptom:** the new frame renders fine by ID (screenshots and metadata work) but is missing from the target page — noticed only when opening the page in Figma.
-**Pattern:** `const p = figma.root.children.find(pg => pg.name === '…'); await figma.setCurrentPageAsync(p); p.appendChild(node);`
+**Pattern:** find the page as in `find-pages-by-id-names-change`, then `await figma.setCurrentPageAsync(page); page.appendChild(node);`
 
 ### clone-reparents-to-currentpage-if-source-not-on-currentpage
 **Principle:** `node.clone()` inserts the copy into `figma.currentPage` (not next to the original in its real parent) if the original is not physically on the current page at call time — and `figma.currentPage` resets to the first page at the start of EVERY call (see above). Same symptom, triggered by `.clone()` instead of a manual `appendChild`.
@@ -120,7 +127,7 @@ actionRow.layoutSizingVertical = 'HUG';
 **Pattern:** right after `const clone = source.clone();` do `targetParent.appendChild(clone); clone.x = savedX; clone.y = savedY;` (record x/y before the append). `appendChild` doesn't recompute coordinates for the new parent, so re-setting the same local x/y after the move puts the clone where it was meant to go. Alternative: `await figma.setCurrentPageAsync(pageOfSource)` before `.clone()`, but the appendChild pattern is more robust (doesn't require knowing the current page in advance).
 
 ### page-children-bbox-collision-check
-**Principle:** Position new top-level nodes only after an arithmetic check against the bounding boxes of ALL `page.children` — "not (0,0)" and "looks empty from memory" don't guarantee free space, and a screenshot of a temporary group renders new nodes in isolation and doesn't show collisions with content underneath.
+**Principle:** Position a new node, and re-check after any write that makes a frame taller or wider, against the bounding boxes of every sibling in the same parent — `page.children` for top-level nodes, the section's or wrapper frame's `children` for screens and flows inside it. "Not (0,0)" and "looks empty from memory" don't guarantee free space, and a screenshot of a temporary group renders new nodes in isolation and doesn't show collisions with content underneath.
 **Symptom:** new content landed on top of existing canonical frames (higher z-order, added later) and hid them entirely; the agent's own screenshot verification didn't catch it.
 **Pattern:** build `boxes = page.children.map(n => ({x, y, right, bottom}))` and check the candidate against each. For a combined screenshot with a CONNECTOR, use a temporary SECTION, not a GROUP: ungrouping a GROUP deletes a connector whose endpoint is on it without a trace; a SECTION doesn't auto-delete — remove it explicitly with `section.remove()`.
 ```js
@@ -213,6 +220,28 @@ for (const id of collection.variableIds) {
 }
 ```
 
+### setboundvariableforpaint-returns-frozen-paint-and-drops-source-opacity
+**Principle:** `figma.variables.setBoundVariableForPaint(paint, 'color', v)` returns a NEW paint whose **own `opacity` from the source paint is reset to 1** — only the colour is bound; the paint's own alpha isn't carried over. Worse: the returned object is **frozen**, so a head-on fix (`newPaint.opacity = 0.7`) is a silent no-op: no error, `fills` is assigned, and on a repeat read the opacity is still 1. Opacity can be restored only on a PLAIN copy (`JSON.parse(JSON.stringify(...))`), not on the returned object. The same trap in the other direction: setting `opacity` on a paint *before* it's on the node clobbers it to 1 (a solid fill; same-colour text becomes invisible) — e.g. an eyebrow chip at `Action/Regular` 0.16 renders solid and its text vanishes.
+**Symptom:** a translucent element (a progress bar, an overlay, a tint backing) becomes noticeably more saturated than its neighbours assembled from the same donor after binding to a token. The first attempt to restore the opacity "doesn't work" without any sign of error — a second readback shows the same value of 1, so it's easy to conclude opacity can't be written on this node at all.
+**Pattern:** remember the donor paint's `opacity` BEFORE binding; bind in one `use_figma` call, then restore the opacity on a plain copy in a SEPARATE next call, on top of the already-bound fills. A plain copy within the same call does not reliably apply, even with a double `JSON.parse(JSON.stringify(...))` round trip: no error, `fills` is assigned, the readback shows `opacity: 1`. Plan two calls by default; if the first happened to keep the opacity, the second becomes a harmless no-op.
+```js
+// call 1 — binding only
+const srcOpacity = bar.fills[0].opacity;               // remember BEFORE
+bar.fills = [figma.variables.setBoundVariableForPaint(bar.fills[0], 'color', v)];
+
+// call 2 (a separate use_figma) — restore the opacity on top of the result
+const flat = JSON.parse(JSON.stringify(bar.fills[0]));
+flat.opacity = 0.7;                                    // the value remembered in call 1
+bar.fills = [flat];
+
+// a readback is mandatory: check both boundVariables.color and opacity
+```
+Adjacent: `deltae-color-matcher-must-check-token-opacity-not-just-rgb` in `references/variables-and-tokens.md` — there opacity drifts the other way (the variable's own alpha is carried onto the paint). The common rule is one: **after `setBoundVariableForPaint` always re-read the final `opacity`, not only the fact of a successful bind.**
+
+**`clone` drops opacity in exactly the same way.** The trap isn't limited to binding: a node copy obtained via `node.clone()` (including when moving between pages) may arrive with `opacity: 1` where the donor had `0.7` — the variable binding meanwhile survives the move correctly. So after EVERY cloning of a translucent element the opacity must be re-read alongside the binding, rather than assuming the clone is identical to the donor.
+
+**Verify by render, not only by structure.** The difference between `0.7` and `1` on a 3 px bar isn't obvious to the eye. A cheap objective check — sample a pixel inside the element and compare with the composite `255 + (channel − 255) × opacity` over the background: at 0.7 over white `#79ce64` gives `(161,221,146)`, at 1.0 — `(121,206,100)`; the distance between the hypotheses is two orders of magnitude above rounding error.
+
 ## Routing: what to read when
 
 | File | Trigger |
@@ -236,27 +265,29 @@ If you accumulate facts about one specific Figma file (Set IDs / Page IDs of par
 
 | Mistake | Fix |
 |---|---|
+| Reading topic files once at the start, or only their headings | Re-check the identifier list before each script that uses a new API; read the whole file — the fix is in the Pattern, not the heading |
 | Retrying font loads/bindings for a sandbox-absent licensed font | Ask whether it can be uploaded to the org/team — that's the real fix; only then fall back to Inter to spec — `text-and-styles.md` |
 | Writing to a node right after `setTextStyleIdAsync` | It swaps the node's font mid-call — load both current and target fonts first |
 | Reading `node.fontName` on multi-font text | It's `figma.mixed` — loop `getStyledTextSegments(['fontName'])` and load each run's font |
 | Assuming a binding applied | Read it back — library-swatch and `cornerRadius` bindings fail silently |
 | `setBoundVariable('cornerRadius', v)` then checking the aggregate key | It binds the four per-corner fields — bind and verify all four |
-| Setting paint opacity before the paint is on the node | Bind in one call; set opacity on a plain copy in a separate next call, then read both back — `variables-and-tokens.md` |
+| A bind helper that returns `{ ...setBoundVariableForPaint(p, 'color', v), opacity }`, or opacity set before the paint is on the node | The tint renders solid: opacity set in the binding call comes back 1. Bind in one call, set opacity on a plain copy in the next call, read both back — `setboundvariableforpaint-returns-frozen-paint-and-drops-source-opacity` |
 | Treating local bindings in a library file as orphaned | They're correct; only hardcoded values are fix candidates |
 | Calling `deleteComponentProperty` without snapshotting instances | It resets every instance to the component default — capture content first — `components-and-variants.md` |
 | Expecting properties to survive a dissolved variant set | They belong to the SET; re-create them on the standalone component |
 | Reading a set's `description`/`x`/`y` after moving its last variant out | The emptied set auto-deletes — read what you need before mutating |
 | Trusting an instance's `children` as an inventory | Hidden descendants are missing — read the main component — `instances.md` |
 | Escaping spaces in a `query` selector | No escape syntax — write the space as-is or use `findAll` with a predicate |
-| One property collector over a mixed-type node list | Guard each property with `'prop' in n` |
+| Guarding with `n.children &&` or `n.findOne &&`, or one collector over a mixed-type list | A missing property throws, it is not `undefined`. Guard with `'prop' in n` or the container-type set |
+| Looking up a page, variant, style, variable or image by a remembered name inside a build script | Resolve every name in a read-only call first, or make each lookup throw with the missing name and the available list. An unguarded `undefined` fails as an anonymous `TypeError` and rolls back the whole build |
 | Deleting children by ascending numeric index | Delete in descending order, capture refs before mutating |
 | Assuming a `vectorPaths` node sits at `(0, 0)` | Its box is normalised to the path's bbox — `layout-and-geometry.md` |
 | Setting `layoutSizingHorizontal`/`Vertical` before `appendChild` | Only resolves after the node is inside its auto-layout parent |
 | Calling `get_variable_defs` with a page id | Only accepts a node/frame id — `mcp-and-environment.md` |
-| Running `get_metadata` or `findAllWithCriteria` on a whole page | Can blow the token ceiling or hang the plugin — scope to a frame, use a one-line dumper |
+| Running `get_metadata` on a link's `node-id`, or `findAllWithCriteria` on a whole page | Can blow the token ceiling or hang the plugin. A link copied with nothing selected carries the page id — match the id against the page list first; for a page use the `page.children` dumper — `mcp-and-environment.md` |
 | Treating `get_screenshot`'s default response as image bytes | It's a short-lived URL — `enableBase64Response: true` or `curl` it to disk at once |
 | Skipping `setCurrentPageAsync` / font preload before a write batch | Both fail opaquely mid-batch |
-| Declaring a visual edit safe without a before/after check | Hash the export or diff against a saved screenshot — never assert pixel-identity by eye |
+| Declaring a visual edit safe without a before/after check | Record every affected screen before the batch (export hash or `scale: 1` shot), compare after; an unchanged readback or a small-scale shot proves nothing — `mcp-and-environment.md` |
 | Creating text styles, then setting `fontName`/`fontSize` on nodes to the same values | Nothing links them — bind with `setTextStyleIdAsync(style.id)` and read back `styled/total` — `text-and-styles.md` |
 | Leaving `clipsContent` at its default on structural wrappers | Every wrapper clips its children's shadows — `clipsContent = false` next to `fills = []` |
 | Editing the file to match a screenshot that disagrees with the readback | The screenshot is stale, not the file — re-shoot, never save a disagreeing frame as reference — `mcp-and-environment.md` |

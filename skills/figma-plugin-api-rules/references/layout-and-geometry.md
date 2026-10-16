@@ -1,6 +1,6 @@
 ---
 name: figma-plugin-api-rules/layout-and-geometry
-description: Read when creating or editing frames and geometry — auto-layout, HUG/FILL, resize, coordinates, rotation, strokes/shadows, radii, vector paths, traversal and safe deletion, canvas collisions
+description: Read when creating or editing frames and geometry — auto-layout, HUG/FILL, resize, coordinates, rotation, strokes/shadows/background blur, radii, vector paths, traversal and safe deletion, canvas collisions
 ---
 
 # layout-and-geometry — use_figma rules
@@ -56,7 +56,7 @@ _Core: full text — `../SKILL.md`._
 ### fill-spacer-fifty-fifty-split
 **Principle:** Two FILL siblings in a HORIZONTAL layout split the space exactly 50/50 — an empty FILL spacer takes half the width from the content FILL block; for variants where the spacer is empty, switch it to FIXED with a 1 px width (not 0).
 **Symptom:** text in the content block clips even in a wide parent; content width ≈ spacer width — confirmation of the 50/50 split.
-**Pattern:** don't apply the FIXED fix to variants where the spacer carries optional content — there it must stay FILL.
+**Pattern:** when you own the layout, replace the spacer with two groups and `SPACE_BETWEEN` on the parent; the FIXED fix is for an existing spacer you may not restructure. Don't apply the FIXED fix to variants where the spacer carries optional content — there it must stay FILL.
 ```js
 // Diagnosis: Info.width ≈ Spacer.width → confirms the 50/50 split
 const spacer = variant.findOne(n => n.name === 'Spacer' && n.layoutMode === 'NONE');
@@ -1415,7 +1415,7 @@ if (mainContent.height < target) mainContent.resize(mainContent.width, target); 
 
 **Principle:** A row of two children where the first is `layoutSizingHorizontal: 'FILL'` (e.g. a title) and the second `HUG` (e.g. a button group) is a common way to press the second child to the right edge WITHOUT an explicit `primaryAxisAlignItems: 'SPACE_BETWEEN'`: the first child eats all free space; the second simply ends up after it. This works only while the row holds EXACTLY those two children. Inserting new siblings BETWEEN the FILL element and the one it was pushing (e.g. a badge and a toggle between the title and the button group) doesn't break the script — the FILL element is still the only one eating free space — but visually creates an empty gap BETWEEN the FILL element's real content (e.g. the title text) and the next sibling, because FILL considers itself the owner of all unoccupied width of the row, not just the space up to the nearest neighbour.
 **Symptom:** after inserting new siblings between the historical FILL element and what used to be its only neighbour — a visible gap where there was none before (with two children); the FILL element and its immediate neighbour still look "butted" structurally (`appendChild`/`insertChild` ran without errors; `x`/`width` read correctly); the bug is purely visual and not caught by a structural check (`get_metadata` shows a valid row without collisions).
-**Pattern:** before inserting a new sibling into an EXISTING auto-layout row — check which of the current children has `layoutSizingHorizontal: 'FILL'`, and ask why: if it's an implicit spacer (FILL is used not because the content needs the full width but to push the next neighbour to the edge) — on insertion between them that role must either move onto a new dedicated spacer node, or the whole row must be rebuilt as a pair of groups (`[title-group]` HUG + `[actions-group]` HUG) with `primaryAxisAlignItems: 'SPACE_BETWEEN'` on the parent — which is usually the more faithful analogue of the real markup anyway (see `screen-from-code.md`). Don't leave the historical FILL as is just because the script throws no error.
+**Pattern:** before inserting a new sibling into an EXISTING auto-layout row — check which of the current children has `layoutSizingHorizontal: 'FILL'`, and ask why: if it's an implicit spacer (FILL is used not because the content needs the full width but to push the next neighbour to the edge) — on insertion between them the whole row must be rebuilt as a pair of groups (`[title-group]` HUG + `[actions-group]` HUG) with `primaryAxisAlignItems: 'SPACE_BETWEEN'` on the parent — which is usually the more faithful analogue of the real markup anyway (see `screen-from-code.md`). Don't leave the historical FILL as is just because the script throws no error.
 ```js
 // ❌ there were 2 children (title FILL + actions HUG) — worked as an implicit spacer
 // now 4 (title FILL + badge + toggle + actions) — title still eats the extra space,
@@ -1518,3 +1518,13 @@ arc.arcData = { startingAngle: -Math.PI / 2, endingAngle: -Math.PI / 2 + Math.PI
 track.strokes = []; arc.strokes = [];
 return { arc: arc.arcData }; // innerRadius must be > 0
 ```
+
+### centred-child-lands-on-half-pixel-when-the-remainder-is-odd
+**Principle:** Auto-layout centring places a child at (inner size − child size) / 2. When that remainder is odd, the child and its whole subtree sit on .5. The common source is a text style with an odd line height in a container of even height. Strokes counted in layout (`strokesIncludedInLayout = true`) are a second source: turning it off on stroked auto-layout frames clears most of what even line heights leave.
+**Symptom:** frames at x/y such as 22.5 or 12.5 in absolute coordinates, concentrated under headers, buttons and stroked cards; the layers panel looks clean.
+**Pattern:** keep line heights and fixed container heights both even (or both odd); set `strokesIncludedInLayout = false` on stroked auto-layout frames unless the stroke must take space; then re-count nodes whose `absoluteTransform` x/y is off an integer, relative to the screen frame. Fix the few that remain with FILL width and text alignment instead of centring.
+
+### background-blur-needs-a-translucent-fill
+**Principle:** `BACKGROUND_BLUR` shows what lies behind the node only through the node's own fill. Under a fill at opacity 1 it renders nothing, while the effect, its style and its radius all read back as set. A "glass" header bound to an opaque surface token, or an instance that kept an opaque fill override, shows no blur.
+**Symptom:** sticky headers carry `BACKGROUND_BLUR` from an effect style over a fill at opacity 1; glass button instances carry an opaque fill override; the render shows no blur anywhere.
+**Pattern:** give every glass node a fill below opacity 1 (a translucent token or the paint's `opacity`), scan instances of glass components for opaque fill overrides, and verify by rendering the node over a photo, not over a flat background.

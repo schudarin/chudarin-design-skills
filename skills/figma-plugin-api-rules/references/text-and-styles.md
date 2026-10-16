@@ -342,7 +342,8 @@ const styles = await figma.getLocalTextStylesAsync();
 const S = name => { const s = styles.find(x => x.name === name); if (!s) throw new Error('no text style ' + name); return s.id; };
 const T = async (chars, styleName, fillVar) => {
   const t = figma.createText(); t.characters = chars;
-  t.fills = [figma.variables.setBoundVariableForPaint({ type: 'SOLID', color: { r: 0, g: 0, b: 0 } }, 'color', fillVar)];
+  const { r, g, b } = fillVar.resolveForConsumer(t).value;   // seed = resolved value — variables-and-tokens.md › bound-paint-base-colour-must-equal-resolved-value
+  t.fills = [figma.variables.setBoundVariableForPaint({ type: 'SOLID', color: { r, g, b } }, 'color', fillVar)];
   await t.setTextStyleIdAsync(S(styleName));   // the binding — not fontName/fontSize
   return t;
 };

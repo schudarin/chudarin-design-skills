@@ -133,7 +133,7 @@ if (chevron) chevron.visible = false; // a superfluous visual element — just h
 **Symptom:** the missing check passes cleanly, but some nested icons/components are actually from a deprecated/foreign library.
 
 ### mirror-instance-relativetransform-no-fliphorizontal
-**Principle:** The Plugin API has no `node.flipHorizontal` — in the `use_figma` sandbox accessing a non-existent property THROWS rather than returning undefined, so `typeof node.flipHorizontal` doesn't save you. Mirror an instance horizontally (without editing the master, without changing bindings, works in HORIZONTAL auto-layout too) via `relativeTransform` (scaleX = −1). `swapComponent` PRESERVES the source instance's existing scaleX=−1 — if the original was already mirrored, the new component arrives mirrored too; a repeat flip = a double reflection.
+**Principle:** The Plugin API has no `node.flipHorizontal` — in the `use_figma` sandbox accessing a non-existent property THROWS rather than returning undefined, so `typeof node.flipHorizontal` doesn't save you. Mirror an instance horizontally (without editing the master, without changing bindings, works in HORIZONTAL auto-layout too) via `relativeTransform` (scaleX = −1). `swapComponent` PRESERVES the source instance's existing scaleX=−1 — if the original was already mirrored, the new component arrives mirrored too; a repeat flip = a double reflection. Never mirror the icon slot of a component master to turn one glyph into its opposite (an arrow-left as arrow-right): an INSTANCE_SWAP property keeps the slot's scaleX = −1, so every icon later swapped in renders mirrored, in every variant and instance. Use the opposite glyph component. To audit a set, read `relativeTransform[0][0]` of the icon slot in each variant — `-1` is the trap.
 ```js
 const t = inst.relativeTransform; // [[a,c,e],[b,d,f]]
 inst.relativeTransform = [[-t[0][0], t[0][1], t[0][0]*inst.width + t[0][2]],
@@ -312,9 +312,10 @@ merchantSelect.remove(); // fine
 const placeholder = iconBox.findOne(n => n.name === 'Icon placeholder');
 placeholder.swapComponent(checkMaster); // changes ONLY the glyph's shape, not the colour
 const vectors = placeholder.findAll(n => n.type === 'VECTOR' || n.type === 'BOOLEAN_OPERATION');
+const { r, g, b } = iconPositiveVar.resolveForConsumer(placeholder).value; // seed = resolved value, see variables-and-tokens.md › bound-paint-base-colour-must-equal-resolved-value
 for (const v of vectors) { // a mandatory separate step — easy to forget; the mistake throws no exception
-  if (v.strokes?.length) v.strokes = [figma.variables.setBoundVariableForPaint({type:'SOLID', color:{r:0,g:0,b:0}}, 'color', iconPositiveVar)];
-  if (v.fills?.length) v.fills = [figma.variables.setBoundVariableForPaint({type:'SOLID', color:{r:0,g:0,b:0}}, 'color', iconPositiveVar)];
+  if (v.strokes?.length) v.strokes = [figma.variables.setBoundVariableForPaint({type:'SOLID', color:{r,g,b}}, 'color', iconPositiveVar)];
+  if (v.fills?.length) v.fills = [figma.variables.setBoundVariableForPaint({type:'SOLID', color:{r,g,b}}, 'color', iconPositiveVar)];
 }
 ```
 
@@ -870,4 +871,24 @@ wrap.resize(inst.width, inst.height);
 group.insertChild(idx, wrap);          // keep it above the mask
 wrap.x = inst.x; wrap.y = inst.y;
 wrap.appendChild(inst); inst.x = 0; inst.y = 0;
+```
+
+### swap-inside-master-drops-every-instance-override-on-that-node
+**Principle:** `swapComponent` on a nested instance inside a MAIN component replaces that node for every instance of the master. Text overrides that the instances carried on the old nested node do not move to the new one — every instance falls back to the new nested component's default text. Adjacent: `swapcomponent-resets-nested-instance-overrides-to-master-defaults` above, the same loss for a swap on an instance.
+**Symptom:** after restyling a badge or tag inside a master, every screen shows the default label ("Label", "Tag") in its place; the screens themselves were never touched.
+**Pattern:** before the swap, snapshot each instance's texts on that nested node (keyed by instance id and the text layer's name); swap in the master; in the same call, write the snapshot back and return the entries that did not resolve.
+
+### image-fill-to-instance-swap-drops-the-slot-paint-settings
+**Principle:** Replacing an IMAGE fill with an instance of an image component brings only the master's paint. The slot paint's own `scaleMode`, `imageTransform` (crop, flip), `rotation` and `filters` (exposure, contrast, saturation…) do not come along, and nothing reports it.
+**Symptom:** after the swap a cropped or mirrored tile shows the full, unflipped image, and a colour-corrected photo looks flat; the script returns no error.
+**Pattern:** before the swap, list every slot whose image paint differs from the master's: `scaleMode !== 'FILL'`, an `imageTransform` other than identity, a `rotation`, or a non-zero `filters` value. A pure horizontal flip (`[[-1,0,1],[0,1,0]]`) moves onto the instance's `relativeTransform` (see `mirror-instance-relativetransform-no-fliphorizontal` above). Show the crop and filter slots to the user before writing, with their recorded paints.
+```js
+const ID = '[[1,0,0],[0,1,0]]';
+const special = slots.flatMap(n => {
+  const p = n.fills.find(f => f.type === 'IMAGE' && f.visible !== false);
+  const t = JSON.stringify(p.imageTransform || [[1,0,0],[0,1,0]]);
+  const filtered = p.filters && Object.values(p.filters).some(v => v);
+  return (p.scaleMode !== 'FILL' || t !== ID || p.rotation || filtered)
+    ? [{ id: n.id, scaleMode: p.scaleMode, t, filters: p.filters }] : [];
+});
 ```

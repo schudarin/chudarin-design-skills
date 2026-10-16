@@ -335,6 +335,13 @@ if (wrapperParent.children.length === 0) {
 }
 return { wrapperRemoved }; // just a variable, not a repeat access to the node
 ```
+**Nested matches:** `findAll(n => n.name === X)` also returns a layer named X inside another layer named X. Removing the outer one deletes the inner one, and the loop then throws `does not exist` on it, rolling back every removal before it. Keep only the outermost matches and check `n.removed` first:
+```js
+const all = root.findAll(n => n.name === X);
+const ids = new Set(all.map(n => n.id));
+const outer = all.filter(n => { for (let p = n.parent; p && p.id !== root.id; p = p.parent) if (ids.has(p.id)) return false; return true; });
+for (const n of outer) if (!n.removed) n.remove();
+```
 
 ### create-component-from-node-changes-own-id-preserves-children-ids
 **Principle:** `figma.createComponentFromNode(frame)` does NOT preserve the node's own id (despite the docs' wording "preserving all of its properties and children") — the top-level id changes to a new one (checked empirically: `idPreserved: false`), but the ids of ALL child nodes stay unchanged.

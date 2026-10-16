@@ -179,26 +179,7 @@ const walk = async n => {
 ```
 
 ### setboundvariableforpaint-returns-frozen-paint-and-drops-source-opacity
-**Principle:** `figma.variables.setBoundVariableForPaint(paint, 'color', v)` returns a NEW paint whose **own `opacity` from the source paint is reset to 1** — only the colour is bound; the paint's own alpha isn't carried over. Worse: the returned object is **frozen**, so a head-on fix (`newPaint.opacity = 0.7`) is a silent no-op: no error, `fills` is assigned, and on a repeat read the opacity is still 1. Opacity can be restored only on a PLAIN copy (`JSON.parse(JSON.stringify(...))`), not on the returned object. The same trap in the other direction: setting `opacity` on a paint *before* it's on the node clobbers it to 1 (a solid fill; same-colour text becomes invisible) — e.g. an eyebrow chip at `Action/Regular` 0.16 renders solid and its text vanishes.
-**Symptom:** a translucent element (a progress bar, an overlay, a tint backing) becomes noticeably more saturated than its neighbours assembled from the same donor after binding to a token. The first attempt to restore the opacity "doesn't work" without any sign of error — a second readback shows the same value of 1, so it's easy to conclude opacity can't be written on this node at all.
-**Pattern:** remember the donor paint's `opacity` BEFORE binding; bind in one `use_figma` call, then restore the opacity on a plain copy in a SEPARATE next call, on top of the already-bound fills. A plain copy within the same call does not reliably apply, even with a double `JSON.parse(JSON.stringify(...))` round trip: no error, `fills` is assigned, the readback shows `opacity: 1`. Plan two calls by default; if the first happened to keep the opacity, the second becomes a harmless no-op.
-```js
-// call 1 — binding only
-const srcOpacity = bar.fills[0].opacity;               // remember BEFORE
-bar.fills = [figma.variables.setBoundVariableForPaint(bar.fills[0], 'color', v)];
-
-// call 2 (a separate use_figma) — restore the opacity on top of the result
-const flat = JSON.parse(JSON.stringify(bar.fills[0]));
-flat.opacity = 0.7;                                    // the value remembered in call 1
-bar.fills = [flat];
-
-// a readback is mandatory: check both boundVariables.color and opacity
-```
-Adjacent: `deltae-color-matcher-must-check-token-opacity-not-just-rgb` above — there opacity drifts the other way (the variable's own alpha is carried onto the paint). The common rule is one: **after `setBoundVariableForPaint` always re-read the final `opacity`, not only the fact of a successful bind.**
-
-**`clone` drops opacity in exactly the same way.** The trap isn't limited to binding: a node copy obtained via `node.clone()` (including when moving between pages) may arrive with `opacity: 1` where the donor had `0.7` — the variable binding meanwhile survives the move correctly. So after EVERY cloning of a translucent element the opacity must be re-read alongside the binding, rather than assuming the clone is identical to the donor.
-
-**Verify by render, not only by structure.** The difference between `0.7` and `1` on a 3 px bar isn't obvious to the eye. A cheap objective check — sample a pixel inside the element and compare with the composite `255 + (channel − 255) × opacity` over the background: at 0.7 over white `#79ce64` gives `(161,221,146)`, at 1.0 — `(121,206,100)`; the distance between the hypotheses is two orders of magnitude above rounding error.
+_Core: full text — `../SKILL.md`._
 
 ### check-collection-modes-before-normalising-onto-a-flavour-named-variable
 
@@ -259,8 +240,9 @@ if (hexWithAlpha(paint) === '#ffffff') bindPaint(node, targetVar); // '#ffffff30
 node.strokes = [{ type: 'SOLID', color: { r: 0, g: 0, b: 0 } }];
 node.setBoundVariable('strokes', 0, variable);
 
-// ✅ RIGHT
-let paint = { type: 'SOLID', color: { r: 0, g: 0, b: 0 } };
+// ✅ RIGHT — seed with the resolved value, see bound-paint-base-colour-must-equal-resolved-value
+const { r, g, b } = variable.resolveForConsumer(node).value;
+let paint = { type: 'SOLID', color: { r, g, b } };
 paint = figma.variables.setBoundVariableForPaint(paint, 'color', variable);
 node.strokes = [paint];
 ```
@@ -359,3 +341,32 @@ Before the swap — read-only confirm that the primitive (or pair) is really exc
 
 ### when-the-file-is-the-library-resolve-local-variables
 **Principle:** If you're editing the library file itself, resolve against local variables (`getLocalVariablesAsync` / local collections), not `figma.teamLibrary` (returns empty). Local colour bindings are **correct**, not orphaned — only truly hardcoded values are fix candidates. Bind by VariableID, then verify: a library's colour/spacing/radius vars are **local** (`remote:false`) — bind colours with `figma.variables.getVariableByIdAsync(id)` + `setBoundVariableForPaint`, and spacing/radius with `setBoundVariable`. The resolver can fail silently, so always run a binding audit at the end.
+
+### bound-paint-base-colour-must-equal-resolved-value
+**Principle:** `setBoundVariableForPaint(paint, 'color', v)` keeps the seed paint's own `color` stored next to the binding. The render and `get_screenshot` can draw that stored colour instead of the variable's value: a black seed `{r:0,g:0,b:0}` shows as solid black panels and borders while `boundVariables.color` names the right variable.
+**Symptom:** a bound fill or stroke renders black (or whatever the seed was); the readback shows the right variable in `boundVariables.color` and `paint.color` equal to the seed, not to `v.resolveForConsumer(node).value`.
+**Pattern:** seed the paint with the resolved value, then bind. Before hand-off, sweep bound SOLID paints, compare `paint.color` with the resolved value, and rebind the ones that differ.
+```js
+const bind = (node, v) => {
+  const { r, g, b } = v.resolveForConsumer(node).value;
+  return figma.variables.setBoundVariableForPaint({ type: 'SOLID', color: { r, g, b } }, 'color', v);
+};
+node.fills = [bind(node, v)];
+```
+
+### color-variable-value-can-be-color-plus-opacity
+**Principle:** A COLOR variable's value in `valuesByMode` is not always `{r,g,b,a}` or a `VARIABLE_ALIAS`. A variable with its own opacity stores `{ color: <{r,g,b,a} or VARIABLE_ALIAS>, opacity: <percent> }`. A resolver that follows aliases and reads `.r/.g/.b` gets `undefined` on it.
+**Symptom:** `setBoundVariableForPaint` throws `Property "paintCopy" failed validation: Required value missing at .color.r` when its seed colour came from such a resolver; the variable reads back as `{"color":{"type":"VARIABLE_ALIAS","id":"…"},"opacity":24}`.
+**Pattern:** unwrap `.color` before following the alias and carry `opacity / 100` separately; read the bound paint's opacity back. The unwrapped colour is also the seed for the binding (see `bound-paint-base-colour-must-equal-resolved-value` above).
+```js
+function literal(v, cols, all) {
+  let op;
+  for (let i = 0; i < 6; i++) {
+    const mode = cols.find(c => c.id === v.variableCollectionId).defaultModeId;
+    let val = v.valuesByMode[mode];
+    if (val && 'color' in val && 'opacity' in val) { op = val.opacity / 100; val = val.color; }
+    if (val && val.type === 'VARIABLE_ALIAS') { v = all.find(x => x.id === val.id); continue; }
+    return { r: val.r, g: val.g, b: val.b, opacity: op };
+  }
+}
+```
