@@ -21,6 +21,8 @@ To the user, write as to a colleague who knows the subject but has not followed 
 
 Before any text, read `~/.agents/voice.md` (the person's voice) and `<project>/.claude/voice.md` (the product's voice), if they exist. Interface text and product docs follow the product's voice; authored text follows the person's voice; both override the general rules below.
 
+A voice correction is recorded only in these two files, through the record proposal in `references/voice.md` — never in the host's memory or a project notes file. A memory note is not read by the next agent that opens the voice files, and it skips the person's yes.
+
 ## The thing, not the category
 
 Name the thing, not its class.
