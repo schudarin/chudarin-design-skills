@@ -291,6 +291,11 @@ the recipe each dispatched task carries, not a separate document an agent has to
 > `compare -metric AE -fuzz 2% approved.png now.png diff.png` — zero means unchanged.
 > An export hash before and after proves an edit is pixel-inert.
 >
+> **Code and Figma are compared by data.** Read computed styles from the DOM (size, padding,
+> color, font) and the same properties from the Figma nodes. The result is a text list of
+> mismatches. Take a screenshot only of a region where the data agree and a difference is still
+> seen.
+>
 > **One strip, not six reads.** Compose several frames into a single image with `magick ...
 > +append` and read it once.
 >

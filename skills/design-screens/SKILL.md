@@ -101,6 +101,21 @@ A brief must point to a source to clone, not describe anatomy: a cloned node gua
 
 A block that appears on more than one frame becomes a component before the second copy is placed, and every later change to it goes to the master. Frame-by-frame edits to copies drift apart in text style, spacing and order within a few rounds, and the user is the one who finds the drift.
 
+## Agent lifetime
+
+Every step an agent takes re-reads its whole context, so its cost grows with its age, not with its work. On one capture-and-redesign project, 72 agents ran up to 236 steps and 520k tokens of context. Restarting each at 150k would have halved the 808M tokens they read, for the same work.
+
+| Rule | What it looks like |
+|---|---|
+| One dispatch, one task | One screen, one block, or one mechanic batch. |
+| A fix round is a new dispatch | The user's feedback goes to a fresh agent with a handback. It is not sent as a message to the agent that built the previous round. |
+| Handback, not history | What was built, node ids, what to change, the user's words verbatim. No screenshots, no build log. |
+| Stop at ~150k context | The agent writes the handback and ends. The orchestrator dispatches a fresh agent with it. |
+| The brief carries only this task | The template blocks and the rules for this screen. Base briefs are not attached "to read whole". |
+| References are read once | One agent looks at the reference images and writes into `design.md` what to take from them. Builders get that text, not the images. |
+
+Where a PreToolUse hook enforces the stop, every tool call past the limit is refused with the handback instruction. Without a hook, the agent checks its own context before it starts each new screen.
+
 ## Editing an approved screen
 
 Edit **one element at a time** — never a batch of fixes applied together.
@@ -157,4 +172,5 @@ The same rule covers any other condition swapped mid-task — a hung Figma bridg
 - "I looked at the screenshot myself, that's the check" — the builder looking at its own work is step 3's revision pass, not step 4. The three checks run as a separate read-only pass, against node properties, before the link goes out.
 - "The link is ready, I'll show it and check while they look" — the verdict comes first. A screen shown before SHOW gets rejected for what the checks would have listed, and the rejection costs the round.
 - "I'll say in the message that it isn't checked" — a disclaimer does not replace step 4. The user's review is not the critic. A same-day deadline shortens the brief, not the checks: the critic runs before the link goes out.
+- "This agent already knows the screen, I'll send the fix to it." On every step it also re-reads every round before this one. Send the handback to a fresh agent.
 - "The screenshot shows it, so the file is like that" — when the readback disagrees, the file wins and the render is old. Re-shoot; don't edit the file to match a cache.
