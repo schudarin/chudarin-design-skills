@@ -110,11 +110,8 @@ Every step an agent takes re-reads its whole context, so its cost grows with its
 | One dispatch, one task | One screen, one block, or one mechanic batch. |
 | A fix round is a new dispatch | The user's feedback goes to a fresh agent with a handback. It is not sent as a message to the agent that built the previous round. |
 | Handback, not history | What was built, node ids, what to change, the user's words verbatim. No screenshots, no build log. |
-| Stop at ~150k context | The agent writes the handback and ends. The orchestrator dispatches a fresh agent with it. |
 | The brief carries only this task | The template blocks and the rules for this screen. Base briefs are not attached "to read whole". |
 | References are read once | One agent looks at the reference images and writes into `design.md` what to take from them. Builders get that text, not the images. |
-
-Where a PreToolUse hook enforces the stop, every tool call past the limit is refused with the handback instruction. Without a hook, the agent checks its own context before it starts each new screen.
 
 ## Editing an approved screen
 
