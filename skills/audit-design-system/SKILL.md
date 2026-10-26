@@ -13,6 +13,8 @@ Work read-only by default.
 
 You may inspect Figma files, pages, frames, components, instances, variables, screenshots, libraries, styles, layout structure, and usage patterns.
 
+A read-only `use_figma` script is inspection: run it without asking. Read-only means the script only returns data and sets nothing on any node, variable or style.
+
 Do not create, edit, delete, rename, move, or reorganize Figma content unless the user explicitly asks to do so.
 
 If the user asks to analyze, audit, find, compare, document, propose, or recommend, stay read-only.
@@ -61,7 +63,7 @@ Use tools in this order when applicable:
 4. `get_variable_defs`
 5. `get_libraries`
 6. `search_design_system`
-7. `use_figma` only after explicit write instruction — and only with your tool's own Figma API instructions (`figma-use`, or the MCP resource `skill://figma/figma-use/SKILL.md`) plus `figma-plugin-api-rules` loaded first
+7. `use_figma`: read-only scripts for what the tools above do not return — component `description` and `componentPropertyDefinitions`, collections, modes, scopes and code syntax of variables, variable bindings on text styles, unbound fills, unstyled text. Writes only after an explicit write instruction. Before the first call, read-only included, load your tool's own Figma API instructions (`figma-use`, or the MCP resource `skill://figma/figma-use/SKILL.md`) plus `figma-plugin-api-rules`
 
 If a listed tool is unavailable in the current MCP server, use the closest available Figma MCP tool and state which expected data could not be inspected.
 
@@ -74,7 +76,10 @@ For each important conclusion, include:
 - Observed value or variable
 - Repeated usage count when available
 - Screenshot reference when useful
+- Source: script or screenshot
 - Confidence: high, medium, or low
+
+A screenshot shows what is drawn on the canvas. Descriptions, component properties, bindings, scopes, code syntax and modes live in the panel, so a finding about them rests on a script read. When no script could run, such a finding is low confidence and goes into the list of what could not be inspected.
 
 Use confidence levels:
 

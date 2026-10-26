@@ -414,3 +414,8 @@ return { version };
 **Principle:** `await node.screenshot()` inside one `use_figma` call attaches at most 5 images to the response — the 6th and later calls run without error and their images are silently dropped.
 **Symptom:** a loop requesting 26 glyph screenshots returns 5 images, no error, and the script's `return` value is intact.
 **Pattern:** batch 5 nodes per call and fan the batches out as parallel read-only calls (one page switch each).
+
+### get-variable-defs-names-by-code-syntax-when-set
+**Principle:** `get_variable_defs` keys a variable by its WEB code syntax when one is set (`var(--brand-text)`) and by its Figma name otherwise (`color/action/primary/bg`). One response over one collection can therefore mix two naming schemes; text styles and effect styles come back in the same map as `Font(...)` and `Effect(...)`.
+**Symptom:** an audit reports "two naming conventions in the tokens" for a collection that names every variable the same way; the real difference is which variables have code syntax.
+**Pattern:** read the mix as code-syntax coverage, not as naming. For the count, run a read-only script over the collection and compare `variable.codeSyntax.WEB` with the variable count.
