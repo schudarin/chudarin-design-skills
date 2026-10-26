@@ -31,7 +31,7 @@ user should never have to ask "where are you going to draw this?" after the dire
 | No design system, screens exist | existing screens in Figma | same |
 | Neither | external references, curated by the user | nothing |
 
-**No Figma: the screen is built straight in code.** The Figma steps do not run. No frame link, no screens drawn first in another medium, unless the user asks for mockups in words. What still runs: `design.md` is read first and decisions are written back to it. Before a screen's code is written, read the `references/ux-rules.md` rows that match its content, plus `ux/principles.md` when the screen is new or was rejected. Before the user sees the screen, the three checks from `references/checks.md` run on the running build, against the DOM and a screenshot at each width, by a reader that did not write the code.
+**No Figma: the screen is built straight in code.** The Figma steps do not run. No frame link, no screens drawn first in another medium, unless the user asks for mockups in words. What still runs: `design.md` is read first and decisions are written back to it. Before a screen's code is written, read the `references/ux-rules.md` rows that match its content, plus `ux/principles.md` when the screen is new or was rejected. Before the user sees the screen, the four checks from `references/checks.md` run on the running build, against the DOM and a screenshot at each width, by a reader that did not write the code.
 
 ## Improving a product that already ships
 
@@ -44,6 +44,22 @@ Skipping the audit doesn't remove the phase, it relocates it — without a recor
 Default deliverable: **one screen, done right.** Variants are produced only when (1) the user asked in words, (2) the product has no chosen direction yet and this is discovery, or (3) you see a genuine fork — then you ask in one line and do not decide for the user.
 
 When there is one screen, uncertainty cannot be absorbed by quantity. If the brief contains a fork you would have to resolve on the user's behalf, name it to the user in one line **before** building.
+
+## Talking to the user
+
+A message with more than one request gets a numbered list back before any build: each item says in plain words what will change, on which screen, and how you read it. Clear items go ahead; only an item with two possible readings waits for an answer.
+
+A proposal is described the way the user will see it, not in build terms: the screen, the element, what it looks like and does now, and what it will look like and do after, a sentence each. Node ids, component names and internal labels appear only if the user used them first. When the proposal changes behaviour, write the difference as "now: … → after: …". A proposal the user misread costs a full round: the misreading surfaces only once the build is on the screen. Short is fine; the before → after is what has to be there.
+
+## Session length
+
+Every step re-reads the whole session, and a compacted session loses detail: decisions, the user's hand edits, what was agreed. Keep sessions to one block of work and make restarting cheap.
+
+- **Work that won't fit one session is planned per session.** With `superpowers` installed, its `writing-plans` makes the plan file: tasks sized so each session closes its own, checked off as they land. Without it, the same task list lives under "In progress" in `design.md`. Tell the user the split in one line: "this is three sessions: 1) …, 2) …, 3) …".
+- **A compaction is the signal to restart.** When the session shows the host's note that it continues from a previous conversation that ran out of context (Claude Code: "This session is being continued from a previous conversation…"), say in one line that the context was compacted and details may be lost, and offer a new session with the start line below.
+- **The start line** names the task and three sources: `design.md`, the plan file if there is one, and the digest of this session — the user's messages verbatim and the agent's last reply to each, from the host's session log. Get this session's id with `python3 <this skill's folder>/scripts/session-digest.py --current-id`, then write: "Continue <task>. Read `<project>/.claude/design.md`, <plan path>, and `python3 <this skill's folder>/scripts/session-digest.py <id>`."
+
+The digest reads Claude Code's logs in `~/.claude/projects`. In another host it finds nothing; there the new session starts from `design.md` and the plan alone.
 
 ## Minimum skill stack
 
@@ -77,7 +93,7 @@ user has seen the screen.
 
 **Nothing found — carry on without it.** Say so in one line, then work from what this skill already
 gives you: the design system, the existing screens, the references recorded in `design.md`, the copy
-and control rules routed by `references/ux-rules.md`, and the three checks in `references/checks.md`. A
+and control rules routed by `references/ux-rules.md`, and the four checks in `references/checks.md`. A
 missing visual skill costs an extra lens on composition, not the process.
 
 ## Working a screen
@@ -87,7 +103,7 @@ missing visual skill costs an extra lens on composition, not the process.
 | 1 | Gather the style source: `design.md`, the design system, existing screens, or references |
 | 2 | Write the brief, check it against `references/briefs.md`; carry into it the rules in force for this screen — `references/ux-rules.md` routes to them by what the screen contains |
 | 3 | Agent builds: intent in words, then Figma, then self-critique and a revision pass |
-| 4 | Three checks from `references/checks.md`, before the user sees it — the Accuracy pass re-reads the same rules as criteria |
+| 4 | Four checks from `references/checks.md`, before the user sees it — the Accuracy pass re-reads the same rules as criteria |
 | 5 | Show the user |
 | 6 | User hand-finishes it; the resulting screenshot becomes the saved one |
 
@@ -116,6 +132,8 @@ Every step an agent takes re-reads its whole context, so its cost grows with its
 ## Editing an approved screen
 
 Edit **one element at a time** — never a batch of fixes applied together.
+
+Before writing to a screen the user has already seen, read the nodes you are about to change and compare them with your last read. A difference you didn't make is the user's hand edit: it is the approved state now. Leave it and ask about it in one line; never write over it.
 
 A visual difference from grid, alignment, or component convention can look exactly like "an identifiable defect against an existing standard" and still be the product's own signature trait, not a lag behind one. Without the signature-traits list and the saved screenshot in `design.md` (format: `references/state.md`) in front of you, you cannot tell which — and it isn't your call to make from the visual alone.
 
@@ -153,7 +171,7 @@ The same rule covers any other condition swapped mid-task — a hung Figma bridg
 | Redesigning an audited flow | Three frames documented defects of a modal date picker; the fix replaced the picker entirely, and the frames were about to be filled with the calendar anyway | The defect's object no longer existed — the frames had to be reassigned to the new states, not populated with a control nobody would build |
 | Writing a value list | Country list written from memory into the mockup | Two of the countries had no flag in the design system and one was named differently — invisible in the mockup, a missing asset at build time |
 | A decision was reversed | The screen was changed, the note under it was not | A mockup whose own caption praises the state it no longer has is worse than an uncaptioned one — search the notes for the decision's keywords whenever it flips |
-| Showing a screen | The builder glanced at its own screenshot and posted the link; no critic, no three checks | The screenshot was a stale render: the user's first-round rejection named two defects — clipped shadows and a busy background — that the Accuracy and Product style checks exist to catch, and a later "fix" was made against the stale frame and broke a title that had been correct |
+| Showing a screen | The builder glanced at its own screenshot and posted the link; no critic, no checks | The screenshot was a stale render: the user's first-round rejection named two defects — clipped shadows and a busy background — that the Accuracy and Product style checks exist to catch, and a later "fix" was made against the stale frame and broke a title that had been correct |
 | Saving the reference frame | The screenshot disagreed with the readback (34px in the file, small on the frame) and was saved to `design-shots/` anyway | Every later comparison ran against the cache, not the file; the saved frame has to agree with a Read of one changed property before it becomes the reference |
 
 ## Red Flags — stop
@@ -166,7 +184,7 @@ The same rule covers any other condition swapped mid-task — a hung Figma bridg
 - "The note says so" — a quarter of the audit notes were wrong on the first pass, and they were written by you. Re-read the note against the screen before designing to it.
 - "Nothing found on the re-read" — on a set over ~20 notes, an empty result is a claim about your re-read, not about the notes.
 - "The defect is recorded, so this frame needs that control drawn" — check whether your fix removed the object the defect lived on. If it did, the frame is reassigned, not filled.
-- "I looked at the screenshot myself, that's the check" — the builder looking at its own work is step 3's revision pass, not step 4. The three checks run as a separate read-only pass, against node properties, before the link goes out.
+- "I looked at the screenshot myself, that's the check" — the builder looking at its own work is step 3's revision pass, not step 4. The four checks run as a separate read-only pass, against node properties, before the link goes out.
 - "The link is ready, I'll show it and check while they look" — the verdict comes first. A screen shown before SHOW gets rejected for what the checks would have listed, and the rejection costs the round.
 - "I'll say in the message that it isn't checked" — a disclaimer does not replace step 4. The user's review is not the critic. A same-day deadline shortens the brief, not the checks: the critic runs before the link goes out.
 - "This agent already knows the screen, I'll send the fix to it." On every step it also re-reads every round before this one. Send the handback to a fresh agent.

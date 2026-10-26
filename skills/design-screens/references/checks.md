@@ -1,10 +1,10 @@
 # Checks
 
-Three checks run before the user sees a screen. The order is fixed: the first two are cheap and
+Four checks run before the user sees a screen. The order is fixed: the first two are cheap and
 mechanical — judging style on a screen that's missing a state, or that has a 28px tap target,
 spends the taste-sensitive check on something that gets redone anyway. Run them in order; jumping
 to Product style first doesn't save time, it just means redoing that check after Completeness or
-Accuracy forces a change.
+Accuracy forces a change. Composition runs last, on the final render.
 
 ## 1. Completeness
 
@@ -106,6 +106,30 @@ Look: list each tell found, with its element and whether `design.md` or the user
 **Result:** SHOW-compatible, or a list of trait/screenshot mismatches, each naming the specific
 trait or screenshot region it contradicts.
 
+## 4. Composition
+
+What the user sees in the first seconds, checked by Look on a `scale: 1` screenshot of the whole
+frame. A screen can pass every number in Accuracy and still show a hole in the middle: the user
+finds that at a glance, and the critic has to look the same way.
+
+- **Dead zones.** An empty area larger than the blocks next to it, or a column that ends far above
+  its neighbour, with no reason in the content.
+- **Edges line up.** Blocks stacked on the screen share their left and right edges. A block set a
+  few pixels in, or a dropdown that moved off its row, is a finding.
+- **The same element sits in the same place across the flow.** Search, filters, the primary action
+  and the step header keep one position on every sibling screen. The critic gets the sibling frames
+  and compares them side by side: a screen that puts search on the other side is a finding even
+  when it looks fine alone.
+- **Controls look like what they do.** A working control that reads as disabled, or an action that
+  reads as plain text, is a finding.
+
+**After fixes,** compare each frame's new screenshot with the one from the previous round first. A
+frame that comes out identical where a fix was reported means the fix did not land, and that is
+the first finding.
+
+**Result:** PASS, or a list of regions, each with the screenshot path, the region, and the nearest
+node id.
+
 ## Modes of application
 
 Rows are mutually exclusive — pick the one that names the actual constraint on this round, not
@@ -116,10 +140,10 @@ singles out one listed check as more required than the others listed beside it.
 
 | Situation | Checks to run |
 |---|---|
-| First showing of a new screen, direction was the agent's own call | all three |
-| After fixes | only the checks tied to the listed findings, plus "did anything else break" |
-| The user chose this direction themselves | Completeness and Accuracy only. **Taste is out of scope**: the critic does not rule on whether a device the user explicitly asked for belongs in the product — that question was already decided by the person who asked for it |
-| Edit inside approved work | Accuracy, scoped to the touched element, and Product style — both run in full; a batch of textbook-correct edits with no Product style check is exactly the kind that gets rejected. Completeness is out of scope: nothing was added, screen composition didn't change, there's nothing new to count. Reviewed **one element at a time**, never as a batch |
+| First showing of a new screen, direction was the agent's own call | all four |
+| After fixes | the checks tied to the listed findings, "did anything else break", and Composition on every frame the fixes touched, whole frame, with the previous-round comparison |
+| The user chose this direction themselves | Completeness, Accuracy and Composition. **Taste is out of scope**: the critic does not rule on whether a device the user explicitly asked for belongs in the product — that question was already decided by the person who asked for it. Composition is not taste: a hole or a misaligned edge is a defect in any direction |
+| Edit inside approved work | Accuracy, scoped to the touched element, Product style, and Composition of the frame — all run in full; a batch of textbook-correct edits with no Product style check is exactly the kind that gets rejected. Completeness is out of scope: nothing was added, there's nothing new to count. Reviewed **one element at a time**, never as a batch |
 
 A SHOW covers the file as the critic read it. Any write after it — a one-line fix, a rename, a copy
 pass — voids it for every frame the write touched: run the after-fixes round on those frames before
@@ -136,8 +160,8 @@ scope for a check the row *does* list, means that check didn't run: treat the ve
 Fill in the bracketed lines before sending.
 
 ```
-You are reviewing a Figma screen against three checks: Completeness, Accuracy, Product style
-(criteria in references/checks.md). You are the critic, not the builder — a separate pass.
+You are reviewing a Figma screen against four checks: Completeness, Accuracy, Product style,
+Composition (criteria in references/checks.md). You are the critic, not the builder — a separate pass.
 
 Skills to load: a critique skill if this session has one on the shelf (`design-critique` is one
 name worth looking for) — otherwise none; the criteria below are self-contained either way.
@@ -156,6 +180,9 @@ blocks the check that depends on it exactly the way a blank result section does 
   Product style]
 - The screen's task list that Completeness is checked against — the brief that carries it, or
   the task list itself, pasted in full: [absolute path to the brief / the task list itself]
+- Node ids of the sibling screens in the same flow, for Composition: [ids / none — single screen]
+- Screenshots of the previous round, per frame, for the after-fixes comparison: [absolute paths /
+  not applicable — first showing]
 
 Rules:
 - Read-only. Do not write, move, or edit anything in Figma.
@@ -185,10 +212,14 @@ note if scoped to a single touched element rather than the whole screen]
 Result: [SHOW-compatible / list of mismatches against the signature-traits list or saved
 screenshot, each naming the trait or region / out of scope for this mode]
 
+## Composition
+Screenshots looked at, scale 1, one per frame and per sibling compared: [absolute paths]
+Result: [PASS / list of regions, each with the screenshot path, the region and the nearest node id]
+
 ## Verdict
 SHOW or FIX-FIRST. A section legitimately marked out of scope does not block this; a section
-left blank, an input slot left unfilled, or a result marked out of scope despite being listed
-for this mode, does.
+left blank, an input slot left unfilled, a Composition section with no screenshot path, or a
+result marked out of scope despite being listed for this mode, does.
 ```
 
 For **after fixes**, replace the Completeness/Accuracy/Product style sections with:
@@ -198,10 +229,16 @@ For **after fixes**, replace the Completeness/Accuracy/Product style sections wi
 - [finding 1]: ADDRESSED / NOT ADDRESSED
 - [finding 2]: ADDRESSED / NOT ADDRESSED
 
+## Composition
+Screenshots, previous round → now, per touched frame: [absolute path → absolute path]
+Fix landed: [per frame: changed / identical — the reported fix did not land]
+Result: [PASS / list of regions, each with the screenshot path, the region and the nearest node id]
+
 ## New breakage
 [Anything the fixes broke that wasn't broken before. "None found" is a valid, explicit answer —
 an empty line is not.]
 
 ## Verdict
-SHOW or FIX-FIRST.
+SHOW or FIX-FIRST. A Composition section with no screenshot paths, or a frame marked identical
+where a fix was reported, is FIX-FIRST.
 ```
