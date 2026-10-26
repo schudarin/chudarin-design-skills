@@ -15,7 +15,7 @@
     },
     {
       "name": "chudarin-context-mod",
-      "description": "A Claude Code mod: side panel /ctx with context and plan limits at a glance, what fills the window with plain-language help for every item, the price of each kind of action, and the session's totals across compactions.",
+      "description": "A Claude Code mod: side panel /ctx with context and plan limits at a glance, what fills the window with plain-language help for every item, the price of each kind of action, and the session's totals across compactions, with what its subagents processed.",
       "source": {
         "source": "github",
         "repo": "schudarin/chudarin-context-mod"
