@@ -160,7 +160,9 @@ A component set often carries auto layout, which ignores the x/y of its variants
 Swatches, type samples, numbers and names are read from the file at build time: a swatch's fill is bound to its variable, a type sample has its text style applied, names and descriptions come from the variable, style or component itself. A board built this way follows the tokens when they change. A token table has one value column per mode, headed with the mode's name.
 
 ### Tags and rebuilds
-Tag every node the script creates with `setSharedPluginData('dsdocs', 'role', …)` (`board`, `card`, `label`), and every card or table row with `setSharedPluginData('dsdocs', 'sourceId', <component, variable or style id>)`. Record the namespace and keys in the project notes (`sharedplugindata-namespace-is-not-enumerable`). A rebuild rewrites tagged labels and descriptions in place and leaves untagged nodes alone. A card that holds a component is never removed: to drop such a card, move the component out first and check it is still on the page.
+Tag every node the script creates with `setSharedPluginData('dsdocs', 'role', …)` (`board`, `card`, `label`), and every card or table row with `setSharedPluginData('dsdocs', 'sourceId', <component, variable or style id>)`. Record the namespace and keys in the project notes (`sharedplugindata-namespace-is-not-enumerable`). A rebuild rewrites tagged labels and descriptions in place and leaves untagged nodes alone. A card that holds a component is never removed: to drop such a card, move the component out first and check it is still on the page. Before every `remove()`, the script asserts that the node's subtree holds no component, component set or instance, and the report lists every removed node. Moving a component inside the file keeps its instances, so this assertion is the guard, not an instance count before and after: `getInstancesAsync` returns different totals for the same file depending on what is loaded (`getinstancesasync-counts-instances-in-pageless-nodes` in figma-plugin-api-rules).
+
+Before archiving or deleting a component as unused, name the screen and the instance that hold each of its instances. Instances placed in the slot of another instance can read as pageless; pageless is not unused.
 
 ### Order
 Build the first card or table row, run the check below on it and fix it. Only then build the rest, in batches.
@@ -174,7 +176,6 @@ One read-only script over the boards you touched, reading the drawn layers rathe
 5. TEXT nodes without a text style. In a file with no text styles, skip this count and say so in the report.
 6. Card descriptions that differ from the component's `description`.
 7. Swatches and samples not bound to the variable or style named in their own row. A binding elsewhere on the board, such as the board's own spacing, does not count.
-8. Components whose instance count changed: count with `getInstancesAsync` before the first write and again at the end. Moving a component or laying out its variants never changes it. If a count falls, list where the instances live before calling it a loss (`getinstancesasync-counts-instances-in-pageless-nodes` in figma-plugin-api-rules).
 
 While any count is above zero, the boards are not shown to the user: fix, then run the check again. After it passes, screenshot each section and look for overlap and empty previews, which the script cannot see.
 
