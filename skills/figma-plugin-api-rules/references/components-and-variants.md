@@ -568,3 +568,8 @@ for (const i of await comp.getInstancesAsync())
 
 ### emptied-component-set-deletes-itself-mid-script
 **Principle:** An emptied `COMPONENT_SET` deletes itself mid-script. Read `description`, `x`, `y` and anything else you need off the set *before* moving variants out; touching it afterwards throws `The node with id "…" does not exist`. The same mechanism as a GROUP losing its last child (see `group-auto-dissolves-on-last-child-removal-remove-call-throws` in `layout-and-geometry.md`).
+
+### component-set-auto-layout-ignores-variant-xy
+**Principle:** A COMPONENT_SET can carry its own auto layout (`layoutMode` VERTICAL or HORIZONTAL, often with `layoutWrap = 'WRAP'`) — sets tidied in the editor usually do. Then `variant.x` / `variant.y` are ignored like on any auto-layout child (`autolayout-manual-xy-silently-ignored-order-controls-position` in layout-and-geometry.md), and `resizeWithoutConstraints` on a wrapping set re-flows the variants into new rows or columns in child order.
+**Symptom:** a script places variants on a labelled grid, returns the intended coordinates and throws nothing; the render shows the variants in their original flow order, so the labels name the wrong variants.
+**Pattern:** read `set.layoutMode` before positioning variants. If it is not `'NONE'`, save the layout settings (mode, wrap, padding, spacings, sizing modes) in plugin data so they can be restored, set `layoutMode = 'NONE'`, then place the variants and fit the frame with `resizeWithoutConstraints`. Verify by render, not by the returned coordinates.

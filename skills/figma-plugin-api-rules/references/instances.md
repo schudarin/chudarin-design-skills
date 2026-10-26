@@ -892,3 +892,8 @@ const special = slots.flatMap(n => {
     ? [{ id: n.id, scaleMode: p.scaleMode, t, filters: p.filters }] : [];
 });
 ```
+
+### getinstancesasync-counts-instances-in-pageless-nodes
+**Principle:** `component.getInstancesAsync()` also returns instances whose ancestor chain ends in a node with no page — a deleted variant, set or frame that Figma still keeps because something references it. Figma can drop such nodes between two reads, so the count can fall while nothing visible on any page changed. How such nodes survive: `deleted-variant-lives-on-as-parentless-master-while-any-instance-points-at-it` in components-and-variants.md.
+**Symptom:** a before/after check of instance counts reports losses after edits that removed no instance; walking each instance up to its page shows the missing part was under a parentless `COMPONENT_SET` or `FRAME`.
+**Pattern:** when a count changes, group the instances by their page (walk `parent` until the type is `PAGE`; a chain that ends without a page is a pageless node) and compare the on-page counts. Treat a loss only on a page as a real loss.

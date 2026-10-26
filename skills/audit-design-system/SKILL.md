@@ -270,19 +270,7 @@ For repeated elements, and whenever the user asks why elements are used, how com
 
 ## Figma documentation pages
 
-When the user asks to create design-system documentation in Figma, create or propose this page structure:
-
-- `00 Cover`
-- `01 Principles`
-- `02 Foundations`
-- `03 Tokens`
-- `04 Components`
-- `05 Patterns`
-- `06 Templates`
-- `07 Accessibility`
-- `08 Governance`
-- `09 Migration Backlog`
-- `99 Archive`
+When the user asks to create design-system documentation in Figma, create only the pages this run fills.
 
 Do not modify product screens unless the user explicitly asks.
 
@@ -296,7 +284,7 @@ to lends only the way of showing: which sections a board has, how states and wid
 side, where the grid is drawn. Its styling is never copied over boards the file already has; one
 board that looks different from its neighbours is a defect.
 
-Load `references/figma-documentation-structure.md` before creating documentation pages in Figma.
+Load `references/figma-documentation-structure.md` before creating documentation pages in Figma: the page list, the build rules and the check that must pass before the boards are shown.
 
 ## Default output
 
