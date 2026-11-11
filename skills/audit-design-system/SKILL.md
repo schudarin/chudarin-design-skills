@@ -1,11 +1,11 @@
 ---
 name: audit-design-system
-description: Analyze, audit, inventory, and document an existing Figma design system through the Figma MCP server — components, variables, tokens, patterns, design debt, usage rules, causal relationships — and create design-system documentation pages in Figma on request. Use when the user asks to audit, inventory, map, document, or find debt in a Figma file, page, frame, component set, or selection. Read-only by default; modify Figma only when the user explicitly asks. Not for designing or building screens — that is design-screens; not for repairing broken variable bindings — that is figma-fix-variable-bindings.
+description: Analyze, audit, inventory, and document an existing design system, in Figma through the Figma MCP server or in code (tokens, component markup, HTML prototypes) — components, variables, tokens, patterns, design debt, usage rules, causal relationships — and create documentation pages in Figma or a review catalogue in code on request. Use when the user asks to audit, inventory, map, document, or find debt in a Figma file, page, frame, component set, or selection, or in a design system kept as code. Read-only by default; modify Figma or code only when the user explicitly asks. Not for designing or building screens — that is design-screens; not for repairing broken variable bindings — that is figma-fix-variable-bindings.
 ---
 
-# Figma Audit Design System
+# Audit Design System
 
-Use this skill to analyze real Figma files and help build a tokenized design system grounded in actual layouts, components, variables, and product flows.
+Use this skill to analyze a real design system, in Figma or in code, and help build a tokenized design system grounded in actual layouts, components, variables, and product flows.
 
 ## Operating mode
 
@@ -21,7 +21,7 @@ If the user asks to analyze, audit, find, compare, document, propose, or recomme
 
 If the user asks to create, add, insert, update, modify, rename, organize, or publish in Figma, you may use write-capable Figma MCP tools, but do not modify source product screens unless the user specifically asks.
 
-Do not analyze the codebase or Code Connect mappings.
+The source is Figma or code: tokens files, component markup, HTML prototypes. Use the one the user names; when both exist and the user has not said which one is the design source, ask in one line. A system in Figma and a system in code are different systems, even for one product: different units, names, states and failure modes. Name the source in the report's first line and in every finding (Figma: file and node; code: file and selector). A finding from one is not evidence about the other; comparing the two is a separate task, done only when the user asks. When prototypes are the design source, the product's code is a port: it is checked against them, not the other way round. Read-only holds for code too. Code sources follow `references/code-sources.md`.
 
 ## Primary objective
 
@@ -35,7 +35,7 @@ For every important finding, connect:
 4. Component or pattern
 5. Token dependency
 6. Design-system rule
-7. Evidence from Figma
+7. Evidence from the source (Figma or code)
 8. Confidence level
 
 ## MCP workflow
@@ -323,7 +323,6 @@ Load `references/governance-rules.md` when the user asks how to maintain, versio
 ## Do not
 
 - Do not modify Figma unless explicitly asked.
-- Do not analyze the codebase or Code Connect.
 - Do not invent components without labeling them as recommendations.
 - Do not treat every repeated value as a token.
 - Do not create components from one-off layout details.
