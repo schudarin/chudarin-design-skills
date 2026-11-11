@@ -2,8 +2,6 @@
 # Run: python3 serve.py --root <prototype folder> [--port 8000] [--host 127.0.0.1]
 import argparse
 import os
-import posixpath
-import urllib.parse
 from functools import partial
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 
@@ -14,8 +12,9 @@ class Handler(SimpleHTTPRequestHandler):
         super().end_headers()
 
     def send_head(self):
-        path = posixpath.normpath(urllib.parse.unquote(self.path.split("?", 1)[0].split("#", 1)[0]))
-        if any(part.startswith(".") for part in path.split("/")):  # .env, .git and the like are never served
+        # checked on the file the request reaches on disk, links followed: .env, .git and anything outside the folder are never served
+        rel = os.path.relpath(os.path.realpath(self.translate_path(self.path)), os.path.realpath(self.directory)).split(os.sep)
+        if rel[0] == os.pardir or any(part.startswith(".") and part != os.curdir for part in rel):
             self.send_error(404)
             return None
         return super().send_head()

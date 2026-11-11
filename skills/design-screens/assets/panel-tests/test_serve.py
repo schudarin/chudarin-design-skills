@@ -21,6 +21,11 @@ class ServeTest(unittest.TestCase):
             os.makedirs(os.path.dirname(os.path.join(self.root, p)), exist_ok=True)
             with open(os.path.join(self.root, p), "w") as f:
                 f.write(text)
+        outside = tempfile.mkdtemp()
+        with open(os.path.join(outside, "notes.txt"), "w") as f:
+            f.write("private")
+        os.symlink(".env", os.path.join(self.root, "config.txt"))  # a plain name that leads to a hidden file
+        os.symlink(outside, os.path.join(self.root, "out"))  # a folder that leads out of the served one
         self.srv = serve.make_server("127.0.0.1", 0, self.root)
         threading.Thread(target=self.srv.serve_forever, daemon=True).start()
 
@@ -43,7 +48,7 @@ class ServeTest(unittest.TestCase):
         self.assertEqual(self.get("/v2/app.html")[::2], (200, "app"))
 
     def test_hidden_files_and_folder_listings_are_not_served(self):
-        for path in ["/.env", "/.git/config", "/v2/", "/v2/../.env"]:
+        for path in ["/.env", "/.git/config", "/v2/", "/v2/../.env", "/config.txt", "/out/notes.txt"]:
             self.assertEqual(self.get(path)[0], 404, path)
 
 
