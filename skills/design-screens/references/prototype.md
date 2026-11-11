@@ -10,16 +10,14 @@ A prototype is a served HTML page outside the product, built to choose and appro
 
 ## Panel
 
-One review panel per project; every prototype page mounts it and never builds its own. `design.md` › Settings records its path. When there is none, the first prototype builds it.
+One review panel per project; every prototype is reviewed through it and none builds its own. Its code is this skill's `assets/panel/`: the first prototype copies the folder into the project as is, and `design.md` › Settings records the copy's path. The project never edits the copy. A fix goes into the package, and the agent replaces the copy when the package's version, on the first line of each file, is newer. How to mount the panel and write steps is at the top of `panel.js`; `serve.py` serves the prototype with no cache.
 
-- On a wide screen it sits in a corner, collapses, and never shifts or covers the screen under review.
+- On a wide screen it sits in a corner and collapses to a small pill. A device frame keeps its place whether the panel is open or collapsed, and the open panel never covers it; the pill may. The whole-window view takes the full window, and the panel floats over it.
 - Screen: phone, tablet, desktop, the whole window. A device frame is shown at the device's size: never grown, never shrunk for height (the page scrolls), shrunk only when the window is narrower than the frame.
-- Scenarios: named paths of steps, grouped by milestone. Groups and steps fold. A step opens the page in that state; previous and next move one step.
-- Play runs a scenario start to end at a person's pace: each press is shown, text is typed letter by letter, and there is time to read. The step's caption stays on screen. A new play stops the one running.
-- Data presets when the screen depends on data: empty, typical, heavy.
+- Scenarios: named paths of steps, grouped by milestone. Groups and steps fold. A tap on a step opens the page in that state at once, with no animation.
+- The chosen step has a play button: the scenario plays on from that step to its end at a person's pace. Each press is shown, text is typed letter by letter, and there is time to read. The step's caption stays above a device frame and in the open panel. A new play stops the one running. The panel puts no checkmarks or other marks on played paths or steps.
+- Data presets only when the user asks to compare the screen on different data. The panel has none by default.
 - Theme, when the product has more than one.
-- Changelog: what this round changed and what to test, per version.
-- Feedback per step: accept or needs changes, plus a comment, saved to the feedback file named in `design.md` › Settings and read at the start of every round.
 - The panel holds only what this round tests. Options left from earlier rounds leave it.
 - Opened on a phone (below the product's phone breakpoint; 640 px when none is recorded), the page fills the screen with no device frame, and the screen choice hides. The panel is a sheet from the bottom that tucks away while a path plays. A tap on a path plays it from its start; a small pill shows the step ("2/5") and brings the panel back.
 

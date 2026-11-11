@@ -14,7 +14,7 @@ Design system: yes / no; where it's described
 References: existing screens / external
 Medium: Figma / HTML prototype / product code
 Figma file: key, pages (when the medium is Figma)
-Running page: serve command and port, screenshot recipe, the panel's path, the feedback file (when the medium is a prototype or product code)
+Running page: serve command and port, screenshot recipe, the panel's path (when the medium is a prototype or product code)
 Models: default from the skill; add a line only if this project needs something else
 
 ## Signature traits
