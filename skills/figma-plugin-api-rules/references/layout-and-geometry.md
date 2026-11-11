@@ -1528,3 +1528,13 @@ return { arc: arc.arcData }; // innerRadius must be > 0
 **Principle:** `BACKGROUND_BLUR` shows what lies behind the node only through the node's own fill. Under a fill at opacity 1 it renders nothing, while the effect, its style and its radius all read back as set. A "glass" header bound to an opaque surface token, or an instance that kept an opaque fill override, shows no blur.
 **Symptom:** sticky headers carry `BACKGROUND_BLUR` from an effect style over a fill at opacity 1; glass button instances carry an opaque fill override; the render shows no blur anywhere.
 **Pattern:** give every glass node a fill below opacity 1 (a translucent token or the paint's `opacity`), scan instances of glass components for opaque fill overrides, and verify by rendering the node over a photo, not over a flat background.
+
+### counteraxisalignitems-has-no-stretch-stretch-is-the-childs
+**Principle:** A frame's `counterAxisAlignItems` takes only `'MIN' | 'MAX' | 'CENTER' | 'BASELINE'`. Stretching across the counter axis is set on each child, not on the frame: `child.layoutAlign = 'STRETCH'` or `child.layoutSizingHorizontal/Vertical = 'FILL'`.
+**Symptom:** `in set_counterAxisAlignItems: Property "counterAxisAlignItems" failed validation: Invalid enum value. Expected 'MIN' | 'MAX' | 'CENTER' | 'BASELINE', received 'STRETCH'`. The script is atomic, so nothing it built is kept.
+**Pattern:**
+```js
+col.layoutMode = 'VERTICAL';
+col.counterAxisAlignItems = 'MIN';            // the frame aligns
+for (const c of col.children) c.layoutSizingHorizontal = 'FILL'; // each child stretches, after appendChild
+```

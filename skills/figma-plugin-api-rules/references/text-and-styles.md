@@ -84,7 +84,7 @@ valueText.textTruncation = 'ENDING';  // NOT 'ENDING_ELLIPSIS'
 
 ### loadfontasync-multiple-families-cross-instance
 **Principle:** Before mutating `characters` on cross-instance text nodes load ALL the fonts actually used — complex DS components use different families in different text nodes, and a specific node's current fonts are found via `getStyledTextSegments(['fontName'])` followed by `loadFontAsync` per segment.
-**Symptom:** the error "Cannot write to node with unloaded font..." on a text override inside an instance.
+**Symptom:** the error "Cannot write to node with unloaded font..." on a text override inside an instance. The same error comes from `setRangeFontName` in a bulk font swap when only the target font was loaded: every font already in the node's runs is loaded first.
 **Pattern:** preflight: load the pool of likely fonts (optional ones in try/catch) before any characters/setProperties; because the script is atomic, a failure on a font load cancels everything done — rerun whole.
 ```js
 // Error: Cannot write to node with unloaded font "JetBrains Mono Regular".

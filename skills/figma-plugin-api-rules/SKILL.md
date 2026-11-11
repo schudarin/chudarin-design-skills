@@ -21,7 +21,7 @@ Accumulated, field-tested knowledge of the Figma Plugin API as driven through an
  - `combineAsVariants` · `addComponentProperty` · `deleteComponentProperty` · `componentPropertyDefinitions` · `componentPropertyReferences` → `references/components-and-variants.md`
  - `setBoundVariable` · `setBoundVariableForPaint` · `addMode` · `setValueForMode` · `resolveForConsumer` → `references/variables-and-tokens.md`
  - `characters =` · `loadFontAsync` · `textStyleId` · `textAutoResize` · `textTruncation` → `references/text-and-styles.md`
- - `layoutMode` · `layoutSizing*` · `primaryAxisSizingMode` · `resize(` · `insertChild` · `clone` · `arcData` → `references/layout-and-geometry.md`
+ - `layoutMode` · `layoutSizing*` · `primaryAxisSizingMode` · `counterAxisAlignItems` · `resize(` · `insertChild` · `clone` · `arcData` → `references/layout-and-geometry.md`
  - `connectorStart` · `connectorEnd` → `references/connectors.md` · `annotations` → `references/annotations.md`
  - `setReactionsAsync` · `reactions` · `overlay*` → `references/prototyping.md`
  - `get_metadata` on a page or on a link's `node-id` · `findAll` over a page · `exportAsync` · `get_screenshot` for verification → `references/mcp-and-environment.md`
