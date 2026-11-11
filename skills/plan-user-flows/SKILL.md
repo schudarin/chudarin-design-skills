@@ -1,9 +1,9 @@
 ---
 name: plan-user-flows
-description: "Plan user flows and screen states for a Figma design before any designing starts. Use when asked to plan a user flow, map out screens for a feature, define screen states, plan a Figma file structure, or work out what needs to be designed before opening Figma. Produces a complete flow map with all screens, states, entry/exit points, and a suggested Figma page structure."
+description: "Plan user flows and screen states before any designing starts, whether the design is built in Figma, an HTML prototype or code. Use when asked to plan a user flow, map out screens for a feature, define screen states, plan a Figma file structure or a prototype's scenarios, or work out what needs to be designed before building. Produces a complete flow map with all screens, states, entry/exit points, and where they will live: Figma pages or the prototype panel's paths."
 ---
 
-# Figma Plan User Flows
+# Plan User Flows
 
 Plans what needs to be designed before a pixel is touched — mapping all screens, states, entry points, and edge cases so designers do not discover missing states mid-build.
 
@@ -47,7 +47,9 @@ Screen types to cover: entry, happy path, loading, success, error (network/valid
 - If yes: [Screen N]
 - If no: [Screen X]
 
-### 5. Suggested Figma File Structure
+### 5. Where the screens will live
+
+In Figma, a page structure:
 
 ```
 Feature name/
@@ -60,6 +62,8 @@ Feature name/
 - Handoff
 ```
 
+In a prototype: one panel path per flow (the main path, each error branch, each empty state), each screen state a step, paths named as the user would say them.
+
 ### 6. What Not to Design Yet
 [Explicit out-of-scope items — prevents scope creep]
 
@@ -68,7 +72,7 @@ Feature name/
 - [ ] All decision points mapped with both branches
 - [ ] Entry points include all realistic user paths
 - [ ] Out-of-scope section is explicit
-- [ ] Figma file structure matches screen map
+- [ ] Figma file structure or the panel's paths match the screen map
 
 ## Drawing the map in Figma
 When the map goes on the canvas as blocks and arrows:
