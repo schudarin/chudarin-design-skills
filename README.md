@@ -54,8 +54,8 @@ flowchart LR
 
 | Skill | You type something like | What happens |
 |---|---|---|
-| `plan-user-flows` | "What screens do we need for checkout?" | You get every screen and state, entry and exit points, and a page structure for the Figma file, before anything is drawn |
-| `audit-design-system` | "Go through this file and tell me what the design system holds" | The agent reads the file and reports components, tokens, patterns and design debt, and writes documentation pages if you ask. Read-only otherwise |
+| `plan-user-flows` | "What screens do we need for checkout?" | You get every screen and state, entry and exit points, and where they will live (Figma pages or a prototype's paths), before anything is drawn |
+| `audit-design-system` | "Go through this file and tell me what the design system holds" | The agent reads the Figma file or the code and reports components, tokens, patterns and design debt, and writes documentation pages if you ask. Read-only otherwise |
 | `design-screens` | "Design a settings screen" · "Change the header on this frame" | The design process itself: where the style comes from, a brief per screen, checks afterwards, edits to approved work one element at a time |
 | `design-slides` | "Make a pitch deck from this doc" · "Fix this deck, it looks generated" | Story first, one claim per slide, style from your template or brand, numbers checked against sources, export checked before you get it |
 | `figma-plugin-api-rules` | nothing, it loads on its own | Real Plugin API failures and the way around each one. Loads before the agent writes anything into your file |
