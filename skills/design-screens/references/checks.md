@@ -1,6 +1,6 @@
 # Checks
 
-Four checks run before the user sees a screen. The order is fixed: the first two are cheap and
+Four checks run before the user sees a screen (not for a draft: `SKILL.md` › Working a screen). The order is fixed: the first two are cheap and
 mechanical — judging style on a screen that's missing a state, or that has a 28px tap target,
 spends the taste-sensitive check on something that gets redone anyway. Run them in order; jumping
 to Product style first doesn't save time, it just means redoing that check after Completeness or
@@ -242,3 +242,13 @@ an empty line is not.]
 SHOW or FIX-FIRST. A Composition section with no screenshot paths, or a frame marked identical
 where a fix was reported, is FIX-FIRST.
 ```
+
+For a **running page** (a prototype or product code), the same template with these changes:
+
+- First line: "You are reviewing a running page at [served URL] against four checks: …".
+- No Figma skills. Accuracy reads the DOM and computed styles with the browser tool the host has, at each width and theme in the inputs.
+- Inputs: sibling screens are given as URLs or panel paths; add "Widths and themes: [list]".
+- Wherever the template says node id, the finding names a CSS selector or element, the width and theme, and a number: "`.btn-primary` at 390, light: height 40px, the product minimum is 44px".
+- "A colour bound to a variable" and "text on a text style" read as "a token from the system, not a literal value". "An instance of a component" reads as "built with the system's markup, function or component".
+- Figma-only criteria (integer coordinates, `clipsContent`, SPACE_BETWEEN, spacer frames, instance overrides) do not apply and are not counted as skipped. Composition uses a full-page screenshot at each width.
+- Read-only means no edits to project files.

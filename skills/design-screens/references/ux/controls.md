@@ -73,7 +73,8 @@ Text the user will need to copy — an identifier, a key, an address — gets a 
 immediately beside the value at a fixed offset, at the lowest control tier. On a pointer device it
 appears on hover, so it does not compete with the content it belongs to. On touch there is no hover,
 so there it is permanent, or it lives in the row's action set — a hover-only copy button is a copy
-button that does not exist on a phone (`ux/controls.md` above, `ux/responsive.md`).
+button that does not exist on a phone (`ux/controls.md` above, `ux/responsive.md`). A press turns
+the control itself into "Copied" for about two seconds; nothing around it moves or re-renders.
 
 **Read:** copyable values have the affordance in both the pointer and the touch frames; the offset
 matches the one recorded in `design.md`.
@@ -97,7 +98,8 @@ is where inconsistency between screens comes from.
 
 ### A button that starts something slow says so in place
 
-On press it becomes a loading state — the same size, in the same place, no longer pressable. A
+On press it becomes a loading state — the same size, in the same place, no longer pressable. The
+size holds when the label changes too (Save → Saving → Saved). A
 button that stays idle while a request runs gets pressed again, and the second press is a duplicate
 submit the design invited.
 

@@ -1,9 +1,9 @@
 ---
 name: design-screens
-description: Use when designing, building, or changing a product screen, flow, or component in Figma — new screens, states, lo-fi or hi-fi prototypes, redesigns, or edits to already-approved work. Load it alongside figma-generate-design or figma-use, never instead of them: those cover the API, this covers the process. Also use, for its UX rules and checks, when a product screen is built directly in code with no Figma step. Use when a design result was rejected, when a screen must match an existing product, or when starting design on a product with no visual direction yet. Not for auditing or documenting an existing design system without changing screens — that is audit-design-system.
+description: Use when designing, building, or changing a product screen, flow, or component — in Figma, in an HTML prototype, or straight in the product's code: new screens, states, scenarios, rough or polished takes, redesigns, edits to approved work, or porting a prototype into the product. In Figma, load it alongside figma-generate-design or figma-use, never instead of them: those cover the API, this covers the process. Use when a design result was rejected, when a screen must match an existing product, or when starting design on a product with no visual direction yet. Not for auditing or documenting an existing design system without changing screens — that is audit-design-system.
 ---
 
-# Figma Design Screens
+# Design Screens
 
 ## Overview
 
@@ -15,7 +15,16 @@ of the index — by the Figma file key in the request first, then by the row's t
 match → the product file it names (`design/<slug>.md`) is `design.md` for the rest of this run. Zero or
 more than one → ask which product in a single line and wait. Format of the index: `references/state.md`.
 
-Second action, before any read or write in Figma: make sure you have a link to the frame or page the
+Second action: know the medium, the place where the screen is built. `design.md` › Settings names it;
+when neither it nor the request does, ask in one line.
+
+| Medium | What it is | Read next |
+|---|---|---|
+| Figma | frames in a Figma file | the link rule below, `references/canvas.md` |
+| HTML prototype | a served page outside the product, a folder per version; ported into the product once approved | `references/prototype.md` |
+| Product code | the screen is built in the product's own codebase | "Prototype or product code" below |
+
+In Figma, before any read or write: make sure you have a link to the frame or page the
 task is about. No link in the request and none recorded in `design.md` → ask for one in a single
 line and wait. Guessing which file and page the user means is the most expensive mistake available
 here: everything after it is built in the wrong place.
@@ -28,10 +37,10 @@ user should never have to ask "where are you going to draw this?" after the dire
 | Project state | Where style comes from | Skipped |
 |---|---|---|
 | Design system exists | the design system is law | direction, typography, palette phases |
-| No design system, screens exist | existing screens in Figma | same |
+| No design system, screens exist | existing screens, in Figma, prototypes or the product | same |
 | Neither | external references, curated by the user | nothing |
 
-**No Figma: the screen is built straight in code.** The Figma steps do not run. No frame link, no screens drawn first in another medium, unless the user asks for mockups in words. What still runs: `design.md` is read first and decisions are written back to it. Before a screen's code is written, read the `references/ux-rules.md` rows that match its content, plus `ux/principles.md` when the screen is new or was rejected. Before the user sees the screen, the four checks from `references/checks.md` run on the running build, against the DOM and a screenshot at each width, by a reader that did not write the code.
+**Prototype or product code.** The Figma steps do not run. No frame link, no screens drawn first in another medium, unless the user asks for mockups in words. What still runs: `design.md` is read first and decisions are written back to it. Before a screen's code is written, read the `references/ux-rules.md` rows that match its content, plus `references/ux/principles.md` when the screen is new or was rejected. Before the user sees the screen, the four checks from `references/checks.md` run on the running build, against the DOM and a screenshot at each width, by a reader that did not write the code: the critic prompt in `references/checks.md` with its running-page changes. A prototype also follows `references/prototype.md`.
 
 ## Improving a product that already ships
 
@@ -63,13 +72,20 @@ The digest reads Claude Code's logs in `~/.claude/projects`. In another host it 
 
 ## Minimum skill stack
 
-Every designer agent loads `figma-use` (mandatory before any `use_figma` call — the Figma plugin
+A designer agent loads `figma-use` (mandatory before any `use_figma` call — the Figma plugin
 skill in Claude Code, or the MCP resource `skill://figma/figma-use/SKILL.md` in other agents) and
-`figma-plugin-api-rules`. On top of those: exactly **one** visual skill, matched to the task type —
+`figma-plugin-api-rules` before its first Figma call. A prototype or product-code task with no Figma
+call loads neither. Every designer agent loads exactly **one** visual skill, matched to the task type —
 never the whole shelf, because more lenses on one task dilute focus rather than adding rigour.
 A screen with any copy also loads `writing-texts` from this pack before its first text is written,
-and every brief to a designer agent names it. It is not a visual skill and does not count against
+and every brief to a designer agent names it. The same load comes before the first write to
+`design.md`, a notes file or a handoff file. It is not a visual skill and does not count against
 the one-lens limit.
+
+A screen built in a prototype or in code with anything that appears, leaves or moves also loads one
+skill from the Motion row of the table below, before its first build. Like `writing-texts`, it does
+not count against the one-lens limit, and every brief to a designer agent names it. None on the
+shelf: `references/ux/motion.md` alone.
 
 **Look before you load.** Read the list of skills available in this session, then match by task
 type. Names worth looking for, by role:
@@ -98,24 +114,33 @@ missing visual skill costs an extra lens on composition, not the process.
 
 ## Working a screen
 
+**Draft or design.** Before the first build of a task, ask in one line which mode it is, unless the request or `design.md` already says:
+
+- Draft: fast rough takes to choose a direction. Steps 1–3 and 5 run, step 4 (the critic) does not; every message that shows one says "draft, not checked" in its first line.
+- Design: the full steps, with the critic before every showing.
+
+The mode goes into `design.md` › In progress with the task. A draft the user picks switches the task to design: the critic runs on it before any polish.
+
 | Step | What happens |
 |---|---|
 | 1 | Gather the style source: `design.md`, the design system, existing screens, or references |
 | 2 | Write the brief, check it against `references/briefs.md`; carry into it the rules in force for this screen — `references/ux-rules.md` routes to them by what the screen contains |
-| 3 | Agent builds: intent in words, then Figma, then self-critique and a revision pass |
+| 3 | Agent builds: intent in words, then the build in the medium, then self-critique and a revision pass |
 | 4 | Four checks from `references/checks.md`, before the user sees it — the Accuracy pass re-reads the same rules as criteria |
 | 5 | Show the user |
-| 6 | User hand-finishes it; the resulting screenshot becomes the saved one |
+| 6 | User finishes it: by hand in Figma, in words on a prototype. The approved state becomes the saved one |
 
-Step 6 is the norm, not an exception — expect the user to finish the screen by hand.
+Step 6 is the norm, not an exception — expect the user to finish the screen: by hand in Figma, in words on a prototype or in code.
 
-Lay the page out per `references/canvas.md` from the first screen. The working page holds only what is in play, in sections: the current product, the proposal, its states. Section names are the headers; no floating text labels. A variant the person rejected leaves the working page in the turn the choice is made. Read before the link goes out: no top-level node on the page other than a section, and no overlaps inside a section.
+In Figma, lay the page out per `references/canvas.md` from the first screen. The working page holds only what is in play, in sections: the current product, the proposal, its states. Section names are the headers; no floating text labels. A variant the person rejected leaves the working page in the turn the choice is made. Read before the link goes out: no top-level node on the page other than a section, and no overlaps inside a section. A prototype's page, panel and versions follow `references/prototype.md`.
 
 The steps hold when the main agent builds the screen itself, with no designer agent. The brief is still written: it is the list Completeness counts against, and it carries the rules in force. Step 4 is still a separate read-only critic. The message that shows a screen carries the critic's verdict line (mode row, SHOW); a message without it is a progress note and says "not checked yet" in its first line.
 
-A brief must point to a source to clone, not describe anatomy: a cloned node guarantees identical spacing, styles, and bindings; a text description invites the agent to author from scratch, and that drifts.
+A brief must point to a source to clone, not describe anatomy: a cloned node guarantees identical spacing, styles, and bindings; a text description invites the agent to author from scratch, and that drifts. In code the source is a file path and the part to copy. A part or mechanic that already works in an earlier version or in the design system (a button, an animation, a scenario player) is ported as is, not rewritten; a change to it is a proposal shown before the build.
 
 A block that appears on more than one frame becomes a component before the second copy is placed, and every later change to it goes to the master. Frame-by-frame edits to copies drift apart in text style, spacing and order within a few rounds, and the user is the one who finds the drift.
+
+A part the design system has is built with its own markup, function or component. A part it lacks is a proposal marked "new", shown beside the closest existing part, and enters the system after the user's yes. A change to a shared part goes through a review page before it lands: per item, before and after side by side, live and built from the system, a choice whose buttons are labelled with the column headings, and a comment. The answers are saved to a file and read back; then the change goes everywhere in one pass.
 
 ## Agent lifetime
 
@@ -127,6 +152,7 @@ Every step an agent takes re-reads its whole context, so its cost grows with its
 | A fix round is a new dispatch | The user's feedback goes to a fresh agent with a handback. It is not sent as a message to the agent that built the previous round. |
 | Handback, not history | What was built, node ids, what to change, the user's words verbatim. No screenshots, no build log. |
 | The brief carries only this task | The template blocks and the rules for this screen. Base briefs are not attached "to read whole". |
+| One writer per file | Two agents never edit the same file at once; parallel work is split by file or runs in turn. A builder works in its own copy (a new version folder, or a branch) and merges it only when the page loads and every scenario plays with no console errors. |
 | References are read once | One agent looks at the reference images and writes into `design.md` what to take from them. Builders get that text, not the images. |
 
 ## Editing an approved screen
@@ -184,8 +210,8 @@ The same rule covers any other condition swapped mid-task — a hung Figma bridg
 - "The note says so" — a quarter of the audit notes were wrong on the first pass, and they were written by you. Re-read the note against the screen before designing to it.
 - "Nothing found on the re-read" — on a set over ~20 notes, an empty result is a claim about your re-read, not about the notes.
 - "The defect is recorded, so this frame needs that control drawn" — check whether your fix removed the object the defect lived on. If it did, the frame is reassigned, not filled.
-- "I looked at the screenshot myself, that's the check" — the builder looking at its own work is step 3's revision pass, not step 4. The four checks run as a separate read-only pass, against node properties, before the link goes out.
+- "I looked at the screenshot myself, that's the check" — the builder looking at its own work is step 3's revision pass, not step 4. The four checks run as a separate read-only pass, against node properties or the DOM, before the link goes out.
 - "The link is ready, I'll show it and check while they look" — the verdict comes first. A screen shown before SHOW gets rejected for what the checks would have listed, and the rejection costs the round.
-- "I'll say in the message that it isn't checked" — a disclaimer does not replace step 4. The user's review is not the critic. A same-day deadline shortens the brief, not the checks: the critic runs before the link goes out.
+- "I'll say in the message that it isn't checked" — a disclaimer does not replace step 4, unless the task is in draft mode. The user's review is not the critic. A same-day deadline shortens the brief, not the checks: the critic runs before the link goes out.
 - "This agent already knows the screen, I'll send the fix to it." On every step it also re-reads every round before this one. Send the handback to a fresh agent.
 - "The screenshot shows it, so the file is like that" — when the readback disagrees, the file wins and the render is old. Re-shoot; don't edit the file to match a cache.

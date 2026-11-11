@@ -29,5 +29,5 @@ file's main sans family; Inter when the file has none. Colours: text primary `#1
   is a card 800 wide, padding-top 48, gap 16 — the time Bold 64 and one sentence Medium 32.
 
 A new screen is inserted as a step into its scenario, with the arrow copied from a neighbour.
-Screens nested in steps cannot carry prototype links, so a clickable prototype lives on its own
+Screens nested in steps cannot carry prototype links, so a clickable Figma prototype lives on its own
 page, built from copies of the main scenario.

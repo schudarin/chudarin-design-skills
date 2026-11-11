@@ -6,6 +6,10 @@ expands, or moves — which is most screens, even when the mockup is still.
 A static mockup still specifies motion by omission: whoever builds it will invent the transition if
 the design does not state one. These rules are about what the design owes the build.
 
+In a prototype or in code the design is the build. Every block that appears, leaves or changes size in a running view has its transition written; reduced motion follows its own rule below.
+
+**Look:** play each state change at a person's pace; nothing appears or disappears between two frames.
+
 ### Motion carries a relationship or it is decoration
 
 Every animation answers one question: where did this come from, or where did it go. A panel slides

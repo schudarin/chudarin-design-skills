@@ -11,7 +11,7 @@ Search, in this order:
 1. **Domain-specific design documents** in the project root or its docs folder — files like `DESIGN_SYSTEM.md` or `<PRODUCT>_DESIGN_SYSTEM.md`.
 2. **`CLAUDE.md` / `AGENTS.md`** — project instructions often name a design system or house style directly.
 3. **`DESIGN.md` / `PRODUCT.md`** or similar top-level docs.
-4. **The Figma file itself** — variable collections and text styles are a design system even when no document describes them in words. Open the file and check before concluding there's nothing.
+4. **The Figma file or the code** — variable collections and text styles in Figma, or a tokens file (CSS custom properties, a theme file) and a component catalogue in code, are a design system even when no document describes them in words. Open them and check before concluding there's nothing.
 5. **Project memory**, if this agent keeps one for the project — a past session may already have recorded the answer.
 
 **Rule: if the project already has a place for design knowledge, `design.md` points to it — it does not restate it.** Copying a style description into `design.md` creates a second copy that drifts the moment either one is edited alone. Record a pointer (file path, Figma file key, memory entry name) and stop there.
@@ -28,10 +28,10 @@ Ask only if Step 1 found nothing. No more than these two, in this order.
 
 **Question 1 — Is there a design system?**
 
-- **Yes** → the design system is law. Colors, typography, and components come from it; nothing is invented. Ask only *where* it's described (a document, a Figma file, or both) and record the pointer. Stop here — the phases below don't run.
+- **Yes** → the design system is law. Colors, typography, and components come from it; nothing is invented. Ask only *where* it's described (a document, a Figma file, tokens and a catalogue in code) and record the pointer. Stop here — the phases below don't run.
 - **No** → ask Question 2.
 
-**Question 2 — (only if no design system) Are there existing screens in Figma?**
+**Question 2 — (only if no design system) Are there existing screens: in Figma, in prototypes or in the product?**
 
 - **Yes** → those screens are the style to match. New work is built to match their style. External references are gathered only as an addition, and only when the task explicitly calls for a fresh direction.
 - **No** → this is a from-scratch product. Go to "From scratch" below.
@@ -39,9 +39,9 @@ Ask only if Step 1 found nothing. No more than these two, in this order.
 ## Never ask
 
 - **Interface language.** Not part of this survey, at any point, regardless of which answer the two questions above produce.
-- **What medium the mockups are built in.** Figma, or the product's code when the user builds without Figma (`SKILL.md`, Overview); never a third medium chosen by the agent.
+- **What medium the mockups are built in**, in this survey. `SKILL.md` › Overview reads it from `design.md` or the request, and asks once only when neither names it; the answer goes to Settings › Medium. The agent never picks a medium itself.
 
-Asking either turns a two-question survey into a longer interview, and the rest of the skill has no use for the answer.
+Asking either here turns a two-question survey into a longer interview, and the rest of the skill has no use for the answer.
 
 ## From scratch
 

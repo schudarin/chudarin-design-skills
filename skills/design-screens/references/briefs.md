@@ -178,6 +178,18 @@ SEND STATUS: [NOT READY / READY] — do not mark READY while any SELF-CHECK line
 "[ ]" instead of an actual answer.
 ```
 
+## Running page (prototype or product code)
+
+The same template with these changes:
+
+- Block 1: "working in [an HTML prototype / the product's code] on [product]".
+- Block 2: no Figma skills. Load the visual skill, `writing-texts` and, when anything appears, leaves or moves, one Motion skill (`SKILL.md` › Minimum skill stack).
+- Block 3: the source to clone is a file path and the part to copy; SELF-CHECK 9 asks for that instead of a node id. A part or mechanic that already works is ported as is.
+- Block 4: the folders or files the agent may edit, the served URL, and any other agent working at the same time (`SKILL.md` › Agent lifetime, "One writer per file").
+- Block 5: values come from the system's tokens file, parts from its own markup, function or component. On the reuse ladder, "component" means these, and "variable or text style" means a token.
+- Block 7: "before touching Figma" reads "before editing a file".
+- Block 8: reply with the served URL, the files changed, and anything unsure; SELF-CHECK 7 checks these three.
+
 ## Variants-mode addendum
 
 Add the lines tagged "(variants mode only)" above — never by default. They apply only under the

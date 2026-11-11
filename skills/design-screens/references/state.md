@@ -12,14 +12,16 @@ Both live in the project's own repository, not in this skill and not in agent me
 ## Settings
 Design system: yes / no; where it's described
 References: existing screens / external
-Figma file: key, pages
+Medium: Figma / HTML prototype / product code
+Figma file: key, pages (when the medium is Figma)
+Running page: serve command and port, screenshot recipe, the panel's path, the feedback file (when the medium is a prototype or product code)
 Models: default from the skill; add a line only if this project needs something else
 
 ## Signature traits
 What looks like an unfinished detail in this product but is actually the style, and the usage rules the person states while working: which variant goes where (e.g. "secondary buttons only in the footer"). A rule stated during the work goes here in the same turn, not only into a log line: the brief and the Product style check read this section.
 
 ## Approved
-| Screen | Where in Figma | Screenshot | Date |
+| Screen | Where (Figma frame, or prototype folder and URL) | Screenshot | Date |
 
 ## Rejected — do not suggest again
 <what was tried> → "<user's own words>", <date>
@@ -39,6 +41,7 @@ Anything about this specific project's tools or setup that cost time once.
 ## Settings
 Design system: no
 References: existing screens (Accounts, Transactions)
+Medium: Figma
 Figma file: key <file-key>, pages "Accounts", "Transactions", "Settings"
 Models: default from the skill
 
@@ -48,7 +51,7 @@ Guest sign-in as a table row, not a button — a recognized pattern, not a missi
 Orange only on live/dynamic values, never on buttons.
 
 ## Approved
-| Screen | Where in Figma | Screenshot | Date |
+| Screen | Where | Screenshot | Date |
 |---|---|---|---|
 | Accounts — list | Accounts page, frame "Accounts/List" | design-shots/accounts-list-2026-01-14.png | 2026-01-14 |
 

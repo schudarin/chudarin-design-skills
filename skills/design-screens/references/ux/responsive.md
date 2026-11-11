@@ -90,3 +90,17 @@ action below the real fold.
 
 **Read:** the frame height against the product's device height, for every screen without a scroll
 area.
+
+### Decoration is the same at every width
+
+A background, a decorative layer or an ambient motion looks and moves the same at phone and desktop
+width, unless `design.md` records the difference.
+
+**Look:** both widths in the same pass, side by side.
+
+### A row that scrolls sideways shows that it does
+
+An edge fade or an arrow sits over the side with more items. A row cut at the edge with no sign
+reads as broken.
+
+**Look:** the row at the narrowest width, before any scroll.

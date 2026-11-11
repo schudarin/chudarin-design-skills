@@ -2,7 +2,7 @@
 
 Runs before any redesign work when the product already ships. The deliverable of this phase is not
 a screen — it is a **map of what the product currently does and where it fails**, laid out in Figma
-next to the screens it describes. Everything the redesign later claims as an improvement is measured
+next to the screens it describes, or on a capture page in the prototype folder when the medium is not Figma. Everything the redesign later claims as an improvement is measured
 against this map, so a wrong note here becomes a wrong screen two phases later.
 
 For scale: one authenticated area of a product can run to dozens of screens and notes — plan the
@@ -20,7 +20,7 @@ code, letting the session expire).
   disappeared in ~1.5 s, in the opposite corner from the click. If a click appears to do nothing,
   assume a transient response and catch it deliberately — "nothing happens" is a claim about
   timing, not a fact about the product.
-- Put every capture into Figma in flow-ordered strips, one group per flow (`A · LOG IN`,
+- Put every capture into Figma (or onto the capture page) in flow-ordered strips, one group per flow (`A · LOG IN`,
   `B · SIGN UP`, …), each screen numbered. The numbering becomes the addressing scheme for every
   later conversation; renaming a group later breaks every reference to it.
 - **Ask before crossing anything irreversible.** Registration, verification, payments, and identity
