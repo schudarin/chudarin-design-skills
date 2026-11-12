@@ -1,6 +1,6 @@
 ---
 name: design-screens
-description: Use when designing, building, or changing a product screen, flow, or component — in Figma, in an HTML prototype, or straight in the product's code: new screens, states, scenarios, rough or polished takes, redesigns, edits to approved work, or porting a prototype into the product. In Figma, load it alongside figma-generate-design or figma-use, never instead of them: those cover the API, this covers the process. Use when a design result was rejected, when a screen must match an existing product, or when starting design on a product with no visual direction yet. Not for auditing or documenting an existing design system without changing screens — that is audit-design-system.
+description: "Use when designing, building, or changing a product screen, flow, or component — in Figma, in an HTML prototype, or straight in the product's code: new screens, states, scenarios, rough or polished takes, redesigns, edits to approved work, or porting a prototype into the product. In Figma, load it alongside figma-generate-design or figma-use, never instead of them: those cover the API, this covers the process. Use when a design result was rejected, when a screen must match an existing product, or when starting design on a product with no visual direction yet. Not for auditing or documenting an existing design system without changing screens — that is audit-design-system."
 ---
 
 # Design Screens
