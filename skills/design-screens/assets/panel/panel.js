@@ -1,4 +1,4 @@
-/* panel v1.0.0 — the prototype's review panel (design-screens › references/prototype.md › Panel). No dependencies, nothing from the project.
+/* panel v1.4.0 — the prototype's review panel (design-screens › references/prototype.md › Panel). No dependencies, nothing from the project.
    The project keeps a copy of this folder and never edits it; changes go to the package, and the copy is replaced when the package's version is newer.
    A review page beside the prototype, served by serve.py so the page under review shares its address:
      <link rel="stylesheet" href="panel/panel.css"><script src="panel/panel.js"></script>
@@ -9,18 +9,22 @@
          ['Pay', (T) => T.tap('button', 'Pay')],
          ['Card number', (T) => T.type('input[name=card]', '4242 4242 4242 4242')],
        ] }],
+       // a path with states: true is a set of separate states, not a sequence: no play buttons, its steps only open
        presets: ['empty', 'heavy'],             // only when the user asks to compare data; none by default. The page reads ?preset=
-       themes: ['light', 'dark'],               // optional; the page gets data-theme on <html> and ?theme=
+       themes: ['light', 'dark'],               // optional, these two by default: a Light/Dark switch; the page gets data-theme="light|dark" on <html> (read it there) and ?theme=; the choice is kept in localStorage
        labels: { playStep: 'Проиграть шаг' },   // optional, over the English defaults below
        phone: 640,                              // optional, the product's phone breakpoint
-       screens: { desktop: [1440, 900] },       // optional, over the default device sizes
+       screens: { desktop: [1440, 900], tablet: null }, // optional, over the default device sizes; null removes one
+       versions: [{ id: 'v2', label: 'Checkout v2', note: '13.11', group: 'New' }], version: 'v2', // optional: a version switcher at the top of the panel;
+                                                // newest first; note is a grey aside (a date), a change of group draws a divider with the group's name
+       onVersion(id) {},                       // optional; by default the review page reloads with ?v=<id>
      });</script>
    A step's action gets T: tap(selector, words?, { nth, nav }), type(selector, text), see(selector, words?, ms), has(selector, words?), open(url), wait(ms), doc(), slow. */
 (function (root) {
-  const VERSION = '1.0.0';
+  const VERSION = '1.3.0';
   const STOP = Symbol('stop');
   const LABELS = {
-    panel: 'Prototype panel', collapse: 'Collapse', open: 'Panel', screen: 'Screen',
+    panel: 'Prototype panel', version: 'Version', collapse: 'Collapse', open: 'Panel', screen: 'Screen',
     phone: 'Phone', tablet: 'Tablet', desktop: 'Desktop', full: 'Whole window',
     playStep: 'Play from here', paths: 'Scenarios', steps: 'Steps',
     data: 'Data', theme: 'Theme', light: 'Light', dark: 'Dark',
@@ -44,6 +48,12 @@
       const path = paths.find((p) => p.id === id);
       return path ? { path, step: Math.max(0, Math.min(Number(k) || 0, path.steps.length - 1)) } : { path: paths[0], step: 0 };
     },
+    /* the versions in their given order, split where the group changes */
+    vgroups: (versions) => versions.reduce((out, v) => {
+      const g = v.group || '', last = out[out.length - 1];
+      if (last && last.group === g) last.items.push(v); else out.push({ group: g, items: [v] });
+      return out;
+    }, []),
     rows(paths, shut) { /* group headers and the path rows under them */
       const out = [];
       paths.forEach((p, i) => {
@@ -73,8 +83,8 @@
   };
 
   function mount(o) {
-    const L = core.labels(o.labels), SCR = { ...SCREENS, ...o.screens }, paths = o.paths;
-    const presets = o.presets || [], themes = o.themes || [];
+    const L = core.labels(o.labels), SCR = Object.fromEntries(Object.entries({ ...SCREENS, ...o.screens }).filter(([, v]) => v)), paths = o.paths;
+    const presets = o.presets || [], themes = o.themes || ['light', 'dark'], versions = o.versions || [];
     const $ = (s, r = document) => r.querySelector(s);
     const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
     const store = {
@@ -102,17 +112,25 @@
       desktop: '<rect x="1.5" y="2.5" width="13" height="9" rx="1.4"/><path d="M5.5 14.5h5M8 11.5v3"/>',
       full: '<path d="M2 6V2.5c0-.3.2-.5.5-.5H6M10 2h3.5c.3 0 .5.2.5.5V6M14 10v3.5c0 .3-.2.5-.5.5H10M6 14H2.5a.5.5 0 0 1-.5-.5V10"/>',
     }; /* a screen with no icon of its own shows its name */
+    const OK = '<svg class="ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5 6.5 11.5 12.5 4.5"/></svg>';
+    const vcur = versions.find((v) => v.id === o.version) || versions[0];
+    const vrow = (v) => `<span class="vt">${esc(v.label || v.id)}</span>${v.note ? `<span class="vn">${esc(v.note)}</span>` : ''}`;
     const seg = (label, attr, list) => `<div class="pseg" role="group" aria-label="${esc(label)}">${list.map((v) => `<button type="button" ${attr}="${esc(v)}">${esc(L[v] || v)}</button>`).join('')}</div>`;
     document.body.insertAdjacentHTML('beforeend',
       '<div class="pdesk"><div class="pstage"><small class="pcap"></small><div class="pdev"><iframe allow="clipboard-read; clipboard-write"></iframe></div></div></div>'
       + `<aside id="panel" aria-label="${esc(L.panel)}"><div class="ph"><b>${esc(o.title || '')}</b>`
       + `<button class="picon" type="button" data-a="close" aria-label="${esc(L.collapse)}" title="${esc(L.collapse)}">`
       + '<svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="11" rx="2"/><path d="M10 2.5v11M5 6.5 6.5 8 5 9.5"/></svg></button></div>'
-      + '<div class="pset">' /* how to look: screen, data, theme; then what to look at: the scenarios */
+      + '<div class="pset">' /* which version, then how to look: screen, data, theme; then what to look at: the scenarios */
+      + (versions.length > 1 ? `<div class="fld"><span class="fh" id="pvh">${esc(L.version)}</span><div class="pver">`
+        + `<button type="button" class="vbtn" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="pvh pvc"><span class="vrow" id="pvc">${vrow(vcur)}</span></button>`
+        + `<div class="vlist" role="listbox" tabindex="-1" aria-labelledby="pvh" hidden>${core.vgroups(versions).map((g) => `<div role="group"${g.group ? ` aria-label="${esc(g.group)}"><div class="vgh" aria-hidden="true">${esc(g.group)}</div>` : '>'}`
+          + g.items.map((v) => `<div class="vopt" role="option" id="pv-${esc(v.id)}" data-v="${esc(v.id)}" aria-selected="${v === vcur}">${OK}${vrow(v)}</div>`).join('') + '</div>').join('')}</div>`
+        + '</div></div>' : '')
       + `<div class="fld pscr"><span class="fh">${esc(L.screen)}<span class="fv"></span></span><div class="pseg pico" role="group" aria-label="${esc(L.screen)}">`
       + Object.keys(SCR).map((v) => `<button type="button" data-s="${esc(v)}" aria-label="${esc(name(v))}" title="${esc(name(v))}">${SICON[v] ? `<svg viewBox="0 0 16 16" aria-hidden="true">${SICON[v]}</svg>` : esc(L[v] || v)}</button>`).join('') + '</div></div>'
-      + (presets.length ? `<label class="fld"><span class="fh">${esc(L.data)}</span><select data-a="preset">${presets.map((v) => `<option value="${esc(v)}">${esc(L[v] || v)}</option>`).join('')}</select></label>` : '')
       + (themes.length > 1 ? `<div class="fld"><span class="fh">${esc(L.theme)}</span>${seg(L.theme, 'data-t', themes)}</div>` : '')
+      + (presets.length ? `<label class="fld"><span class="fh">${esc(L.data)}</span><select data-a="preset">${presets.map((v) => `<option value="${esc(v)}">${esc(L[v] || v)}</option>`).join('')}</select></label>` : '')
       + `</div><ol class="seq" aria-label="${esc(L.paths)}"></ol>`
       + '<p class="pnote" role="status"></p></aside><button id="popen" type="button"></button>');
 
@@ -163,7 +181,7 @@
         + `${CHEV}<span class="t">${esc(p.label)}</span></button>`
         + (open ? `<ol class="steps" aria-label="${esc(L.steps)}">${p.steps.map((s, k) => `<li><button type="button" data-step="${k}"${k === step ? ' aria-current="true"' : ''}>`
           + `<span class="t">${esc(s[0])}</span></button>`
-          + (k < p.steps.length - 1 ? `<button type="button" class="sp" data-play="${k}" aria-label="${esc(L.playStep)}">${PLAY}</button>` : FLAG) + '</li>').join('')}</ol>` : '')
+          + (p.states ? '' : k < p.steps.length - 1 ? `<button type="button" class="sp" data-play="${k}" aria-label="${esc(L.playStep)}">${PLAY}</button>` : FLAG) + '</li>').join('')}</ol>` : '')
         + '</li>';
     };
     const list = () => {
@@ -301,7 +319,7 @@
         if (p === cur && !phone.matches) { stepsOpen = !stepsOpen; store.set('steps', stepsOpen ? '1' : '0'); return list(); } /* the open path folds its steps */
         if (!stepsOpen) { stepsOpen = true; store.set('steps', '1'); }
         tuck();
-        return phone.matches ? play(p, p.steps.length - 1, true) : play(p, 0); /* a phone: a tap plays the path from its start */
+        return phone.matches && !p.states ? play(p, p.steps.length - 1, true) : play(p, 0); /* a phone: a tap plays the path from its start; a set of states just opens its first */
       }
       if (b.dataset.step) { tuck(); return play(cur, Number(b.dataset.step)); }
       if (b.dataset.play) { tuck(); return play(cur, cur.steps.length - 1, true, Number(b.dataset.play) + 1); }
@@ -310,6 +328,40 @@
       const a = b.dataset.a;
       if (a === 'close') { document.body.classList.add('pclosed'); store.set('closed', '1'); fit(); pill.focus(); }
     });
+    /* the version list: a button and a listbox, keyboard as in a native select */
+    const vbtn = $('.vbtn', panel), vlist = $('.vlist', panel);
+    if (vbtn) {
+      const opts = [...vlist.querySelectorAll('[role=option]')];
+      let vi = 0;
+      const mark = (i) => {
+        vi = Math.max(0, Math.min(opts.length - 1, i));
+        opts.forEach((x, k) => x.classList.toggle('act', k === vi));
+        vlist.setAttribute('aria-activedescendant', opts[vi].id);
+        opts[vi].scrollIntoView({ block: 'nearest' });
+      };
+      const vshow = (on) => {
+        if (on === !vlist.hidden) return;
+        vlist.hidden = !on; vbtn.setAttribute('aria-expanded', on);
+        if (on) { mark(opts.findIndex((x) => x.getAttribute('aria-selected') === 'true')); vlist.focus(); }
+      };
+      const pick = (id) => {
+        vshow(false); vbtn.focus();
+        if (id !== vcur.id) (o.onVersion || ((v) => { const u = new URL(location.href); u.searchParams.set('v', v); location.href = u.href; }))(id);
+      };
+      vbtn.addEventListener('click', () => vshow(vlist.hidden));
+      vbtn.addEventListener('keydown', (e) => { if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); vshow(true); } });
+      vlist.addEventListener('click', (e) => { const x = e.target.closest('[role=option]'); if (x) pick(x.dataset.v); });
+      vlist.addEventListener('pointermove', (e) => { const k = opts.indexOf(e.target.closest('[role=option]')); if (k >= 0 && k !== vi) mark(k); });
+      vlist.addEventListener('keydown', (e) => {
+        const k = { ArrowDown: vi + 1, ArrowUp: vi - 1, Home: 0, End: opts.length - 1 }[e.key];
+        if (k !== undefined) { e.preventDefault(); mark(k); }
+        else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(opts[vi].dataset.v); }
+        else if (e.key === 'Escape') { vshow(false); vbtn.focus(); }
+        else if (e.key === 'Tab') vshow(false);
+      });
+      document.addEventListener('pointerdown', (e) => { if (!e.target.closest('.pver')) vshow(false); });
+      addEventListener('blur', () => vshow(false)); /* a click into the page under review lands in the iframe, not on this document */
+    }
     $('[data-a=preset]', panel)?.addEventListener('change', (e) => { preset = e.target.value; store.set('preset', preset); play(cur, step); });
     pill.addEventListener('click', () => { document.body.classList.remove('pclosed'); store.set('closed', ''); fit(); $('[data-a=close]', panel).focus(); });
     addEventListener('resize', fit);
