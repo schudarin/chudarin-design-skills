@@ -119,7 +119,7 @@ missing visual skill costs an extra lens on composition, not the process.
 - Draft: fast rough takes to choose a direction. Steps 1–3 and 5 run, step 4 (the critic) does not; every message that shows one says "draft, not checked" in its first line.
 - Design: the full steps, with the critic before every showing.
 
-The mode goes into `design.md` › In progress with the task. A draft the user picks switches the task to design: the critic runs on it before any polish.
+The mode goes into `design.md` › In progress with the task. In progress holds the task and what is next, one line per decision; actions, critic verdicts and "shown to the user" are not written anywhere in `design.md`. A draft the user picks switches the task to design: the critic runs on it before any polish.
 
 | Step | What happens |
 |---|---|
@@ -127,8 +127,8 @@ The mode goes into `design.md` › In progress with the task. A draft the user p
 | 2 | Write the brief, check it against `references/briefs.md`; carry into it the rules in force for this screen — `references/ux-rules.md` routes to them by what the screen contains |
 | 3 | Agent builds: intent in words, then the build in the medium, then self-critique and a revision pass |
 | 4 | Four checks from `references/checks.md`, before the user sees it — the Accuracy pass re-reads the same rules as criteria |
-| 5 | Show the user |
-| 6 | User finishes it: by hand in Figma, in words on a prototype. The approved state becomes the saved one |
+| 5 | Show the user. A "no" to a version, an element or an approach goes to `design.md` › Rejected in the user's words before the next build |
+| 6 | User finishes it: by hand in Figma, in words on a prototype. The approved state becomes the saved one: a row in `design.md` › Approved (screen, where, date) with its screenshot in `.claude/design-shots/`, and the task's line leaves In progress |
 
 Step 6 is the norm, not an exception — expect the user to finish the screen: by hand in Figma, in words on a prototype or in code.
 
