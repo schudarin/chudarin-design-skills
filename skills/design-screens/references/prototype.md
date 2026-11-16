@@ -24,7 +24,7 @@ One review panel per project; every prototype is reviewed through it and none bu
 ## Checks on a running page
 
 - The checks run as `SKILL.md` › Prototype or product code says, in each theme. Every scenario plays start to end with no console errors.
-- Screenshots are taken with a browser tool the host already has. When none is found, ask the user how to proceed before installing anything. Images go to a temp folder outside the repository and are read by absolute path.
+- Screenshots and DOM reads use the tool and recipe recorded in `design.md` › Settings, from the first one. When Settings names none, use a browser tool the host already has; when none is found, ask the user how to proceed before installing anything. Images go to a temp folder outside the repository and are read by absolute path.
 - The recipe that works (serve command, port, screenshot script) is the Running page line in `design.md` › Settings; the first session that finds it missing writes it.
 - Whatever renders only when served (WebGL, data from an API mock) is captured from the running page, never from the static file.
 

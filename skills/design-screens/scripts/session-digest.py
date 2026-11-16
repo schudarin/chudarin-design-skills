@@ -54,6 +54,11 @@ def turns(path):
                 continue
             msg = d.get("message") or {}
             content = msg.get("content")
+            att = d.get("attachment") or {}
+            if (d.get("type") == "attachment" and att.get("type") == "queued_command"
+                    and (att.get("origin") or {}).get("kind") == "human"):
+                # words the person typed while the agent was working are logged here, not as a user message
+                d, content = dict(d, type="user"), att.get("prompt")
             if d.get("type") == "user":
                 if isinstance(content, list) and any(isinstance(b, dict) and b.get("type") == "tool_result" for b in content):
                     continue

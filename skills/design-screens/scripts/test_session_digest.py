@@ -71,6 +71,24 @@ class Digest(unittest.TestCase):
         self.assertNotIn("command-name", out)       # host markup dropped
         self.assertIn("Кейхинт я вернул руками", out)
 
+    def test_keeps_words_typed_while_the_agent_works(self):
+        def queued(text, ts, kind):
+            return line(type="attachment", timestamp=ts, attachment={
+                "type": "queued_command", "prompt": text, "commandMode": "prompt", "origin": {"kind": kind}})
+        self.write("eeee5555", [
+            user("Проверь полку", "2026-10-26T10:00:00Z"),
+            tool_call("2026-10-26T10:00:05Z"),
+            user("[Request interrupted by user]", "2026-10-26T10:00:06Z"),
+            queued("Браузер только тот, что в Settings", "2026-10-26T10:00:07Z", "human"),
+            queued("Сосед: правлю backlog.md", "2026-10-26T10:00:08Z", "session"),
+            assistant("Перешёл на браузер из Settings", "2026-10-26T10:01:00Z"),
+        ], 100)
+        code, out, _ = self.run_script("eeee")
+        self.assertEqual(code, 0)
+        self.assertIn("Браузер только тот, что в Settings", out)
+        self.assertIn("Перешёл на браузер из Settings", out)
+        self.assertNotIn("Сосед", out)              # only the person's words
+
     def test_cap_keeps_the_most_recent_turns(self):
         rows = []
         for i in range(50):
