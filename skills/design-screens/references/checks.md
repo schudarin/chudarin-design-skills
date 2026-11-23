@@ -151,6 +151,8 @@ the link goes out, or say in the message which frames changed after the check.
 
 ## Critic prompt (copy-paste ready)
 
+Choose the critic using the [model rules](../SKILL.md#models) before sending the brief.
+
 The critic is a separate, read-only agent — not the one that built the screen, so there's no
 incentive to confirm its own success. The output below is a checklist to fill in, not a paragraph
 to write, and it has exactly two legitimate results per section: a completed result (PASS / a

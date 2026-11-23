@@ -1,8 +1,8 @@
 # Briefs
 
 Reference for `SKILL.md`, "Working a screen," step 2: write the brief, then check it against this
-file, before any agent is dispatched. Two agent templates live here — designer (strongest model tier) and
-mechanic (cheaper tier) — plus the addendum that applies only in variants mode. The critic's prompt is
+file, before any agent is dispatched. Choose the designer or mechanic using the [model rules](../SKILL.md#models).
+This file contains both briefs and the variants addendum. The critic's prompt is
 not repeated here; it lives whole in `references/checks.md`, run at step 4.
 
 ## Why the self-check lives inside the template, not next to it

@@ -173,12 +173,22 @@ A property the user didn't name is not part of the request. "Make active element
 
 ## Models
 
+In Codex, choose the model and reasoning effort for the work each agent will do.
+
+| Task | Model | Effort |
+|---|---|---|
+| Create or rethink a design, explore product ideas, plan a user flow, or judge a design direction | `gpt-6.2-astra` | `high` |
+| Check visual fidelity against a reference, including a critic or any subagent comparing screenshots, a Figma frame and a prototype, or a port in either direction | `gpt-6.1-terra` | `medium` |
+| Other work, including implementing an approved design, wiring interactions, and updating text or tokens to spec | `gpt-6.2-sol` | `medium` |
+
+Follow an explicit model choice from the user. If the active chat has the right model and effort, work there unless the review calls for an independent critic. Otherwise, delegate the relevant task with both model and effort set on the new agent. With a fresh context, pass the brief and source paths or links. Give a visual reviewer both views at the same size and in the same state. If the host cannot dispatch the requested model, tell the user which setting to select in the chat.
+
+On Claude Code and other hosts, use the existing model tiers.
+
 | Task type | Model tier |
 |---|---|
 | Composition, critique, synthesis | the strongest reasoning model available to the host |
 | Mechanics: variables, text styles, clones, renames, moves | a cheaper, faster model — no design judgment is involved |
-
-Model names differ per host (Claude Code, Codex, others); pick by tier, not by name.
 
 If the model you need is unavailable — limit, outage, missing access — stop and ask before switching, not after. Disclosing a swap once it's done isn't the same as asking first: by the time there's something to disclose, the hour is already spent on the wrong tool.
 
