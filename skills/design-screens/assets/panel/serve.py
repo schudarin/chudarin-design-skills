@@ -1,4 +1,4 @@
-# panel v1.5.0 — serves a prototype folder with no cache, so every reload shows the last edit.
+# panel v1.5.1 — serves a prototype folder with no cache, so every reload shows the last edit.
 # Run: python3 serve.py --root <prototype folder> [--port 8000] [--host 127.0.0.1]
 import argparse
 import os

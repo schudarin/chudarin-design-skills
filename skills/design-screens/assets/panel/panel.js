@@ -1,4 +1,4 @@
-/* panel v1.5.0 — the prototype's review panel (design-screens › references/prototype.md › Panel). No dependencies, nothing from the project.
+/* panel v1.5.1 — the prototype's review panel (design-screens › references/prototype.md › Panel). No dependencies, nothing from the project.
    The project keeps a copy of this folder and never edits it; changes go to the package, and the copy is replaced when the package's version is newer.
    A review page beside the prototype, served by serve.py so the page under review shares its address:
      <link rel="stylesheet" href="panel/panel.css"><script src="panel/panel.js"></script>
@@ -21,7 +21,7 @@
      });</script>
    A step's action gets T: tap(selector, words?, { nth, nav }), type(selector, text), see(selector, words?, ms), has(selector, words?), open(url), wait(ms), doc(), slow. */
 (function (root) {
-  const VERSION = '1.5.0';
+  const VERSION = '1.5.1'; // 1.5.1: a jump to a step marks the page with data-pjump, so it can show the end state without animations
   const STOP = Symbol('stop');
   const LABELS = {
     panel: 'Prototype panel', version: 'Version', collapse: 'Collapse', open: 'Panel', screen: 'Screen',
@@ -115,8 +115,11 @@
     }; /* a screen with no icon of its own shows its name */
     const OK = '<svg class="ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5 6.5 11.5 12.5 4.5"/></svg>';
     const FIG = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5.5 1H8v5H5.5a2.5 2.5 0 0 1 0-5zM8 1h2.5a2.5 2.5 0 0 1 0 5H8zM5.5 6H8v5H5.5a2.5 2.5 0 0 1 0-5zM5.5 11H8v2.5A2.5 2.5 0 1 1 5.5 11z"/><circle cx="10.5" cy="8.5" r="2.5"/></svg>'; /* the step's screen in Figma */
-    /* the step's node in Figma: the phone's or the desktop's by the chosen screen (the whole window counts as the desktop) */
-    const figHref = (p, s) => { const f = s[2]?.figma, id = f && ((scr === 'phone' ? f.phone : f.desktop) || f.phone || f.desktop); return p.figma && id ? `${p.figma}?node-id=${id.replace(':', '-')}` : ''; };
+    /* the step's node for the selected device, or the closest reference when that device has no mockup */
+    const figHref = (p, s) => {
+      const f = s[2]?.figma, id = f && (f[scr === 'full' ? 'desktop' : scr] || f.desktop || f.phone || f.tablet);
+      return p.figma && id ? `${p.figma}?node-id=${id.replace(':', '-')}` : '';
+    };
     const vcur = versions.find((v) => v.id === o.version) || versions[0];
     const vrow = (v) => `<span class="vt">${esc(v.label || v.id)}</span>${v.note ? `<span class="vn">${esc(v.note)}</span>` : ''}`;
     const seg = (label, attr, list) => `<div class="pseg" role="group" aria-label="${esc(label)}">${list.map((v) => `<button type="button" ${attr}="${esc(v)}">${esc(L[v] || v)}</button>`).join('')}</div>`;
@@ -272,6 +275,7 @@
     };
     /* steps `from`..`to` of a path. The page plays on from what it shows when that is the step before `from` and nobody touched it;
        otherwise it opens fresh (the preset and theme) and runs quickly to the step before `from` */
+    const still = (on) => { for (const el of [frame, doc()?.documentElement]) el?.toggleAttribute('data-pjump', on); };
     async function go(p, to, slow = false, from = 0) {
       const r = runs.start(), here = from > 0 && p === cur && at === from - 1 && !touched;
       const T = actions(r, slow);
@@ -285,6 +289,7 @@
         mark(slow ? Math.max(0, from - 1) : to); /* the panel shows where the page is going, not the steps on the way */
         const kb = document.activeElement, keys = panel.contains(kb) && kb.matches(':focus-visible'); /* a field typed into on the way takes the focus; a keyboard user gets it back */
         dev.classList.add('pwait'); /* the steps on the way run hidden */
+        still(true); /* ...and still: a page opened now reads data-pjump on its frame and may show end states without animations; a jump keeps it until the next play */
         try {
           await T.open(p.start);
           touched = false;
@@ -297,6 +302,7 @@
         if (!slow) { if (r.live()) at = to; return; }
         if (from) await r.wait(1000); /* time to see where it plays from */
       }
+      still(false); /* a played step animates */
       panel.classList.add('pplaying');
       try {
         await core.walk(p.steps, to, T, { from, gap: 2400, mark }); /* time to read a step before the next one plays */
