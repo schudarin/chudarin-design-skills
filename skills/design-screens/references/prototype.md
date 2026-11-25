@@ -16,6 +16,7 @@ One review panel per project; every prototype is reviewed through it and none bu
 - Screen: phone, tablet, desktop, the whole window. A device frame is shown at the device's size: never grown, never shrunk for height (the page scrolls), shrunk only when the window is narrower than the frame.
 - Scenarios: named paths of steps, grouped by milestone. Groups and steps fold. A tap on a step opens the page in that state at once, with no animation.
 - The chosen step has a play button: the scenario plays on from that step to its end at a person's pace. Each press is shown, text is typed letter by letter, and there is time to read. The step's caption stays above a device frame and in the open panel. A new play stops the one running. The panel puts no checkmarks or other marks on played paths or steps.
+- A step whose screen is drawn in Figma may carry a link to it: the path names the file, the step names the phone's and the desktop's node, and a quiet Figma glyph at the end of the step opens the node for the screen being viewed. Only for key screens with an exact frame; a step without one gets no glyph.
 - Data presets only when the user asks to compare the screen on different data. The panel has none by default.
 - Theme, when the product has more than one.
 - The panel holds only what this round tests. Options left from earlier rounds leave it.

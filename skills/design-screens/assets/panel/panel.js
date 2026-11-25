@@ -1,12 +1,12 @@
-/* panel v1.4.0 — the prototype's review panel (design-screens › references/prototype.md › Panel). No dependencies, nothing from the project.
+/* panel v1.5.0 — the prototype's review panel (design-screens › references/prototype.md › Panel). No dependencies, nothing from the project.
    The project keeps a copy of this folder and never edits it; changes go to the package, and the copy is replaced when the package's version is newer.
    A review page beside the prototype, served by serve.py so the page under review shares its address:
      <link rel="stylesheet" href="panel/panel.css"><script src="panel/panel.js"></script>
      <script>PANEL.mount({
        title: 'Checkout',
-       paths: [{ id: 'buy', label: 'Buy one item', group: 'Checkout', start: 'v2/index.html#cart', steps: [
+       paths: [{ id: 'buy', label: 'Buy one item', group: 'Checkout', start: 'v2/index.html#cart', figma: 'https://www.figma.com/design/<file key>/', steps: [
          ['Cart with one item'],                                        // the first step is where the path opens
-         ['Pay', (T) => T.tap('button', 'Pay')],
+         ['Pay', (T) => T.tap('button', 'Pay'), { figma: { phone: '12:34', desktop: '12:56' } }], // optional: the step's screen in Figma; with the path's figma file a quiet glyph opens the phone's or the desktop's node by the chosen screen
          ['Card number', (T) => T.type('input[name=card]', '4242 4242 4242 4242')],
        ] }],
        // a path with states: true is a set of separate states, not a sequence: no play buttons, its steps only open
@@ -21,7 +21,7 @@
      });</script>
    A step's action gets T: tap(selector, words?, { nth, nav }), type(selector, text), see(selector, words?, ms), has(selector, words?), open(url), wait(ms), doc(), slow. */
 (function (root) {
-  const VERSION = '1.3.0';
+  const VERSION = '1.5.0';
   const STOP = Symbol('stop');
   const LABELS = {
     panel: 'Prototype panel', version: 'Version', collapse: 'Collapse', open: 'Panel', screen: 'Screen',
@@ -29,6 +29,7 @@
     playStep: 'Play from here', paths: 'Scenarios', steps: 'Steps',
     data: 'Data', theme: 'Theme', light: 'Light', dark: 'Dark',
     stepFailed: 'Step failed:', notFound: 'not found:', noLoad: 'the page did not load in 15 s', crossOrigin: 'The page is on another address: serve it from the panel\'s own.',
+    figma: 'Figma',
   };
   const SCREENS = { phone: [390, 844], tablet: [768, 1024], desktop: [1280, 800], full: [0, 0] };
 
@@ -113,6 +114,9 @@
       full: '<path d="M2 6V2.5c0-.3.2-.5.5-.5H6M10 2h3.5c.3 0 .5.2.5.5V6M14 10v3.5c0 .3-.2.5-.5.5H10M6 14H2.5a.5.5 0 0 1-.5-.5V10"/>',
     }; /* a screen with no icon of its own shows its name */
     const OK = '<svg class="ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5 6.5 11.5 12.5 4.5"/></svg>';
+    const FIG = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5.5 1H8v5H5.5a2.5 2.5 0 0 1 0-5zM8 1h2.5a2.5 2.5 0 0 1 0 5H8zM5.5 6H8v5H5.5a2.5 2.5 0 0 1 0-5zM5.5 11H8v2.5A2.5 2.5 0 1 1 5.5 11z"/><circle cx="10.5" cy="8.5" r="2.5"/></svg>'; /* the step's screen in Figma */
+    /* the step's node in Figma: the phone's or the desktop's by the chosen screen (the whole window counts as the desktop) */
+    const figHref = (p, s) => { const f = s[2]?.figma, id = f && ((scr === 'phone' ? f.phone : f.desktop) || f.phone || f.desktop); return p.figma && id ? `${p.figma}?node-id=${id.replace(':', '-')}` : ''; };
     const vcur = versions.find((v) => v.id === o.version) || versions[0];
     const vrow = (v) => `<span class="vt">${esc(v.label || v.id)}</span>${v.note ? `<span class="vn">${esc(v.note)}</span>` : ''}`;
     const seg = (label, attr, list) => `<div class="pseg" role="group" aria-label="${esc(label)}">${list.map((v) => `<button type="button" ${attr}="${esc(v)}">${esc(L[v] || v)}</button>`).join('')}</div>`;
@@ -176,12 +180,13 @@
     /* ---------- paths and steps; the chosen step has its own play ---------- */
     /* groups are section labels; a path folds its steps, which hang on a guide line under it */
     const pathRow = (p) => {
-      const on = p === cur, open = on && stepsOpen;
+      const on = p === cur, open = on && stepsOpen, figs = p.steps.some((s) => figHref(p, s)); /* a path with Figma links keeps the glyph's place on every step, so the play stays put */
       return `<li class="path"><button type="button" data-path="${esc(p.id)}"${on ? ' aria-current="step"' : ''} aria-expanded="${open}">`
         + `${CHEV}<span class="t">${esc(p.label)}</span></button>`
-        + (open ? `<ol class="steps" aria-label="${esc(L.steps)}">${p.steps.map((s, k) => `<li><button type="button" data-step="${k}"${k === step ? ' aria-current="true"' : ''}>`
+        + (open ? `<ol class="steps" aria-label="${esc(L.steps)}">${p.steps.map((s, k) => { const h = figHref(p, s); return `<li><button type="button" data-step="${k}"${k === step ? ' aria-current="true"' : ''}>`
           + `<span class="t">${esc(s[0])}</span></button>`
-          + (p.states ? '' : k < p.steps.length - 1 ? `<button type="button" class="sp" data-play="${k}" aria-label="${esc(L.playStep)}">${PLAY}</button>` : FLAG) + '</li>').join('')}</ol>` : '')
+          + (p.states ? '' : k < p.steps.length - 1 ? `<button type="button" class="sp" data-play="${k}" aria-label="${esc(L.playStep)}">${PLAY}</button>` : FLAG)
+          + (h ? `<a class="fg" href="${esc(h)}" target="_blank" rel="noopener" aria-label="${esc(L.figma)}" title="${esc(L.figma)}">${FIG}</a>` : figs ? '<span class="fg"></span>' : '') + '</li>'; }).join('')}</ol>` : '')
         + '</li>';
     };
     const list = () => {
@@ -323,7 +328,7 @@
       }
       if (b.dataset.step) { tuck(); return play(cur, Number(b.dataset.step)); }
       if (b.dataset.play) { tuck(); return play(cur, cur.steps.length - 1, true, Number(b.dataset.play) + 1); }
-      if (b.dataset.s) { scr = b.dataset.s; store.set('screen', scr); return size(); }
+      if (b.dataset.s) { scr = b.dataset.s; store.set('screen', scr); size(); return list(); } /* the Figma links follow the screen */
       if (b.dataset.t) { theme = b.dataset.t; store.set('theme', theme); return paint(); }
       const a = b.dataset.a;
       if (a === 'close') { document.body.classList.add('pclosed'); store.set('closed', '1'); fit(); pill.focus(); }
