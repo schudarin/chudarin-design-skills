@@ -1,9 +1,9 @@
 # Working canvas
 
-The default layout for pages, sections and flows. It applies to a new file, or a new page in a file
-that has no layout of its own. A file that already has its own page background, sections or flow
-layout keeps it: new screens follow what is there, and the existing layout is changed only when the
-person asks for it.
+Use the defaults below for a new file or a page with no layout of its own. For an existing page,
+inspect the neighboring scenario on the destination page and use it as the layout reference.
+Use source frames for screen content. Before sharing, compare step direction, grouping, and
+spacing with the destination scenario. Change an existing layout when the person asks for it.
 
 Every screen goes into this structure the moment it is created — never loose on the page and tidied
 later. All containers are auto-layout, hug both axes, no fill, `clipsContent = false`. Font: the

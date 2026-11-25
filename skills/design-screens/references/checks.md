@@ -6,14 +6,19 @@ spends the taste-sensitive check on something that gets redone anyway. Run them 
 to Product style first doesn't save time, it just means redoing that check after Completeness or
 Accuracy forces a change. Composition runs last, on the final render.
 
+For changed work, open the deliverable from the link the user will use. In a prototype,
+select each affected version and step in the review panel, then repeat the changed interaction.
+In Figma, verify each affected placement and compare each option on a review board with its
+intended source.
+
 ## 1. Completeness
 
 All elements and tasks from the brief are present. The error, empty and loading states this feature
 introduces are drawn, not just the happy path. A state an existing component already draws (its
 skeleton, its send error) is named in the notes next to that component, not redrawn. A state no
 source names — brief, spec, meeting notes — is a question to the user, not a frame. Behaviour the
-user never sees, such as a server-side queue or delay, is not a screen state. Checked item-by-item against the brief's own list — this requires no taste,
-only a count.
+user never sees, such as a server-side queue or delay, is not a screen state. Check each item
+against the brief.
 
 **Result:** PASS, or a list of what's missing.
 
@@ -182,12 +187,15 @@ blocks the check that depends on it exactly the way a blank result section does 
   Product style]
 - The screen's task list that Completeness is checked against — the brief that carries it, or
   the task list itself, pasted in full: [absolute path to the brief / the task list itself]
+- Link the user will open, with each affected placement or option and its source: [link, list]
 - Node ids of the sibling screens in the same flow, for Composition: [ids / none — single screen]
 - Screenshots of the previous round, per frame, for the after-fixes comparison: [absolute paths /
   not applicable — first showing]
 
 Rules:
 - Read-only. Do not write, move, or edit anything in Figma.
+- Open the user-facing link. Verify each affected placement and compare each option on a review
+  board with its intended source.
 - Verify every item yourself, directly against node properties or the screenshot. A builder's
   report of what it did is not evidence of what it did — re-derive each result from the file.
 - Every finding names a specific node id. "Spacing looks off" is not a finding; "node 12:34,
@@ -250,6 +258,9 @@ For a **running page** (a prototype or product code), the same template with the
 - First line: "You are reviewing a running page at [served URL] against four checks: …".
 - No Figma skills. Accuracy reads the DOM and computed styles with the browser tool the host has, at each width and theme in the inputs.
 - Inputs: sibling screens are given as URLs or panel paths; add "Widths and themes: [list]".
+- Replace the Figma placement check with: "Open the user-facing link and test the change in each
+  affected view. In a prototype, select each affected version and step in the review panel and
+  repeat the changed interaction."
 - Wherever the template says node id, the finding names a CSS selector or element, the width and theme, and a number: "`.btn-primary` at 390, light: height 40px, the product minimum is 44px".
 - "A colour bound to a variable" and "text on a text style" read as "a token from the system, not a literal value". "An instance of a component" reads as "built with the system's markup, function or component".
 - Figma-only criteria (integer coordinates, `clipsContent`, SPACE_BETWEEN, spacer frames, instance overrides) do not apply and are not counted as skipped. Composition uses a full-page screenshot at each width.

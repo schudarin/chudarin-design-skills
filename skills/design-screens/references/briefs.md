@@ -49,16 +49,18 @@ ten self-checks embedded at the block each one governs, follows in the next sect
    <repo>/.claude/design-shots/accounts-list-2026-01-14.png, <repo>/.claude/design.md, ... Node <id> in
    the Figma file is the screen to clone from — open it first."*
 
-4. **Work zone and forbidden zones.** Name the frame or page the agent may edit, and what it may
-   not touch — other pages, other frames, shared components used elsewhere.
+4. **Work zone and forbidden zones.** For a revision, name the medium and the exact files, exports,
+   or layers in scope. List the approved elements the edit must preserve and compare them with
+   the approved version before sharing. Record a task-specific limit on that task’s line in
+   In progress.
    *Example: "Work only inside frame 'Settings/Draft'. Do not touch the Accounts page or any node
    also used by an existing screen — check Instances before editing a component."*
 
 5. **Design system as material that isn't free, and the rules in force.** Colors from variables,
-   type from text styles — never typed in or eyeballed, even "just this once." Then: open
-   `references/ux-rules.md`, take the rows matching what this screen will contain, and paste those
-   rules into the brief in full. Naming the file is not enough — a dispatched agent reads the brief,
-   not this skill's references.
+   type from text styles — never typed in or eyeballed, even "just this once." For each affected
+   state or interaction, open the topic file routed by `ux-rules.md`. Put the applicable rule in
+   the brief with the user action and expected result the critic will check. If the read is
+   truncated, reopen the relevant section before building.
    *Example: "Every fill is a variable from the 'color' collection. Every text layer uses an
    existing text style. If neither exists for what you need, say so instead of typing a value."*
 
@@ -115,14 +117,13 @@ references.
   [ ]
 
 ## 4. Work zone and forbidden zones
-Edit only: [frame / page].
-Do not touch: [other pages, shared components, anything also used elsewhere].
+Medium and items to edit: [exact frame, page, file, export, or layer].
+Approved elements to preserve and compare before sharing: [elements and reference].
 (Variants mode only) Do not look at output from any previous round — a fresh dispatch gives a
 fresh take, not a variation on what round 1 already produced.
-SELF-CHECK 5 — are forbidden zones named, and, in variants mode, is the no-peeking line present?
+SELF-CHECK 5 — are the edit scope, elements to preserve, and any variants-mode limits named?
   [ ]
-SELF-CHECK 8 — is every prohibition above phrased as a goal ("stay inside the Settings frame"),
-not a bare block ("don't touch anything else")?
+SELF-CHECK 8 — is every limit phrased as a concrete instruction the builder can verify?
   [ ]
 
 ## 5. Design system as material, and the rules in force
@@ -136,15 +137,14 @@ Only when all four are "no" — create.
 Never cut, no matter where the ladder lands: the screen's error, empty, and loading states;
 accessibility (tap zones, contrast); every task listed in block 6.
 
-Rules in force for this screen (pasted in full from references/ux-rules.md, not named):
-[the rules from every matching row — copy, forms, controls, accessibility]
+Rules in force for this screen:
+[for each applicable rule from a topic file reached through references/ux-rules.md, write the
+rule, the user action, and the expected result]
 SELF-CHECK 6 — is the reuse ladder above present, in this order (need it at all → component →
 pattern to clone → variable/text style → create), with the never-cut list next to it?
   [ ]
-SELF-CHECK 10 — are the rules in force pasted in full, from every row of references/ux-rules.md
-that matches what this screen contains — including the accessibility row, which always matches?
-A brief that only cites the file makes the agent discover the rules at check time, after the
-screen is built.
+SELF-CHECK 10 — were all matching topic files read, including accessibility, and does each
+applicable rule have a user action and an expected result for the critic?
   [ ]
 
 ## 6. Screen content
